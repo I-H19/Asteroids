@@ -5,6 +5,7 @@ using VContainer.Unity;
 public class MainSceneScope : LifetimeScope
 {
     [SerializeField] private KeyboardMonitor _keyboardMonitor;
+    [SerializeField] private Camera _camera;
 
     [SerializeField] private PlayerKeyboardController _playerKeyboardController;
     [SerializeField] private PlayerMovementSettings _playerSettings;
@@ -21,6 +22,7 @@ public class MainSceneScope : LifetimeScope
         builder.RegisterComponent<PlayerKeyboardController>(_playerKeyboardController);
         builder.RegisterComponent<InertialMover>(_playerInertialMover);
         builder.RegisterComponent<DirectionalRotator>(_playerDirectionalRotator);
+        builder.RegisterComponent<Camera>(_camera);
 
         builder.RegisterInstance<InertialMoverSettings>(_playerSettings.MoverSettings);
         builder.RegisterInstance<DirectionalRotationSettings>(_playerSettings.RotationSettings);

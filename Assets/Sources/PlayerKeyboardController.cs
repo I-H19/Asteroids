@@ -17,43 +17,51 @@ public class PlayerKeyboardController : MonoBehaviour
         _playerRotator = rotator;
     }
 
-    private void Start()
-    {
-        KeyboardMonitorSubscribe();
-    }
+    private void Start() => KeyboardMonitorSubscribe();
     private void Update()
     {
         _playerMover.Move();
         _playerRotator.Rotate();
     }
     private void OnDestroy() => KeyboardMonitorUnsubscribe();
-
     private void KeyboardMonitorSubscribe()
     {
-        _keyboardMonitor.ForwardButtonDown += () => _playerMover.SetMoving(true);
-        _keyboardMonitor.ForwardButtonUp += () => _playerMover.SetMoving(false);
+        _keyboardMonitor.ForwardButtonDown += HandleForwardDown;
+        _keyboardMonitor.ForwardButtonUp += HandleForwardUp;
 
-        _keyboardMonitor.BackwardButtonDown += () => _playerMover.SetBraking(true);
-        _keyboardMonitor.BackwardButtonUp += () => _playerMover.SetBraking(false);
+        _keyboardMonitor.BackwardButtonDown += HandleBackwardDown;
+        _keyboardMonitor.BackwardButtonUp += HandleBackwardUp;
 
-        _keyboardMonitor.LeftButtonDown += () => _playerRotator.SetRotateLeft(true);
-        _keyboardMonitor.LeftButtonUp += () => _playerRotator.SetRotateLeft(false);
+        _keyboardMonitor.LeftButtonDown += HandleLeftDown;
+        _keyboardMonitor.LeftButtonUp += HandleLeftUp;
 
-        _keyboardMonitor.RightButtonDown += () => _playerRotator.SetRotateRight(true);
-        _keyboardMonitor.RightButtonUp += () => _playerRotator.SetRotateRight(false);
+        _keyboardMonitor.RightButtonDown += HandleRightDown;
+        _keyboardMonitor.RightButtonUp += HandleRightUp;
     }
     private void KeyboardMonitorUnsubscribe()
     {
-        _keyboardMonitor.ForwardButtonDown -= () => _playerMover.SetMoving(true);
-        _keyboardMonitor.ForwardButtonUp -= () => _playerMover.SetMoving(false);
+        _keyboardMonitor.ForwardButtonDown -= HandleForwardDown;
+        _keyboardMonitor.ForwardButtonUp -= HandleForwardUp;
 
-        _keyboardMonitor.BackwardButtonDown -= () => _playerMover.SetBraking(true);
-        _keyboardMonitor.BackwardButtonUp -= () => _playerMover.SetBraking(false);
+        _keyboardMonitor.BackwardButtonDown -= HandleBackwardDown;
+        _keyboardMonitor.BackwardButtonUp -= HandleBackwardUp;
 
-        _keyboardMonitor.LeftButtonDown -= () => _playerRotator.SetRotateLeft(true);
-        _keyboardMonitor.LeftButtonUp -= () => _playerRotator.SetRotateLeft(false);
+        _keyboardMonitor.LeftButtonDown -= HandleLeftDown;
+        _keyboardMonitor.LeftButtonUp -= HandleLeftUp;
 
-        _keyboardMonitor.RightButtonDown -= () => _playerRotator.SetRotateRight(true);
-        _keyboardMonitor.RightButtonUp -= () => _playerRotator.SetRotateRight(false);
+        _keyboardMonitor.RightButtonDown -= HandleRightDown;
+        _keyboardMonitor.RightButtonUp -= HandleRightUp;
     }
+
+    private void HandleForwardDown() => _playerMover.SetMoving(true);
+    private void HandleForwardUp() => _playerMover.SetMoving(false);
+
+    private void HandleBackwardDown() => _playerMover.SetBraking(true);
+    private void HandleBackwardUp() => _playerMover.SetBraking(false);
+
+    private void HandleLeftDown() => _playerRotator.SetRotateLeft(true);
+    private void HandleLeftUp() => _playerRotator.SetRotateLeft(false);
+
+    private void HandleRightDown() => _playerRotator.SetRotateRight(true);
+    private void HandleRightUp() => _playerRotator.SetRotateRight(false);
 }

@@ -150,6 +150,7 @@ Transform:
   m_Children:
   - {fileID: 220171508}
   - {fileID: 519420032}
+  - {fileID: 1961044338}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &187408683
@@ -187,6 +188,7 @@ MonoBehaviour:
   autoInjectGameObjects:
   - {fileID: 220171505}
   _keyboardMonitor: {fileID: 1179759290}
+  _camera: {fileID: 519420031}
   _playerKeyboardController: {fileID: 220171511}
   _playerSettings: {fileID: 821299311}
   _playerRigidBody: {fileID: 220171507}
@@ -218,9 +220,10 @@ GameObject:
   - component: {fileID: 220171508}
   - component: {fileID: 220171507}
   - component: {fileID: 220171506}
-  - component: {fileID: 220171509}
   - component: {fileID: 220171511}
+  - component: {fileID: 220171509}
   - component: {fileID: 220171512}
+  - component: {fileID: 220171513}
   m_Layer: 0
   m_Name: PlayerShip
   m_TagString: Untagged
@@ -353,6 +356,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63d85acbe21747346adbd3c628f907ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DirectionalRotator
+--- !u!114 &220171513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 220171505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b445dda7e6b0f54a847457c66566357, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScreenTeleporter
 --- !u!1 &374709835
 GameObject:
   m_ObjectHideFlags: 0
@@ -709,7 +724,6 @@ Transform:
   - {fileID: 821299310}
   - {fileID: 187408685}
   - {fileID: 1179759289}
-  - {fileID: 1961044338}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1961044336
@@ -797,11 +811,11 @@ Transform:
   m_GameObject: {fileID: 1961044336}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 2.05628, y: -0.04955, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1702698126}
+  m_Father: {fileID: 172791836}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
