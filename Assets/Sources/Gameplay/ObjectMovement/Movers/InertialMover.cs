@@ -16,8 +16,7 @@ public class InertialMover : MonoBehaviour, IMover
     private float _brakeDeceleration;
     private float _stopEpsilon;
 
-    [Inject]
-    public void Construct(InertialMoverSettings moverSettings, Rigidbody2D rigidbody)
+    public void Init(Rigidbody2D rigidbody, InertialMoverSettings moverSettings)
     {
         _rigidBody = rigidbody;
         _maxForwardSpeed = moverSettings.MaxForwardSpeed;

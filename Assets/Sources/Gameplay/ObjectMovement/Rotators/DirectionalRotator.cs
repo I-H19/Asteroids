@@ -10,8 +10,7 @@ public class DirectionalRotator : MonoBehaviour, IRotator
     private bool _rotateLeft;
     private bool _rotateRight;
 
-    [Inject]
-    public void Construct(Rigidbody2D rigidBody, DirectionalRotationSettings rotationSettings)
+    public void Init(Rigidbody2D rigidBody, DirectionalRotationSettings rotationSettings)
     {
         _rigidBody = rigidBody;
         CurrentAngle = _rigidBody.rotation;

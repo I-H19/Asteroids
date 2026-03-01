@@ -13,8 +13,7 @@ public class DirectionalMover : MonoBehaviour, IMover
     private Rigidbody2D _rigidBody;
     private float _moveSpeed;
 
-    [Inject]
-    public void Construct(DirectionalMoverSettings moverSettings, Rigidbody2D rigidbody)
+    public void Init(DirectionalMoverSettings moverSettings, Rigidbody2D rigidbody)
     {
         _rigidBody = rigidbody;
         _moveSpeed = moverSettings.MovingSpeed;

@@ -17,8 +17,7 @@ public class InertialRotator : MonoBehaviour, IRotator
     private bool _rotateLeft;
     private bool _rotateRight;
 
-    [Inject]
-    public void Construct(Rigidbody2D rigidBody, InertialRotationSettings rotationSettings)
+    public void Init(Rigidbody2D rigidBody, InertialRotationSettings rotationSettings)
     {
         _rigidBody = rigidBody;
 
