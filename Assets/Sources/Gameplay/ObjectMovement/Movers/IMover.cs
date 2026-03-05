@@ -7,4 +7,5 @@ public interface IMover
     public void SetMoving(bool value);
     public void SetBraking(bool value);
     public void SetEnabled(bool enabled);
+    public void SetPosition(Vector2 position);
 }

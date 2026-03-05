@@ -26,7 +26,12 @@ public class EnemyRegistry : MonoBehaviour
     }
     public void ScoredKill(IEnemy enemy)
     {
-        GameObject enemyGameObject = enemy.EnemyGameObject;
+        if (enemy is Asteroid)
+        { 
+            Asteroid asteroid = (Asteroid)enemy;   
+            if (asteroid.IsFragment && !asteroid.IsActiveFragment) return;
+            if (!asteroid.IsFragment) asteroid.ActivateFragments();
+        }
         AliveCount--;
         AliveEnemies.Remove(enemy);
 
@@ -34,6 +39,7 @@ public class EnemyRegistry : MonoBehaviour
         enemy.Kill();
 
         _playerScore.Increment();
+
     }
     public void KillAll()
     {

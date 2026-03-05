@@ -1695,6 +1695,7 @@ MonoBehaviour:
     <MovingSpeed>k__BackingField: 2.5
   <UfoDamage>k__BackingField: 999
   <AsteroidDamage>k__BackingField: 999
+  <AsteroidFragmentsNumber>k__BackingField: 3
 --- !u!114 &1060627449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1738,6 +1739,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SpawnerPrefabs
   <Bullet>k__BackingField: {fileID: 1307927974123800649, guid: e28b5744c9c38e043a310edb8f6d46b4, type: 3}
   <Asteroid>k__BackingField: {fileID: 8207766781003968305, guid: bc72ad307a225a946b0e1ba90e72ab4e, type: 3}
+  <AsteroidFragment>k__BackingField: {fileID: 8207766781003968305, guid: afe36e0dc4079184f870c37e4d49ffd7, type: 3}
   <UFO>k__BackingField: {fileID: 8665940895236888010, guid: 7df4d2a343d909f41b68010e5f69e315, type: 3}
 --- !u!114 &1060627452
 MonoBehaviour:

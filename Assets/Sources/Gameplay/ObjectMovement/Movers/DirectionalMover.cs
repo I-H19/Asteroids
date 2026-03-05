@@ -78,6 +78,8 @@ public class DirectionalMover : MonoBehaviour, IMover
             _rigidBody.linearVelocity = Vector2.zero;
         }
     }
+    public void SetPosition(Vector2 position) => _rigidBody.position = position;
+
     private void UpdateMovingDirection()
     {
         if (_isMoving && !_isBraking)

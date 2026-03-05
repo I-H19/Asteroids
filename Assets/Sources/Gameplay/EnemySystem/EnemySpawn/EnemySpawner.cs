@@ -7,6 +7,8 @@ public class EnemySpawner : MonoBehaviour, ISceneTickable
     private EnemyRegistry _enemiesRegistry;
 
     private EnemySpawnerSettings _enemySpawnerSettings;
+    private EnemySettings _enemySettings;
+    private IObjectResolver _resolver;
     private ScreenBoundsTracker _boundsTracker;
 
     private AsteroidFactory _asteroidFactory;
@@ -16,14 +18,17 @@ public class EnemySpawner : MonoBehaviour, ISceneTickable
     [Inject]
     public void Construct(IObjectResolver resolver, EnemySpawnerSettings enemySpawnerSettings,
         ScreenBoundsTrackerSettings screenBoundsTrackerSettings, AsteroidFactory asteroidFactory,
-        UfoFactory ufoFactory, EnemyRegistry enemiesRegistry)
+        UfoFactory ufoFactory, EnemyRegistry enemiesRegistry, EnemySettings enemySettings)
     {
         _enemiesRegistry = enemiesRegistry;
 
         _enemySpawnerSettings = enemySpawnerSettings;
+        _enemySettings = enemySettings;
+
+        _resolver = resolver;
 
         _boundsTracker = GetComponent<ScreenBoundsTracker>();
-        resolver.Inject(_boundsTracker);
+        _resolver.Inject(_boundsTracker);
         _boundsTracker.ChangeTrackingBounds(screenBoundsTrackerSettings.EnemyBoundsMultiplier);
 
         _asteroidFactory = asteroidFactory;
@@ -61,11 +66,24 @@ public class EnemySpawner : MonoBehaviour, ISceneTickable
         bool shouldSpawnAsteroid = ChooseAsteroid(asteroidSpawnChancePerSecond, totalSpawnChancePerSecond);
         Vector3 spawnPosition = _boundsTracker.GetRandomPointOnPerimeter();
 
-        IEnemy enemy = shouldSpawnAsteroid
-            ? _asteroidFactory.SpawnOne(spawnPosition)
-            : _ufoFactory.SpawnOne(spawnPosition);
+        IEnemy enemy;
+        if (shouldSpawnAsteroid)
+        {
+            IEnemy parentAsteroid = _asteroidFactory.SpawnOne(spawnPosition);
+            _enemiesRegistry.RegisterEnemy(parentAsteroid);
 
-        _enemiesRegistry.RegisterEnemy(enemy);
+            for (int i = 0; i != _enemySettings.AsteroidFragmentsNumber; i++)
+            {
+                IEnemy fragment = _asteroidFactory.SpawnFragment(spawnPosition, (Asteroid)parentAsteroid);
+                _enemiesRegistry.RegisterEnemy(fragment);
+            }
+        }
+        else
+        {
+            enemy = _ufoFactory.SpawnOne(spawnPosition);
+            _enemiesRegistry.RegisterEnemy(enemy);
+        }
+
     }
 
     private bool ChooseAsteroid(float asteroidSpawnChancePerSecond, float totalSpawnChancePerSecond)
