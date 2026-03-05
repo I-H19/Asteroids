@@ -2,18 +2,17 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(ScreenBoundsTracker))]
-public sealed class ScreenTeleporter : MonoBehaviour
+public sealed class ScreenTeleporter : MonoBehaviour, ISceneTickable
 {
     private Rigidbody2D _rigidbody;
     private ScreenBoundsTracker _boundsTracker;
 
-    private void Awake()
+    public void Init()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         _boundsTracker = GetComponent<ScreenBoundsTracker>();
     }
-
-    private void FixedUpdate()
+    public void Tick()
     {
         if (!_boundsTracker.IsOutOfBounds())
             return;

@@ -12,7 +12,7 @@ public class PlayerKeyboardController : MonoBehaviour
     private Laser _laser;
 
     [Inject]
-    private void Construct(SceneObjectHolder sceneObjectHolder, KeyboardMonitor keyboardMonitor, BulletSpawner bulletSpawner, Laser laser)
+    public void Construct(SceneObjectHolder sceneObjectHolder, KeyboardMonitor keyboardMonitor, BulletSpawner bulletSpawner, Laser laser)
     {
         _keyboardMonitor = keyboardMonitor;
         _playerMover = sceneObjectHolder.Player.GetComponent<InertialMover>();
@@ -21,14 +21,13 @@ public class PlayerKeyboardController : MonoBehaviour
         _laser = laser;
     }
 
-    private void Start() => KeyboardMonitorSubscribe();
-    private void Update()
+    public void Tick()
     {
         _playerMover.Move();
         _playerRotator.Rotate();
     }
     private void OnDestroy() => KeyboardMonitorUnsubscribe();
-    private void KeyboardMonitorSubscribe()
+    public void KeyboardMonitorSubscribe()
     {
         _keyboardMonitor.ForwardButtonDown += HandleForwardDown;
         _keyboardMonitor.ForwardButtonUp += HandleForwardUp;
@@ -47,8 +46,7 @@ public class PlayerKeyboardController : MonoBehaviour
 
         _keyboardMonitor.LaserButtonDown += HandleLaserDown;
     }
-
-    private void KeyboardMonitorUnsubscribe()
+    public void KeyboardMonitorUnsubscribe()
     {
         _keyboardMonitor.ForwardButtonDown -= HandleForwardDown;
         _keyboardMonitor.ForwardButtonUp -= HandleForwardUp;

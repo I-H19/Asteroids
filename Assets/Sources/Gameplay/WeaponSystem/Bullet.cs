@@ -7,8 +7,9 @@ using UnityEngine;
 [RequireComponent(typeof(DirectionalMover))]
 public class Bullet : MonoBehaviour
 {
+    public Action<Bullet> Destroyed;
 
-    [SerializeField] private DirectionalMoverSettings _moverSettings = new();
+    private DirectionalMoverSettings _moverSettings = new();
     private DirectionalMover _mover;
     private PlayerDamageSource _damageSource;
     private ScreenBoundsTracker _boundsTracker;
@@ -31,19 +32,18 @@ public class Bullet : MonoBehaviour
     }
 
     public void OnHit() => Destroy(gameObject);
-
-    internal void Init(float bulletSpeed, object bulletDamage)
+    public void Tick()
     {
-        throw new NotImplementedException();
-    }
+        _damageSource.Tick();
 
-    private void FixedUpdate()
-    {
         if (_boundsTracker.IsOutOfBounds())
             OnHit();
         else
             _mover.Move();
     }
-
-    private void OnDestroy() => _damageSource.TargetDamaged -= OnHit;
+    private void OnDestroy()
+    {
+        Destroyed?.Invoke(this);
+        _damageSource.TargetDamaged -= OnHit;
+    }
 }

@@ -16,16 +16,16 @@ public class PlayerDamageSource : MonoBehaviour, IDamageSource
 
     public void ChangeDamage(float damage) => DamageCount = damage;
     public void ChangeType(bool isLaser) => _isLaser = isLaser;
-    private void Update()
+    public void Tick()
     {
-        var origin = (Vector2)transform.position;
-        var laserDirection = (Vector2)transform.up;
-        var bulletDirection = (Vector2)transform.forward;
+        Vector2 origin = (Vector2)transform.position;
+        Vector2 laserDirection = (Vector2)transform.up;
+        Vector2 bulletDirection = (Vector2)transform.forward;
 
         if (_isLaser)
         {
             RaycastHit2D[] laserHits = Physics2D.RaycastAll(origin, laserDirection);
-            foreach (var hit in laserHits)
+            foreach (RaycastHit2D hit in laserHits)
                 TryDamage(hit);
         }
         else

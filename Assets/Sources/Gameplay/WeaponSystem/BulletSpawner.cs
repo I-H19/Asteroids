@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -12,6 +13,8 @@ public class BulletSpawner : MonoBehaviour
     private bool _isSpawning;
     private float _nextShotTime;
     private float _bulletDamage;
+
+    private List<Bullet> _bullets = new();
 
     [Inject]
     public void Construct(IObjectResolver resolver, PrefabHolder spawnerPrefabs, PlayerCombatSettings playerCombatSettings)
@@ -28,10 +31,11 @@ public class BulletSpawner : MonoBehaviour
     public void StartSpawning() => _isSpawning = true;
     public void StopSpawning() => _isSpawning = false;
 
-    private void Update()
+    public void Tick()
     {
-        if (!_isSpawning)
-            return;
+        foreach (Bullet bullet in _bullets) bullet.Tick();
+
+        if (!_isSpawning) return;
 
         if (Time.time >= _nextShotTime)
         {
@@ -43,9 +47,18 @@ public class BulletSpawner : MonoBehaviour
     {
         GameObject bulletTemplate = _resolver.Instantiate(_bulletTemplate, transform.position, transform.rotation);
 
-        if (bulletTemplate.TryGetComponent<Bullet>(out var bullet))
+        if (bulletTemplate.TryGetComponent<Bullet>(out Bullet bullet))
         {
             bullet.Init(_bulletSpeed, _bulletDamage);
+            _bullets.Add(bullet);
+
+            bullet.Destroyed += OnBulletDestroy;
         }
+    }
+
+    private void OnBulletDestroy(Bullet bullet)
+    {
+        _bullets.Remove(bullet);
+        bullet.Destroyed -= OnBulletDestroy;
     }
 }

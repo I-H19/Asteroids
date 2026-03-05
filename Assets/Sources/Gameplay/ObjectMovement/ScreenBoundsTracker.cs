@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using VContainer;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public sealed class ScreenBoundsTracker : MonoBehaviour
+public class ScreenBoundsTracker : MonoBehaviour
 {
-    private float _defaultBoundsMultiplier = 1f;
+    private readonly float _defaultBoundsMultiplier = 1f;
 
     private Camera _camera;
     private Rigidbody2D _rigidbody;
@@ -55,5 +56,13 @@ public sealed class ScreenBoundsTracker : MonoBehaviour
     {
         Vector2 position = _rigidbody.position;
         return _screenBounds.Wrap(position);
+    }
+
+    public Vector3 GetRandomPointOnPerimeter()
+    {
+        if (_screenBounds == null) throw new NullReferenceException();
+        Vector2 randomVector2 = _screenBounds.GetRandomPointOnPerimeter();
+        Vector3 randomVector3 = new(randomVector2.x, randomVector2.y, 0);
+        return randomVector3;
     }
 }

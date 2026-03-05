@@ -20,7 +20,7 @@ public class KeyboardMonitor : MonoBehaviour
 
     public Action LaserButtonDown;
 
-    private void Update()
+    public void Tick()
     {
         if(Input.GetKeyDown(KeyCode.W)) ForwardButtonDown?.Invoke();
         if (Input.GetKeyUp(KeyCode.W)) ForwardButtonUp?.Invoke();

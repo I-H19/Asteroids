@@ -8,7 +8,12 @@ public class Laser : MonoBehaviour
     private GameObject _laserVisual;
 
     public int MaxChargesNumber { get; private set; }
-    public int ChargesCount { get; private set; } = 4;
+
+    private int _startCharges;
+
+    public int TotalAmmo { get; private set; } = 4;
+    public float ReloadingTime { get; private set; } = 0;
+    public float ShootingCooldown { get; private set; } = 0;
 
     private float _operatingTime;
     private float _endOfOperatingTime;
@@ -22,20 +27,24 @@ public class Laser : MonoBehaviour
 
 
     [Inject]
-    public void Construct(PlayerCombatSettings playerCombatSettings, SceneObjectHolder sceneObjectHolder)
+    public void Construct(PlayerCombatSettings combatSettings, SceneObjectHolder sceneObjectHolder)
     {
         _laserVisual = sceneObjectHolder.LaserVisual;
         _damageSource = GetComponent<PlayerDamageSource>();
 
-        _damageSource.ChangeDamage(playerCombatSettings.LaserDamage);
+        _damageSource.ChangeDamage(combatSettings.LaserDamage);
         _damageSource.ChangeType(true);
 
         SetLaserActive(false);
 
-        MaxChargesNumber = playerCombatSettings.MaxLaserCharge;
-        _reloadingChargeTime = playerCombatSettings.LaserChargeReloadingTime;
-        _shootingCooldown = playerCombatSettings.LaserShootCooldown;
-        _operatingTime = playerCombatSettings.LaserOperatingTime;
+
+        MaxChargesNumber = combatSettings.MaxLaserCharge;
+        
+        _startCharges = combatSettings.StartLaserCharges;
+
+        _reloadingChargeTime = combatSettings.LaserChargeReloadingTime;
+        _shootingCooldown = combatSettings.LaserShootCooldown;
+        _operatingTime = combatSettings.LaserOperatingTime;
 
         _nextShootTime = Time.time;
         _nextChargeTime = Time.time;
@@ -43,28 +52,48 @@ public class Laser : MonoBehaviour
 
     public void TryShoot()
     {
-        if (Time.time <= _nextShootTime || ChargesCount == 0 || _isShooting) return;
-        
+        if (Time.time <= _nextShootTime || TotalAmmo == 0 || _isShooting) return;
+
         SetLaserActive(true);
-        ChargesCount--;
+        TotalAmmo--;
         _nextShootTime = Time.time + _shootingCooldown;
     }
-    private void Update()
-    {        
-        if(_isShooting && Time.time > _endOfOperatingTime) SetLaserActive(false);
+    public void ResetParameters()
+    {
+        SetLaserActive(false);
 
-        if (ChargesCount == MaxChargesNumber) return;
-        if (ChargesCount > MaxChargesNumber)
+        TotalAmmo = _startCharges;
+        _nextShootTime = Time.time;
+        _nextChargeTime = Time.time;
+    }
+    public void Tick()
+    {
+        if (_isShooting) _damageSource.Tick();
+
+        float reloadingTime = _nextChargeTime - Time.time;
+        float shootingCooldown = _nextShootTime - Time.time;
+
+        if (shootingCooldown < 0) ShootingCooldown = 0;
+        else ShootingCooldown = shootingCooldown;
+
+        if (reloadingTime < 0) ReloadingTime = 0;
+        else ReloadingTime = reloadingTime;
+
+        if (_isShooting && Time.time > _endOfOperatingTime) SetLaserActive(false);
+
+        if (TotalAmmo == MaxChargesNumber) return;
+        if (TotalAmmo > MaxChargesNumber)
         {
-            ChargesCount = MaxChargesNumber;
+            TotalAmmo = MaxChargesNumber;
             return;
         }
 
-        if(Time.time > _nextChargeTime)
+        if (Time.time > _nextChargeTime)
         {
             _nextChargeTime = Time.time + _reloadingChargeTime;
-            ChargesCount++;
+            TotalAmmo++;
         }
+
     }
     private void SetLaserActive(bool isActive)
     {

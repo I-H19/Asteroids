@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.InputSystem;
-using VContainer;
 
 public class InertialRotator : MonoBehaviour, IRotator
 {
@@ -12,10 +10,12 @@ public class InertialRotator : MonoBehaviour, IRotator
     private float _angularDeceleration;
     private float _stopEpsilon;
 
-    public float CurrentAngularSpeed { get; private set; }
+    public float CurrentAngle { get; private set; }
+
 
     private bool _rotateLeft;
     private bool _rotateRight;
+    private bool _enabled = true;
 
     public void Init(Rigidbody2D rigidBody, InertialRotationSettings rotationSettings)
     {
@@ -38,6 +38,8 @@ public class InertialRotator : MonoBehaviour, IRotator
     }
     public void Rotate()
     {
+        if(!_enabled) return;  
+
         float deltaTime = Time.fixedDeltaTime;
         float angularVelocity = _rigidBody.angularVelocity;
 
@@ -69,9 +71,14 @@ public class InertialRotator : MonoBehaviour, IRotator
             angularVelocity = 0f;
 
         _rigidBody.angularVelocity = angularVelocity;
-        CurrentAngularSpeed = angularVelocity;
+        CurrentAngle = _rigidBody.rotation;
     }
 
+    public void SetEnabled(bool enabled)
+    {
+        _enabled = enabled;
+        if (!_enabled) _rigidBody.angularVelocity = 0f;
+    }
     private void UpdateDirection()
     {
         if (_rotateLeft && !_rotateRight)

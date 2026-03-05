@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using VContainer;
+﻿using System;
+using UnityEngine;
 
 public class DirectionalMover : MonoBehaviour, IMover
 {
@@ -12,11 +12,17 @@ public class DirectionalMover : MonoBehaviour, IMover
 
     private Rigidbody2D _rigidBody;
     private float _moveSpeed;
+    private bool _enabled = true;
 
-    public void Init(DirectionalMoverSettings moverSettings, Rigidbody2D rigidbody)
+    public void Init(IMoverSettings moverSettings, Rigidbody2D rigidbody)
     {
+        if (moverSettings is not DirectionalMoverSettings)
+            throw new Exception("Incorrect mover settings");
+
+        DirectionalMoverSettings directionalMoverSettings = (DirectionalMoverSettings)moverSettings;
+
         _rigidBody = rigidbody;
-        _moveSpeed = moverSettings.MovingSpeed;
+        _moveSpeed = directionalMoverSettings.MovingSpeed;
 
         ObjectTransform = rigidbody.transform;
         CurrentSpeed = 0f;
@@ -24,6 +30,8 @@ public class DirectionalMover : MonoBehaviour, IMover
 
     public void Move()
     {
+        if (!_enabled) return;
+
         Vector2 forward = ObjectTransform.up;
 
         float targetSpeed = 0f;
@@ -58,7 +66,18 @@ public class DirectionalMover : MonoBehaviour, IMover
         _isBraking = value;
         UpdateMovingDirection();
     }
+    public void SetEnabled(bool enabled)
+    {
+        _enabled = enabled;
+        if (!_enabled)
+        {
+            _isMoving = false;
+            _isBraking = false;
+            MovingDirection = MovingDirection.None;
 
+            _rigidBody.linearVelocity = Vector2.zero;
+        }
+    }
     private void UpdateMovingDirection()
     {
         if (_isMoving && !_isBraking)

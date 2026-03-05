@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [Serializable]
-public class InertialMoverSettings
+public class InertialMoverSettings : IMoverSettings
 {
     [field: SerializeField] public float MaxForwardSpeed { get; private set; } = 200f;
     [field: SerializeField] public float ForwardAcceleration { get; private set; } = 600f;

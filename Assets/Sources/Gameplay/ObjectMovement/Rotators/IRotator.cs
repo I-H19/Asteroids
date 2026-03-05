@@ -1,6 +1,6 @@
 ﻿public interface IRotator
 {
+    public float CurrentAngle { get; }
     public void Rotate();
-    public void SetRotateLeft(bool value);
-    public void SetRotateRight(bool value);
+    public void SetEnabled(bool enabled);
 }

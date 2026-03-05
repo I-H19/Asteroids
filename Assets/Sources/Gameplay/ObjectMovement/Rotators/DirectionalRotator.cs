@@ -1,14 +1,18 @@
-﻿using UnityEngine;
-using VContainer;
+﻿using System;
+using UnityEngine;
 
 public class DirectionalRotator : MonoBehaviour, IRotator
 {
     public float CurrentAngle { get; private set; }
 
+    public Action AngleChanged;
+
     private Rigidbody2D _rigidBody;
+    
     private float _rotationSpeed; 
     private bool _rotateLeft;
     private bool _rotateRight;
+    private bool _enabled = true;
 
     public void Init(Rigidbody2D rigidBody, DirectionalRotationSettings rotationSettings)
     {
@@ -22,6 +26,8 @@ public class DirectionalRotator : MonoBehaviour, IRotator
 
     public void Rotate()
     {
+        if(!_enabled) return;
+
         float deltaTime = Time.fixedDeltaTime;
 
         float direction = 0f;
@@ -35,6 +41,19 @@ public class DirectionalRotator : MonoBehaviour, IRotator
             _rigidBody.rotation + direction * _rotationSpeed * deltaTime
         );
 
-        CurrentAngle = _rigidBody.rotation;
+        CurrentAngle = transform.eulerAngles.z;
+        AngleChanged?.Invoke();
     }
+
+    public void SetEnabled(bool enabled)
+    {
+        _enabled = enabled;
+        if (!_enabled)
+        {
+            _rigidBody.angularVelocity = 0f;
+            _rotateLeft = false;
+            _rotateRight = false;
+        }
+    }
+
 }

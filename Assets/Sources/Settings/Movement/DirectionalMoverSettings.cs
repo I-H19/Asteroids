@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [Serializable]
-public class DirectionalMoverSettings
+public class DirectionalMoverSettings : IMoverSettings
 {
     [field: SerializeField] public float MovingSpeed { get; private set; }
 
