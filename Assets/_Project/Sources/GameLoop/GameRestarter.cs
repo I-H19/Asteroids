@@ -1,7 +1,6 @@
-using UnityEngine;
 using VContainer;
 
-public class GameRestarter : MonoBehaviour
+public class GameRestarter
 {
     private GamePause _gamePause;
     private EnemyRegistry _enemiesRegistry;

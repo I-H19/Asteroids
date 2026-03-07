@@ -3,8 +3,9 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-public class BulletSpawner : MonoBehaviour
+public class BulletSpawner
 {
+    private Player _player;
     private GameObject _bulletTemplate;
     private float _bulletCooldown;
     private float _bulletSpeed;
@@ -17,8 +18,9 @@ public class BulletSpawner : MonoBehaviour
     private List<Bullet> _bullets = new();
 
     [Inject]
-    public void Construct(IObjectResolver resolver, PrefabHolder spawnerPrefabs, PlayerCombatSettings playerCombatSettings)
+    public void Construct(IObjectResolver resolver, PrefabHolder spawnerPrefabs, PlayerCombatSettings playerCombatSettings, Player player)
     {
+        _player = player;
         _resolver = resolver;
         _bulletTemplate = spawnerPrefabs.Bullet;
         _bulletCooldown = playerCombatSettings.BulletCooldown;
@@ -45,7 +47,7 @@ public class BulletSpawner : MonoBehaviour
     }
     private void SpawnBullet()
     {
-        GameObject bulletTemplate = _resolver.Instantiate(_bulletTemplate, transform.position, transform.rotation);
+        GameObject bulletTemplate = _resolver.Instantiate(_bulletTemplate, _player.transform.position, _player.transform.rotation);
 
         if (bulletTemplate.TryGetComponent<Bullet>(out Bullet bullet))
         {

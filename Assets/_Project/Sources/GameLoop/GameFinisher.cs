@@ -5,6 +5,7 @@ public class GameFinisher : MonoBehaviour
 {
     private UIElementsHolder _uiElementsHolder;
     private GamePause _gamePause;
+    private Player _player;
 
     [Inject]
     public void Construct(UIElementsHolder uIElementsHolder, GamePause gamePause, Player player)
@@ -13,6 +14,8 @@ public class GameFinisher : MonoBehaviour
         _gamePause = gamePause;
 
         player.Death += Finish;
+        
+        _player = player;
     }
 
     public void Finish()
@@ -20,4 +23,6 @@ public class GameFinisher : MonoBehaviour
         _uiElementsHolder.RestartGamePanel.SetActive(true);
         _gamePause.SetPause(true);
     }
+
+    private void OnDestroy() => _player.Death -= Finish;
 }

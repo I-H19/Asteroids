@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class KeyboardMonitor : MonoBehaviour
+public class KeyboardMonitor
 {
     public Action ForwardButtonDown;
     public Action ForwardButtonUp;

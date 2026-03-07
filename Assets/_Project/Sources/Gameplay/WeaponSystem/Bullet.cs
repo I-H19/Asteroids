@@ -9,7 +9,7 @@ public class Bullet : MonoBehaviour
 {
     public Action<Bullet> Destroyed;
 
-    private DirectionalMoverSettings _moverSettings = new();
+    private readonly DirectionalMoverSettings _moverSettings = new();
     private DirectionalMover _mover;
     private PlayerDamageSource _damageSource;
     private ScreenBoundsTracker _boundsTracker;

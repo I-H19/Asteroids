@@ -31,10 +31,8 @@ public class PlayerMovementData : MonoBehaviour
         _playerMover.SpeedChanged -= OnSpeedChanged;
         _playerRotator.AngleChanged -= OnAngleChanged;
     }
-    private void OnDestroy()
-    {
-        Unsubscribe();
-    }
+    public void OnDestroy() => Unsubscribe();
+    
     private void OnAngleChanged()
     {
         CurrentAngle = _playerRotator.CurrentAngle;
@@ -45,4 +43,5 @@ public class PlayerMovementData : MonoBehaviour
         CurrentSpeed = _playerMover.CurrentSpeed;
         Changed?.Invoke();
     }
+
 }

@@ -5,18 +5,18 @@ using VContainer.Unity;
 public class SceneScope : LifetimeScope
 {
     [Header("Core")]
-    [SerializeField] private KeyboardMonitor _keyboardMonitor;
     [SerializeField] private Camera _camera;
+    
+    [Header("GameFlow")]
+    [SerializeField] private GameFinisher _gameFinisher;
 
     [Header("Player")]
     [SerializeField] private Player _player;
     [SerializeField] private PlayerKeyboardController _playerKeyboardController;
     [SerializeField] private PlayerMovementSettings _playerMovementSettings;
     [SerializeField] private PlayerCombatSettings _playerCombatSettings;
-    [SerializeField] private PlayerMovementData _playerMovementData;
-    [SerializeField] private PlayerScore _playerScore;
-    [SerializeField] private BulletSpawner _bulletSpawner;
     [SerializeField] private Laser _playerLaser;
+    [SerializeField] private PlayerMovementData _playerMovementData;
 
     [Header("Gameplay")]
     [SerializeField] private PrefabHolder _prefabHolder;
@@ -24,18 +24,12 @@ public class SceneScope : LifetimeScope
     [SerializeField] private ScreenBoundsTrackerSettings _screenBoundsTrackerSettings;
     [SerializeField] private EnemySpawnerSettings _enemySpawnerSettings;
     [SerializeField] private EnemySettings _enemySettings;
-    [SerializeField] private EnemyDriver _enemyTickDriver;
     [SerializeField] private EnemySpawner _enemySpawner;
     [SerializeField] private EnemyRegistry _enemyRegistry;
 
     [Header("UI")]
     [SerializeField] private UIElementsHolder _uiElementsHolder;
     [SerializeField] private UIElementsUpdater _uiElementsUpdater;
-
-    [Header("Game Flow")]
-    [SerializeField] private GameRestarter _gameRestarter;
-    [SerializeField] private GameFinisher _gameFinisher;
-    [SerializeField] private GamePause _gamePause;
 
     protected override void Configure(IContainerBuilder builder)
     {
@@ -56,8 +50,9 @@ public class SceneScope : LifetimeScope
 
     private void RegisterCore(IContainerBuilder builder)
     {
-        builder.RegisterComponent(_keyboardMonitor);
         builder.RegisterComponent(_camera);
+
+        builder.Register<KeyboardMonitor>(Lifetime.Singleton);
     }
 
     private void RegisterPlayer(IContainerBuilder builder)
@@ -67,9 +62,10 @@ public class SceneScope : LifetimeScope
         builder.RegisterComponent(_playerMovementSettings);
         builder.RegisterComponent(_playerCombatSettings);
         builder.RegisterComponent(_playerMovementData);
-        builder.RegisterComponent(_playerScore);
-        builder.RegisterComponent(_bulletSpawner);
         builder.RegisterComponent(_playerLaser);
+
+        builder.Register<BulletSpawner>(Lifetime.Singleton);
+        builder.Register<PlayerScore>(Lifetime.Singleton);
 
         builder.RegisterInstance(_playerMovementSettings.MoverSettings);
         builder.RegisterInstance(_playerMovementSettings.RotationSettings);
@@ -82,9 +78,10 @@ public class SceneScope : LifetimeScope
         builder.RegisterComponent(_screenBoundsTrackerSettings);
         builder.RegisterComponent(_enemySpawnerSettings);
         builder.RegisterComponent(_enemySettings);
-        builder.RegisterComponent(_enemyTickDriver);
         builder.RegisterComponent(_enemySpawner);
         builder.RegisterComponent(_enemyRegistry);
+
+        builder.Register<EnemyDriver>(Lifetime.Singleton);
     }
 
     private void RegisterUI(IContainerBuilder builder)
@@ -95,9 +92,9 @@ public class SceneScope : LifetimeScope
 
     private void RegisterGameFlow(IContainerBuilder builder)
     {
-        builder.RegisterComponent(_gameRestarter);
         builder.RegisterComponent(_gameFinisher);
-        builder.RegisterComponent(_gamePause);
+        builder.Register<GameRestarter>(Lifetime.Singleton);
+        builder.Register<GamePause>(Lifetime.Singleton);
     }
 
     private static void RegisterFactories(IContainerBuilder builder)

@@ -14,5 +14,4 @@ public class PlayerLife : MonoBehaviour, IDamageable
     }
 
     public void PlayerKill() => OnDeath?.Invoke();
-
 }

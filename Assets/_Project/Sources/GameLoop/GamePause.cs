@@ -1,7 +1,6 @@
-using UnityEngine;
 using VContainer;
 
-public class GamePause : MonoBehaviour
+public class GamePause
 {
     private BulletSpawner _bulletSpawner;
     private EnemyDriver _enemyDriver;

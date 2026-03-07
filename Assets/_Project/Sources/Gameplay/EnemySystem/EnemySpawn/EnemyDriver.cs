@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-using VContainer;
+﻿using VContainer;
 
-public class EnemyDriver : MonoBehaviour, ISceneTickable
+public class EnemyDriver : ISceneTickable
 {
     private EnemyRegistry _enemiesRegistry;
 

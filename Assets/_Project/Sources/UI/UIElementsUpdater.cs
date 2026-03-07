@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using VContainer;
@@ -39,10 +38,7 @@ public class UIElementsUpdater : MonoBehaviour
         _playerScore.Changed -= OnScoreChanged;
     }
 
-    private void OnDestroy()
-    {
-        Unsubscribe();
-    }
+    private void OnDestroy() => Unsubscribe();
     private void OnScoreChanged()
     {
         _textScore.text = $"GameScore: {_playerScore.Score}";

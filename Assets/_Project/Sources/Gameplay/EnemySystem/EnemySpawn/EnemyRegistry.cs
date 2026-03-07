@@ -10,10 +10,7 @@ public class EnemyRegistry : MonoBehaviour
     public int AliveCount { get; private set; }
 
     [Inject]
-    public void Construct(PlayerScore playerScore)
-    {
-        _playerScore = playerScore;
-    }
+    public void Construct(PlayerScore playerScore) => _playerScore = playerScore;
     public void RegisterEnemy(IEnemy enemy)
     {
         Component enemyComponent = (Component)enemy;
@@ -54,10 +51,7 @@ public class EnemyRegistry : MonoBehaviour
         AliveEnemies.Clear();
         AliveCount = 0;
     }
-    private void OnDestroy()
-    {
-        Unsubscribe();
-    }
+    private void OnDestroy() => Unsubscribe();
     private void Unsubscribe()
     {
         foreach (IEnemy enemy in AliveEnemies)
