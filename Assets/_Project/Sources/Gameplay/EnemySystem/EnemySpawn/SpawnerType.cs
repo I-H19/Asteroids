@@ -1,5 +1,8 @@
-﻿public enum SpawnerType
+﻿namespace Asteroids.Gameplay.EnemySystem
 {
-    UFO, 
-    Asteroid
+    public enum SpawnerType
+    {
+        UFO,
+        Asteroid
+    }
 }

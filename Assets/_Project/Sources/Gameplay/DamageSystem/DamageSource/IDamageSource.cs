@@ -1,5 +1,8 @@
-﻿public interface IDamageSource
+﻿namespace Asteroids.Gameplay.DamageSystem
 {
-    public float DamageCount { get; }
-    public void Damage(IDamageable target);
+    public interface IDamageSource
+    {
+        public float DamageCount { get; }
+        public void Damage(IDamageable target);
+    }
 }

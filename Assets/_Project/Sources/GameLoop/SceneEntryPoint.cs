@@ -1,40 +1,46 @@
-﻿using VContainer;
+﻿using Asteroids.Gameplay;
+using Asteroids.Gameplay.ObjectMovement;
+using Asteroids.PlayerInput;
+using Asteroids.Settings;
+using VContainer;
 using VContainer.Unity;
 
-public class SceneEntryPoint : IInitializable
+namespace Asteroids.GameLoop
 {
-    private Player _player;
-    private PlayerMovementSettings _playerMovementSettings;
-    private ScreenBoundsTrackerSettings _screenBoundsTrackerSettings;
-    private PlayerKeyboardController _playerKeyboardController;
-
-    [Inject]
-    public void Construct(SceneObjectHolder sceneObjectHolder, PlayerMovementSettings playerMovementSettings, ScreenBoundsTrackerSettings screenBoundsTrackerSettings, PlayerKeyboardController playerKeyboardController)
+    public class SceneEntryPoint : IInitializable
     {
-        _player = sceneObjectHolder.Player.GetComponent<Player>();
-        _playerMovementSettings = playerMovementSettings;
-        _screenBoundsTrackerSettings = screenBoundsTrackerSettings;
-        _playerKeyboardController = playerKeyboardController;
-    }
-    public void Initialize()
-    {
-        InitializePlayer();
-    }
+        private Player _player;
+        private PlayerMovementSettings _playerMovementSettings;
+        private ScreenBoundsTrackerSettings _screenBoundsTrackerSettings;
+        private PlayerKeyboardController _playerKeyboardController;
 
-    private void InitializePlayer()
-    {
-        _player.Init();
+        [Inject]
+        public void Construct(SceneObjectHolder sceneObjectHolder, PlayerMovementSettings playerMovementSettings, ScreenBoundsTrackerSettings screenBoundsTrackerSettings, PlayerKeyboardController playerKeyboardController)
+        {
+            _player = sceneObjectHolder.Player.GetComponent<Player>();
+            _playerMovementSettings = playerMovementSettings;
+            _screenBoundsTrackerSettings = screenBoundsTrackerSettings;
+            _playerKeyboardController = playerKeyboardController;
+        }
+        public void Initialize()
+        {
+            InitializePlayer();
+        }
 
-        DirectionalRotator directionalRotator = _player.DirectionalRotatorTemplate;
-        InertialMover inertialMover = _player.InertialMoverTemplate;
+        private void InitializePlayer()
+        {
+            _player.Init();
 
-        directionalRotator.Init(_player.RigidBodyTemplate, _playerMovementSettings.RotationSettings);
-        inertialMover.Init(_playerMovementSettings.MoverSettings, _player.RigidBodyTemplate);
+            DirectionalRotator directionalRotator = _player.DirectionalRotatorTemplate;
+            InertialMover inertialMover = _player.InertialMoverTemplate;
 
-        ScreenBoundsTracker _playerScreenBoundsTracker = _player.ScreenBoundsTrackerTemplate;
-        _playerScreenBoundsTracker.ChangeTrackingBounds(_screenBoundsTrackerSettings.PlayerBoundsMultiplier);
+            directionalRotator.Init(_player.RigidBodyTemplate, _playerMovementSettings.RotationSettings);
+            inertialMover.Init(_playerMovementSettings.MoverSettings, _player.RigidBodyTemplate);
 
-        _playerKeyboardController.KeyboardMonitorSubscribe();
+            ScreenBoundsTracker _playerScreenBoundsTracker = _player.ScreenBoundsTrackerTemplate;
+            _playerScreenBoundsTracker.ChangeTrackingBounds(_screenBoundsTrackerSettings.PlayerBoundsMultiplier);
+
+            _playerKeyboardController.KeyboardMonitorSubscribe();
+        }
     }
 }
-

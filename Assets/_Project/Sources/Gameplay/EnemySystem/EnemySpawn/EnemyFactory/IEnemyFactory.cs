@@ -1,6 +1,9 @@
 using UnityEngine;
 
-public interface IEnemyFactory
+namespace Asteroids.Gameplay.EnemySystem
 {
-    public IEnemy SpawnOne(Vector3 position);
+    public interface IEnemyFactory
+    {
+        public IEnemy SpawnOne(Vector3 position);
+    }
 }

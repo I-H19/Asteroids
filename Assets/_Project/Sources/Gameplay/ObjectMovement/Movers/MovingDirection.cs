@@ -1,6 +1,9 @@
-﻿public enum MovingDirection
+﻿namespace Asteroids.Gameplay.ObjectMovement
 {
-    Acceleration,
-    Bracking,
-    None
+    public enum MovingDirection
+    {
+        Acceleration,
+        Bracking,
+        None
+    }
 }

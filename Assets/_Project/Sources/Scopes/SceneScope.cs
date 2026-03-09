@@ -1,105 +1,115 @@
+using Asteroids.GameLoop;
+using Asteroids.Gameplay;
+using Asteroids.Gameplay.EnemySystem;
+using Asteroids.Gameplay.WeaponSystem;
+using Asteroids.PlayerInput;
+using Asteroids.Settings;
+using Asteroids.UI;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-public class SceneScope : LifetimeScope
+namespace Asteroids.Scopes
 {
-    [Header("Core")]
-    [SerializeField] private Camera _camera;
-    
-    [Header("GameFlow")]
-    [SerializeField] private GameFinisher _gameFinisher;
-
-    [Header("Player")]
-    [SerializeField] private Player _player;
-    [SerializeField] private PlayerKeyboardController _playerKeyboardController;
-    [SerializeField] private PlayerMovementSettings _playerMovementSettings;
-    [SerializeField] private PlayerCombatSettings _playerCombatSettings;
-    [SerializeField] private Laser _playerLaser;
-    [SerializeField] private PlayerMovementData _playerMovementData;
-
-    [Header("Gameplay")]
-    [SerializeField] private PrefabHolder _prefabHolder;
-    [SerializeField] private SceneObjectHolder _sceneObjectHolder;
-    [SerializeField] private ScreenBoundsTrackerSettings _screenBoundsTrackerSettings;
-    [SerializeField] private EnemySpawnerSettings _enemySpawnerSettings;
-    [SerializeField] private EnemySettings _enemySettings;
-    [SerializeField] private EnemySpawner _enemySpawner;
-    [SerializeField] private EnemyRegistry _enemyRegistry;
-
-    [Header("UI")]
-    [SerializeField] private UIElementsHolder _uiElementsHolder;
-    [SerializeField] private UIElementsUpdater _uiElementsUpdater;
-
-    protected override void Configure(IContainerBuilder builder)
+    public class SceneScope : LifetimeScope
     {
-        RegisterEntryPoints(builder);
-        RegisterCore(builder);
-        RegisterPlayer(builder);
-        RegisterGameplay(builder);
-        RegisterUI(builder);
-        RegisterGameFlow(builder);
-        RegisterFactories(builder);
-    }
+        [Header("Core")]
+        [SerializeField] private Camera _camera;
 
-    private void RegisterEntryPoints(IContainerBuilder builder)
-    {
-        builder.RegisterEntryPoint<SceneEntryPoint>();
-        builder.RegisterEntryPoint<SceneTickDriver>().AsSelf();
-    }
+        [Header("GameFlow")]
+        [SerializeField] private GameFinisher _gameFinisher;
 
-    private void RegisterCore(IContainerBuilder builder)
-    {
-        builder.RegisterComponent(_camera);
+        [Header("Player")]
+        [SerializeField] private Player _player;
+        [SerializeField] private PlayerKeyboardController _playerKeyboardController;
+        [SerializeField] private PlayerMovementSettings _playerMovementSettings;
+        [SerializeField] private PlayerCombatSettings _playerCombatSettings;
+        [SerializeField] private Laser _playerLaser;
+        [SerializeField] private PlayerMovementData _playerMovementData;
 
-        builder.Register<KeyboardMonitor>(Lifetime.Singleton);
-    }
+        [Header("Gameplay")]
+        [SerializeField] private PrefabHolder _prefabHolder;
+        [SerializeField] private SceneObjectHolder _sceneObjectHolder;
+        [SerializeField] private ScreenBoundsTrackerSettings _screenBoundsTrackerSettings;
+        [SerializeField] private EnemySpawnerSettings _enemySpawnerSettings;
+        [SerializeField] private EnemySettings _enemySettings;
+        [SerializeField] private EnemySpawner _enemySpawner;
+        [SerializeField] private EnemyRegistry _enemyRegistry;
 
-    private void RegisterPlayer(IContainerBuilder builder)
-    {
-        builder.RegisterComponent(_player);
-        builder.RegisterComponent(_playerKeyboardController);
-        builder.RegisterComponent(_playerMovementSettings);
-        builder.RegisterComponent(_playerCombatSettings);
-        builder.RegisterComponent(_playerMovementData);
-        builder.RegisterComponent(_playerLaser);
+        [Header("UI")]
+        [SerializeField] private UIElementsHolder _uiElementsHolder;
+        [SerializeField] private UIElementsUpdater _uiElementsUpdater;
 
-        builder.Register<BulletSpawner>(Lifetime.Singleton);
-        builder.Register<PlayerScore>(Lifetime.Singleton);
+        protected override void Configure(IContainerBuilder builder)
+        {
+            RegisterEntryPoints(builder);
+            RegisterCore(builder);
+            RegisterPlayer(builder);
+            RegisterGameplay(builder);
+            RegisterUI(builder);
+            RegisterGameFlow(builder);
+            RegisterFactories(builder);
+        }
 
-        builder.RegisterInstance(_playerMovementSettings.MoverSettings);
-        builder.RegisterInstance(_playerMovementSettings.RotationSettings);
-    }
+        private void RegisterEntryPoints(IContainerBuilder builder)
+        {
+            builder.RegisterEntryPoint<SceneEntryPoint>();
+            builder.RegisterEntryPoint<SceneTickDriver>().AsSelf();
+        }
 
-    private void RegisterGameplay(IContainerBuilder builder)
-    {
-        builder.RegisterComponent(_prefabHolder);
-        builder.RegisterComponent(_sceneObjectHolder);
-        builder.RegisterComponent(_screenBoundsTrackerSettings);
-        builder.RegisterComponent(_enemySpawnerSettings);
-        builder.RegisterComponent(_enemySettings);
-        builder.RegisterComponent(_enemySpawner);
-        builder.RegisterComponent(_enemyRegistry);
+        private void RegisterCore(IContainerBuilder builder)
+        {
+            builder.RegisterComponent(_camera);
 
-        builder.Register<EnemyDriver>(Lifetime.Singleton);
-    }
+            builder.Register<KeyboardMonitor>(Lifetime.Singleton);
+        }
 
-    private void RegisterUI(IContainerBuilder builder)
-    {
-        builder.RegisterComponent(_uiElementsHolder);
-        builder.RegisterComponent(_uiElementsUpdater);
-    }
+        private void RegisterPlayer(IContainerBuilder builder)
+        {
+            builder.RegisterComponent(_player);
+            builder.RegisterComponent(_playerKeyboardController);
+            builder.RegisterComponent(_playerMovementSettings);
+            builder.RegisterComponent(_playerCombatSettings);
+            builder.RegisterComponent(_playerMovementData);
+            builder.RegisterComponent(_playerLaser);
 
-    private void RegisterGameFlow(IContainerBuilder builder)
-    {
-        builder.RegisterComponent(_gameFinisher);
-        builder.Register<GameRestarter>(Lifetime.Singleton);
-        builder.Register<GamePause>(Lifetime.Singleton);
-    }
+            builder.Register<BulletSpawner>(Lifetime.Singleton);
+            builder.Register<PlayerScore>(Lifetime.Singleton);
 
-    private static void RegisterFactories(IContainerBuilder builder)
-    {
-        builder.Register<AsteroidFactory>(Lifetime.Singleton);
-        builder.Register<UfoFactory>(Lifetime.Singleton);
+            builder.RegisterInstance(_playerMovementSettings.MoverSettings);
+            builder.RegisterInstance(_playerMovementSettings.RotationSettings);
+        }
+
+        private void RegisterGameplay(IContainerBuilder builder)
+        {
+            builder.RegisterComponent(_prefabHolder);
+            builder.RegisterComponent(_sceneObjectHolder);
+            builder.RegisterComponent(_screenBoundsTrackerSettings);
+            builder.RegisterComponent(_enemySpawnerSettings);
+            builder.RegisterComponent(_enemySettings);
+            builder.RegisterComponent(_enemySpawner);
+            builder.RegisterComponent(_enemyRegistry);
+
+            builder.Register<EnemyDriver>(Lifetime.Singleton);
+        }
+
+        private void RegisterUI(IContainerBuilder builder)
+        {
+            builder.RegisterComponent(_uiElementsHolder);
+            builder.RegisterComponent(_uiElementsUpdater);
+        }
+
+        private void RegisterGameFlow(IContainerBuilder builder)
+        {
+            builder.RegisterComponent(_gameFinisher);
+            builder.Register<GameRestarter>(Lifetime.Singleton);
+            builder.Register<GamePause>(Lifetime.Singleton);
+        }
+
+        private static void RegisterFactories(IContainerBuilder builder)
+        {
+            builder.Register<AsteroidFactory>(Lifetime.Singleton);
+            builder.Register<UfoFactory>(Lifetime.Singleton);
+        }
     }
 }

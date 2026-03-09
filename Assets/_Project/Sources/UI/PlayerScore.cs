@@ -1,17 +1,20 @@
 using System;
 
-public class PlayerScore
+namespace Asteroids.UI
 {
-    public int Score { get; private set; } = 0;
-    public Action Changed;
-    public void Increment()
+    public class PlayerScore
     {
-        Score++;
-        Changed?.Invoke();
-    }
-    public void ResetScore()
-    {
-        Score = 0;
-        Changed?.Invoke();
+        public int Score { get; private set; } = 0;
+        public Action Changed;
+        public void Increment()
+        {
+            Score++;
+            Changed?.Invoke();
+        }
+        public void ResetScore()
+        {
+            Score = 0;
+            Changed?.Invoke();
+        }
     }
 }

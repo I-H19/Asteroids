@@ -1,14 +1,17 @@
 ﻿using System;
 using UnityEngine;
 
-[Serializable]
-public class DirectionalMoverSettings : IMoverSettings
+namespace Asteroids.Settings
 {
-    [field: SerializeField] public float MovingSpeed { get; private set; }
-
-    public void ChangeValues(float movingSpeed)
+    [Serializable]
+    public class DirectionalMoverSettings : IMoverSettings
     {
-        MovingSpeed = movingSpeed;
+        [field: SerializeField] public float MovingSpeed { get; private set; }
+
+        public void ChangeValues(float movingSpeed)
+        {
+            MovingSpeed = movingSpeed;
+        }
     }
 }
 

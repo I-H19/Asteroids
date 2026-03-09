@@ -1,43 +1,47 @@
+using Asteroids.Settings;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-public class AsteroidFactory : IEnemyFactory
+namespace Asteroids.Gameplay.EnemySystem
 {
-    private IObjectResolver _resolver;
-    private GameObject _asteroidPrefab;
-    private GameObject _fragmentPrefab;
-    private EnemySettings _enemySettings;
-
-    [Inject]
-    public void Construct(IObjectResolver resolver, PrefabHolder prefabHolder, EnemySettings enemySettings)
+    public class AsteroidFactory : IEnemyFactory
     {
-        _resolver = resolver;
-        _asteroidPrefab = prefabHolder.Asteroid;
-        _fragmentPrefab = prefabHolder.AsteroidFragment;
-        _enemySettings = enemySettings;
-    }
-    public IEnemy SpawnOne(Vector3 position)
-    {
-        GameObject enemy = _resolver.Instantiate(_asteroidPrefab, position, Quaternion.identity);
-        Asteroid asteroid = enemy.GetComponent<Asteroid>();
+        private IObjectResolver _resolver;
+        private GameObject _asteroidPrefab;
+        private GameObject _fragmentPrefab;
+        private EnemySettings _enemySettings;
 
-        asteroid.Init(enemy, _enemySettings.AsteroidMovingSettings, _enemySettings.AsteroidDamage, false);
+        [Inject]
+        public void Construct(IObjectResolver resolver, PrefabHolder prefabHolder, EnemySettings enemySettings)
+        {
+            _resolver = resolver;
+            _asteroidPrefab = prefabHolder.Asteroid;
+            _fragmentPrefab = prefabHolder.AsteroidFragment;
+            _enemySettings = enemySettings;
+        }
+        public IEnemy SpawnOne(Vector3 position)
+        {
+            GameObject enemy = _resolver.Instantiate(_asteroidPrefab, position, Quaternion.identity);
+            Asteroid asteroid = enemy.GetComponent<Asteroid>();
 
-        return asteroid;
-    }
+            asteroid.Init(enemy, _enemySettings.AsteroidMovingSettings, _enemySettings.AsteroidDamage, false);
 
-    public Asteroid SpawnFragment(Vector3 position, Asteroid parent)
-    {
-        GameObject enemy = _resolver.Instantiate(_fragmentPrefab, position, Quaternion.identity);
-        Asteroid fragment = enemy.GetComponent<Asteroid>();
+            return asteroid;
+        }
 
-        fragment.Init(enemy, _enemySettings.AsteroidMovingSettings, _enemySettings.AsteroidDamage, true);
-        fragment.SetParent(parent);
-        parent.AddFragment(enemy, _enemySettings.AsteroidMovingSettings, _enemySettings.AsteroidDamage);
+        public Asteroid SpawnFragment(Vector3 position, Asteroid parent)
+        {
+            GameObject enemy = _resolver.Instantiate(_fragmentPrefab, position, Quaternion.identity);
+            Asteroid fragment = enemy.GetComponent<Asteroid>();
 
-        enemy.SetActive(false);
+            fragment.Init(enemy, _enemySettings.AsteroidMovingSettings, _enemySettings.AsteroidDamage, true);
+            fragment.SetParent(parent);
+            parent.AddFragment(enemy);
 
-        return fragment;
+            enemy.SetActive(false);
+
+            return fragment;
+        }
     }
 }

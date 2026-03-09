@@ -1,4 +1,7 @@
-﻿public interface ISceneFixedTickable
+﻿namespace Asteroids.GameLoop
 {
-    public void FixedTick();
+    public interface ISceneFixedTickable
+    {
+        public void FixedTick();
+    }
 }

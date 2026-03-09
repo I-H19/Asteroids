@@ -1,3 +1,6 @@
-﻿public interface IMoverSettings
+﻿namespace Asteroids.Settings
 {
+    public interface IMoverSettings
+    {
+    }
 }

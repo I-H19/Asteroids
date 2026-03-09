@@ -1,98 +1,102 @@
-﻿using System;
+﻿using Asteroids.Settings;
+using System;
 using UnityEngine;
 
-public class DirectionalMover : MonoBehaviour, IMover
+namespace Asteroids.Gameplay.ObjectMovement
 {
-    public float CurrentSpeed { get; private set; }
-    public MovingDirection MovingDirection { get; private set; } = MovingDirection.None;
-    public Transform ObjectTransform { get; private set; }
-
-    private bool _isMoving;
-    private bool _isBraking;
-
-    private Rigidbody2D _rigidBody;
-    private float _moveSpeed;
-    private bool _enabled = true;
-
-    public void Init(IMoverSettings moverSettings, Rigidbody2D rigidbody)
+    public class DirectionalMover : MonoBehaviour, IMover
     {
-        if (moverSettings is not DirectionalMoverSettings)
-            throw new Exception("Incorrect mover settings");
+        public float CurrentSpeed { get; private set; }
+        public MovingDirection MovingDirection { get; private set; } = MovingDirection.None;
+        public Transform ObjectTransform { get; private set; }
 
-        DirectionalMoverSettings directionalMoverSettings = (DirectionalMoverSettings)moverSettings;
+        private bool _isMoving;
+        private bool _isBraking;
 
-        _rigidBody = rigidbody;
-        _moveSpeed = directionalMoverSettings.MovingSpeed;
+        private Rigidbody2D _rigidBody;
+        private float _moveSpeed;
+        private bool _enabled = true;
 
-        ObjectTransform = rigidbody.transform;
-        CurrentSpeed = 0f;
-    }
-
-    public void Move()
-    {
-        if (!_enabled) return;
-
-        Vector2 forward = ObjectTransform.up;
-
-        float targetSpeed = 0f;
-
-        switch (MovingDirection)
+        public void Init(IMoverSettings moverSettings, Rigidbody2D rigidbody)
         {
-            case MovingDirection.Acceleration:
-                targetSpeed = _moveSpeed;
-                break;
+            if (moverSettings is not DirectionalMoverSettings)
+                throw new Exception("Incorrect mover settings");
 
-            case MovingDirection.Bracking:
-                targetSpeed = 0f;
-                break;
+            DirectionalMoverSettings directionalMoverSettings = (DirectionalMoverSettings)moverSettings;
 
-            case MovingDirection.None:
-                targetSpeed = 0f;
-                break;
+            _rigidBody = rigidbody;
+            _moveSpeed = directionalMoverSettings.MovingSpeed;
+
+            ObjectTransform = rigidbody.transform;
+            CurrentSpeed = 0f;
         }
 
-        CurrentSpeed = targetSpeed;
-        _rigidBody.linearVelocity = forward * targetSpeed;
-    }
-
-    public void SetMoving(bool value)
-    {
-        _isMoving = value;
-        UpdateMovingDirection();
-    }
-
-    public void SetBraking(bool value)
-    {
-        _isBraking = value;
-        UpdateMovingDirection();
-    }
-    public void SetEnabled(bool enabled)
-    {
-        _enabled = enabled;
-        if (!_enabled)
+        public void Move()
         {
-            _isMoving = false;
-            _isBraking = false;
-            MovingDirection = MovingDirection.None;
+            if (!_enabled) return;
 
-            _rigidBody.linearVelocity = Vector2.zero;
+            Vector2 forward = ObjectTransform.up;
+
+            float targetSpeed = 0f;
+
+            switch (MovingDirection)
+            {
+                case MovingDirection.Acceleration:
+                    targetSpeed = _moveSpeed;
+                    break;
+
+                case MovingDirection.Bracking:
+                    targetSpeed = 0f;
+                    break;
+
+                case MovingDirection.None:
+                    targetSpeed = 0f;
+                    break;
+            }
+
+            CurrentSpeed = targetSpeed;
+            _rigidBody.linearVelocity = forward * targetSpeed;
         }
-    }
-    public void SetPosition(Vector2 position) => _rigidBody.position = position;
 
-    private void UpdateMovingDirection()
-    {
-        if (_isMoving && !_isBraking)
+        public void SetMoving(bool value)
         {
-            MovingDirection = MovingDirection.Acceleration;
+            _isMoving = value;
+            UpdateMovingDirection();
         }
-        else if (_isBraking && !_isMoving)
+
+        public void SetBraking(bool value)
         {
-            MovingDirection = MovingDirection.Bracking;
+            _isBraking = value;
+            UpdateMovingDirection();
         }
-        else
+        public void SetEnabled(bool enabled)
         {
-            MovingDirection = MovingDirection.None;
+            _enabled = enabled;
+            if (!_enabled)
+            {
+                _isMoving = false;
+                _isBraking = false;
+                MovingDirection = MovingDirection.None;
+
+                _rigidBody.linearVelocity = Vector2.zero;
+            }
+        }
+        public void SetPosition(Vector2 position) => _rigidBody.position = position;
+
+        private void UpdateMovingDirection()
+        {
+            if (_isMoving && !_isBraking)
+            {
+                MovingDirection = MovingDirection.Acceleration;
+            }
+            else if (_isBraking && !_isMoving)
+            {
+                MovingDirection = MovingDirection.Bracking;
+            }
+            else
+            {
+                MovingDirection = MovingDirection.None;
+            }
         }
     }
 }

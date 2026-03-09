@@ -1,6 +1,9 @@
-﻿public enum RotationDirection
+﻿namespace Asteroids.Gameplay.ObjectMovement
 {
-    None,
-    Left,
-    Right
+    public enum RotationDirection
+    {
+        None,
+        Left,
+        Right
+    }
 }

@@ -1,66 +1,70 @@
+using Asteroids.Settings;
 using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-public class BulletSpawner
+namespace Asteroids.Gameplay.WeaponSystem
 {
-    private Player _player;
-    private GameObject _bulletTemplate;
-    private float _bulletCooldown;
-    private float _bulletSpeed;
-    private IObjectResolver _resolver;
-
-    private bool _isSpawning;
-    private float _nextShotTime;
-    private float _bulletDamage;
-
-    private List<Bullet> _bullets = new();
-
-    [Inject]
-    public void Construct(IObjectResolver resolver, PrefabHolder spawnerPrefabs, PlayerCombatSettings playerCombatSettings, Player player)
+    public class BulletSpawner
     {
-        _player = player;
-        _resolver = resolver;
-        _bulletTemplate = spawnerPrefabs.Bullet;
-        _bulletCooldown = playerCombatSettings.BulletCooldown;
-        _bulletSpeed = playerCombatSettings.BulletSpeed;
-        _bulletDamage = playerCombatSettings.BulletDamage;
+        private Player _player;
+        private GameObject _bulletTemplate;
+        private float _bulletCooldown;
+        private float _bulletSpeed;
+        private IObjectResolver _resolver;
 
-        _nextShotTime = Time.time; 
-    }
+        private bool _isSpawning;
+        private float _nextShotTime;
+        private float _bulletDamage;
 
-    public void StartSpawning() => _isSpawning = true;
-    public void StopSpawning() => _isSpawning = false;
+        private List<Bullet> _bullets = new();
 
-    public void Tick()
-    {
-        foreach (Bullet bullet in _bullets) bullet.Tick();
-
-        if (!_isSpawning) return;
-
-        if (Time.time >= _nextShotTime)
+        [Inject]
+        public void Construct(IObjectResolver resolver, PrefabHolder spawnerPrefabs, PlayerCombatSettings playerCombatSettings, Player player)
         {
-            SpawnBullet();
-            _nextShotTime = Time.time + _bulletCooldown;
-        }
-    }
-    private void SpawnBullet()
-    {
-        GameObject bulletTemplate = _resolver.Instantiate(_bulletTemplate, _player.transform.position, _player.transform.rotation);
+            _player = player;
+            _resolver = resolver;
+            _bulletTemplate = spawnerPrefabs.Bullet;
+            _bulletCooldown = playerCombatSettings.BulletCooldown;
+            _bulletSpeed = playerCombatSettings.BulletSpeed;
+            _bulletDamage = playerCombatSettings.BulletDamage;
 
-        if (bulletTemplate.TryGetComponent<Bullet>(out Bullet bullet))
+            _nextShotTime = Time.time;
+        }
+
+        public void StartSpawning() => _isSpawning = true;
+        public void StopSpawning() => _isSpawning = false;
+
+        public void Tick()
         {
-            bullet.Init(_bulletSpeed, _bulletDamage);
-            _bullets.Add(bullet);
+            foreach (Bullet bullet in _bullets) bullet.Tick();
 
-            bullet.Destroyed += OnBulletDestroy;
+            if (!_isSpawning) return;
+
+            if (Time.time >= _nextShotTime)
+            {
+                SpawnBullet();
+                _nextShotTime = Time.time + _bulletCooldown;
+            }
         }
-    }
+        private void SpawnBullet()
+        {
+            GameObject bulletTemplate = _resolver.Instantiate(_bulletTemplate, _player.transform.position, _player.transform.rotation);
 
-    private void OnBulletDestroy(Bullet bullet)
-    {
-        _bullets.Remove(bullet);
-        bullet.Destroyed -= OnBulletDestroy;
+            if (bulletTemplate.TryGetComponent<Bullet>(out Bullet bullet))
+            {
+                bullet.Init(_bulletSpeed, _bulletDamage);
+                _bullets.Add(bullet);
+
+                bullet.Destroyed += OnBulletDestroy;
+            }
+        }
+
+        private void OnBulletDestroy(Bullet bullet)
+        {
+            _bullets.Remove(bullet);
+            bullet.Destroyed -= OnBulletDestroy;
+        }
     }
 }

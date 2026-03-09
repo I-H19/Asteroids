@@ -1,4 +1,7 @@
-﻿public interface ISceneTickable
+﻿namespace Asteroids.GameLoop
 {
-    public void Tick();
+    public interface ISceneTickable
+    {
+        public void Tick();
+    }
 }

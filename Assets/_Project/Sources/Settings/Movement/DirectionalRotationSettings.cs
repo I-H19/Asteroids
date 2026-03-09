@@ -1,14 +1,17 @@
 ﻿using System;
 using UnityEngine;
 
-[Serializable]
-public class DirectionalRotationSettings
+namespace Asteroids.Settings
 {
-    [field: SerializeField] public float RotationSpeed { get; private set; }
-
-    public void ChangeValues(float rotationSpeed)
+    [Serializable]
+    public class DirectionalRotationSettings
     {
-        RotationSpeed = rotationSpeed;
+        [field: SerializeField] public float RotationSpeed { get; private set; }
+
+        public void ChangeValues(float rotationSpeed)
+        {
+            RotationSpeed = rotationSpeed;
+        }
     }
 }
 

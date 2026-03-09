@@ -1,42 +1,46 @@
-﻿using VContainer;
+﻿using Asteroids.GameLoop;
+using VContainer;
 
-public class EnemyDriver : ISceneTickable
+namespace Asteroids.Gameplay.EnemySystem
 {
-    private EnemyRegistry _enemiesRegistry;
-
-    private bool _isEnemiesTicking = true;
-
-    [Inject]
-    public void Construct(EnemyRegistry enemiesRegistry)
+    public class EnemyDriver : ISceneTickable
     {
-        _enemiesRegistry = enemiesRegistry;
+        private EnemyRegistry _enemiesRegistry;
 
-        _isEnemiesTicking = true;
-    }
-    public void Tick()
-    {
-        if (!_isEnemiesTicking) return;
+        private bool _isEnemiesTicking = true;
 
-        foreach (IEnemy enemy in _enemiesRegistry.AliveEnemies)
+        [Inject]
+        public void Construct(EnemyRegistry enemiesRegistry)
         {
-            enemy.Tick();
-        }
-    }
+            _enemiesRegistry = enemiesRegistry;
 
-    public void FreezeEnemyMoving()
-    {
-        foreach (IEnemy enemy in _enemiesRegistry.AliveEnemies)
+            _isEnemiesTicking = true;
+        }
+        public void Tick()
         {
-            enemy.Mover.SetEnabled(false);
-        }
-    }
+            if (!_isEnemiesTicking) return;
 
-    public void UnfreezeEnemyMoving()
-    {
-        foreach (IEnemy enemy in _enemiesRegistry.AliveEnemies)
+            foreach (IEnemy enemy in _enemiesRegistry.AliveEnemies)
+            {
+                enemy.Tick();
+            }
+        }
+
+        public void FreezeEnemyMoving()
         {
-            enemy.Mover.SetEnabled(true);
+            foreach (IEnemy enemy in _enemiesRegistry.AliveEnemies)
+            {
+                enemy.Mover.SetEnabled(false);
+            }
         }
-    }
 
+        public void UnfreezeEnemyMoving()
+        {
+            foreach (IEnemy enemy in _enemiesRegistry.AliveEnemies)
+            {
+                enemy.Mover.SetEnabled(true);
+            }
+        }
+
+    }
 }

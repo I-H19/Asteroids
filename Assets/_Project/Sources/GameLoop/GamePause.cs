@@ -1,36 +1,42 @@
+using Asteroids.Gameplay;
+using Asteroids.Gameplay.EnemySystem;
+using Asteroids.Gameplay.WeaponSystem;
 using VContainer;
 
-public class GamePause
+namespace Asteroids.GameLoop
 {
-    private BulletSpawner _bulletSpawner;
-    private EnemyDriver _enemyDriver;
-    private SceneTickDriver _sceneTickDriver;
-    private Player _player;
-
-    [Inject]
-    public void Construct(SceneTickDriver sceneTickDriver, EnemyDriver enemyTickDriver, Player player, BulletSpawner bulletSpawner)
+    public class GamePause
     {
-        _bulletSpawner = bulletSpawner;
-        _enemyDriver = enemyTickDriver;
-        _sceneTickDriver = sceneTickDriver;
-        _player = player;
-    }
-    public void SetPause(bool pause)
-    {
-        _sceneTickDriver.SetPause(pause);
+        private BulletSpawner _bulletSpawner;
+        private EnemyDriver _enemyDriver;
+        private SceneTickDriver _sceneTickDriver;
+        private Player _player;
 
-        if (pause)
+        [Inject]
+        public void Construct(SceneTickDriver sceneTickDriver, EnemyDriver enemyTickDriver, Player player, BulletSpawner bulletSpawner)
         {
-            _enemyDriver.FreezeEnemyMoving();
-            _player.InertialMoverTemplate.SetEnabled(false);
-            _player.DirectionalRotatorTemplate.SetEnabled(false);
-            _bulletSpawner.StopSpawning();
+            _bulletSpawner = bulletSpawner;
+            _enemyDriver = enemyTickDriver;
+            _sceneTickDriver = sceneTickDriver;
+            _player = player;
         }
-        else
+        public void SetPause(bool pause)
         {
-            _enemyDriver.UnfreezeEnemyMoving();
-            _player.InertialMoverTemplate.SetEnabled(true);
-            _player.DirectionalRotatorTemplate.SetEnabled(true);
+            _sceneTickDriver.SetPause(pause);
+
+            if (pause)
+            {
+                _enemyDriver.FreezeEnemyMoving();
+                _player.InertialMoverTemplate.SetEnabled(false);
+                _player.DirectionalRotatorTemplate.SetEnabled(false);
+                _bulletSpawner.StopSpawning();
+            }
+            else
+            {
+                _enemyDriver.UnfreezeEnemyMoving();
+                _player.InertialMoverTemplate.SetEnabled(true);
+                _player.DirectionalRotatorTemplate.SetEnabled(true);
+            }
         }
     }
 }

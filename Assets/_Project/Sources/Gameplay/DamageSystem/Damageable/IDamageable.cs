@@ -1,5 +1,8 @@
-public interface IDamageable
+namespace Asteroids.Gameplay.DamageSystem
 {
-    public float Health { get; }
-    public void TakeDamage(float damage);
+    public interface IDamageable
+    {
+        public float Health { get; }
+        public void TakeDamage(float damage);
+    }
 }

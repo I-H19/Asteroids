@@ -1,22 +1,26 @@
+using Asteroids.GameLoop;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(ScreenBoundsTracker))]
-public sealed class ScreenTeleporter : MonoBehaviour, ISceneTickable
+namespace Asteroids.Gameplay.ObjectMovement
 {
-    private Rigidbody2D _rigidbody;
-    private ScreenBoundsTracker _boundsTracker;
-
-    public void Init()
+    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(ScreenBoundsTracker))]
+    public sealed class ScreenTeleporter : MonoBehaviour, ISceneTickable
     {
-        _rigidbody = GetComponent<Rigidbody2D>();
-        _boundsTracker = GetComponent<ScreenBoundsTracker>();
-    }
-    public void Tick()
-    {
-        if (!_boundsTracker.IsOutOfBounds())
-            return;
+        private Rigidbody2D _rigidbody;
+        private ScreenBoundsTracker _boundsTracker;
 
-        _rigidbody.position = _boundsTracker.GetTeleportPosition();
+        public void Init()
+        {
+            _rigidbody = GetComponent<Rigidbody2D>();
+            _boundsTracker = GetComponent<ScreenBoundsTracker>();
+        }
+        public void Tick()
+        {
+            if (!_boundsTracker.IsOutOfBounds())
+                return;
+
+            _rigidbody.position = _boundsTracker.GetTeleportPosition();
+        }
     }
 }

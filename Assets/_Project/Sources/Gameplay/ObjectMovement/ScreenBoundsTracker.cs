@@ -2,67 +2,70 @@
 using UnityEngine;
 using VContainer;
 
-[RequireComponent(typeof(Rigidbody2D))]
-public class ScreenBoundsTracker : MonoBehaviour
+namespace Asteroids.Gameplay.ObjectMovement
 {
-    private readonly float _defaultBoundsMultiplier = 1f;
-
-    private Camera _camera;
-    private Rigidbody2D _rigidbody;
-
-    private ScreenBounds _screenBounds;
-
-    [Inject]
-    public void Construct(Camera mainCamera)
+    [RequireComponent(typeof(Rigidbody2D))]
+    public class ScreenBoundsTracker : MonoBehaviour
     {
-        _camera = mainCamera;
-        _rigidbody = GetComponent<Rigidbody2D>();
-        CalculateScreenBounds(_defaultBoundsMultiplier);
-    }
+        private readonly float _defaultBoundsMultiplier = 1f;
 
-    public void ChangeTrackingBounds(float multiplier)
-    {
-        CalculateScreenBounds(multiplier);
-    }
+        private Camera _camera;
+        private Rigidbody2D _rigidbody;
 
-    private void CalculateScreenBounds(float multiplier)
-    {
-        if (multiplier < 1f)
-            multiplier = 1f;
+        private ScreenBounds _screenBounds;
 
-        Vector3 cameraWorldPosition = _camera.transform.position;
+        [Inject]
+        public void Construct(Camera mainCamera)
+        {
+            _camera = mainCamera;
+            _rigidbody = GetComponent<Rigidbody2D>();
+            CalculateScreenBounds(_defaultBoundsMultiplier);
+        }
 
-        float halfScreenHeight = _camera.orthographicSize;
-        float halfScreenWidth = halfScreenHeight * _camera.aspect;
+        public void ChangeTrackingBounds(float multiplier)
+        {
+            CalculateScreenBounds(multiplier);
+        }
 
-        halfScreenHeight *= multiplier;
-        halfScreenWidth *= multiplier;
+        private void CalculateScreenBounds(float multiplier)
+        {
+            if (multiplier < 1f)
+                multiplier = 1f;
 
-        float leftScreenBorder = cameraWorldPosition.x - halfScreenWidth;
-        float rightScreenBorder = cameraWorldPosition.x + halfScreenWidth;
-        float bottomScreenBorder = cameraWorldPosition.y - halfScreenHeight;
-        float topScreenBorder = cameraWorldPosition.y + halfScreenHeight;
+            Vector3 cameraWorldPosition = _camera.transform.position;
 
-        _screenBounds = new ScreenBounds(leftScreenBorder, rightScreenBorder, bottomScreenBorder, topScreenBorder);
-    }
+            float halfScreenHeight = _camera.orthographicSize;
+            float halfScreenWidth = halfScreenHeight * _camera.aspect;
 
-    public bool IsOutOfBounds()
-    {
-        Vector2 position = _rigidbody.position;
-        return _screenBounds.IsOutOfBounds(position);
-    }
+            halfScreenHeight *= multiplier;
+            halfScreenWidth *= multiplier;
 
-    public Vector2 GetTeleportPosition()
-    {
-        Vector2 position = _rigidbody.position;
-        return _screenBounds.Wrap(position);
-    }
+            float leftScreenBorder = cameraWorldPosition.x - halfScreenWidth;
+            float rightScreenBorder = cameraWorldPosition.x + halfScreenWidth;
+            float bottomScreenBorder = cameraWorldPosition.y - halfScreenHeight;
+            float topScreenBorder = cameraWorldPosition.y + halfScreenHeight;
 
-    public Vector3 GetRandomPointOnPerimeter()
-    {
-        if (_screenBounds == null) throw new NullReferenceException();
-        Vector2 randomVector2 = _screenBounds.GetRandomPointOnPerimeter();
-        Vector3 randomVector3 = new(randomVector2.x, randomVector2.y, 0);
-        return randomVector3;
+            _screenBounds = new ScreenBounds(leftScreenBorder, rightScreenBorder, bottomScreenBorder, topScreenBorder);
+        }
+
+        public bool IsOutOfBounds()
+        {
+            Vector2 position = _rigidbody.position;
+            return _screenBounds.IsOutOfBounds(position);
+        }
+
+        public Vector2 GetTeleportPosition()
+        {
+            Vector2 position = _rigidbody.position;
+            return _screenBounds.Wrap(position);
+        }
+
+        public Vector3 GetRandomPointOnPerimeter()
+        {
+            if (_screenBounds == null) throw new NullReferenceException();
+            Vector2 randomVector2 = _screenBounds.GetRandomPointOnPerimeter();
+            Vector3 randomVector3 = new(randomVector2.x, randomVector2.y, 0);
+            return randomVector3;
+        }
     }
 }

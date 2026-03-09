@@ -1,49 +1,55 @@
-﻿using System;
+﻿using Asteroids.Gameplay.DamageSystem;
+using Asteroids.Gameplay.ObjectMovement;
+using Asteroids.Settings;
+using System;
 using UnityEngine;
 
-[RequireComponent(typeof(ScreenBoundsTracker))]
-[RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(PlayerDamageSource))]
-[RequireComponent(typeof(DirectionalMover))]
-public class Bullet : MonoBehaviour
+namespace Asteroids.Gameplay.WeaponSystem
 {
-    public Action<Bullet> Destroyed;
-
-    private readonly DirectionalMoverSettings _moverSettings = new();
-    private DirectionalMover _mover;
-    private PlayerDamageSource _damageSource;
-    private ScreenBoundsTracker _boundsTracker;
-
-    public void Init(float bulletSpeed, float bulletDamage)
+    [RequireComponent(typeof(ScreenBoundsTracker))]
+    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(PlayerDamageSource))]
+    [RequireComponent(typeof(DirectionalMover))]
+    public class Bullet : MonoBehaviour
     {
-        _boundsTracker = GetComponent<ScreenBoundsTracker>();
+        public Action<Bullet> Destroyed;
 
-        _mover = GetComponent<DirectionalMover>();
-        _damageSource = GetComponent<PlayerDamageSource>();
-        _damageSource.ChangeDamage(bulletDamage);
+        private readonly DirectionalMoverSettings _moverSettings = new();
+        private DirectionalMover _mover;
+        private PlayerDamageSource _damageSource;
+        private ScreenBoundsTracker _boundsTracker;
 
-        _moverSettings.ChangeValues(bulletSpeed);
+        public void Init(float bulletSpeed, float bulletDamage)
+        {
+            _boundsTracker = GetComponent<ScreenBoundsTracker>();
 
-        _mover.Init(_moverSettings, GetComponent<Rigidbody2D>());
-        _damageSource.TargetDamaged += OnHit;
+            _mover = GetComponent<DirectionalMover>();
+            _damageSource = GetComponent<PlayerDamageSource>();
+            _damageSource.ChangeDamage(bulletDamage);
 
-        _mover.SetMoving(true);
+            _moverSettings.ChangeValues(bulletSpeed);
 
-    }
+            _mover.Init(_moverSettings, GetComponent<Rigidbody2D>());
+            _damageSource.TargetDamaged += OnHit;
 
-    public void OnHit() => Destroy(gameObject);
-    public void Tick()
-    {
-        _damageSource.Tick();
+            _mover.SetMoving(true);
 
-        if (_boundsTracker.IsOutOfBounds())
-            OnHit();
-        else
-            _mover.Move();
-    }
-    private void OnDestroy()
-    {
-        Destroyed?.Invoke(this);
-        _damageSource.TargetDamaged -= OnHit;
+        }
+
+        public void OnHit() => Destroy(gameObject);
+        public void Tick()
+        {
+            _damageSource.Tick();
+
+            if (_boundsTracker.IsOutOfBounds())
+                OnHit();
+            else
+                _mover.Move();
+        }
+        private void OnDestroy()
+        {
+            Destroyed?.Invoke(this);
+            _damageSource.TargetDamaged -= OnHit;
+        }
     }
 }

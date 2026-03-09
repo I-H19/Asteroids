@@ -1,99 +1,105 @@
-﻿using UnityEngine;
+﻿using Asteroids.GameLoop;
+using Asteroids.Gameplay.ObjectMovement;
+using Asteroids.Settings;
+using UnityEngine;
 using VContainer;
 
-[RequireComponent(typeof(ScreenBoundsTracker))]
-public class EnemySpawner : MonoBehaviour, ISceneTickable
+namespace Asteroids.Gameplay.EnemySystem
 {
-    private EnemyRegistry _enemiesRegistry;
-
-    private EnemySpawnerSettings _enemySpawnerSettings;
-    private EnemySettings _enemySettings;
-    private IObjectResolver _resolver;
-    private ScreenBoundsTracker _boundsTracker;
-
-    private AsteroidFactory _asteroidFactory;
-    private UfoFactory _ufoFactory;
-
-
-    [Inject]
-    public void Construct(IObjectResolver resolver, EnemySpawnerSettings enemySpawnerSettings,
-        ScreenBoundsTrackerSettings screenBoundsTrackerSettings, AsteroidFactory asteroidFactory,
-        UfoFactory ufoFactory, EnemyRegistry enemiesRegistry, EnemySettings enemySettings)
+    [RequireComponent(typeof(ScreenBoundsTracker))]
+    public class EnemySpawner : MonoBehaviour, ISceneTickable
     {
-        _enemiesRegistry = enemiesRegistry;
+        private EnemyRegistry _enemiesRegistry;
 
-        _enemySpawnerSettings = enemySpawnerSettings;
-        _enemySettings = enemySettings;
+        private EnemySpawnerSettings _enemySpawnerSettings;
+        private EnemySettings _enemySettings;
+        private IObjectResolver _resolver;
+        private ScreenBoundsTracker _boundsTracker;
 
-        _resolver = resolver;
+        private AsteroidFactory _asteroidFactory;
+        private UfoFactory _ufoFactory;
 
-        _boundsTracker = GetComponent<ScreenBoundsTracker>();
-        _resolver.Inject(_boundsTracker);
-        _boundsTracker.ChangeTrackingBounds(screenBoundsTrackerSettings.EnemyBoundsMultiplier);
 
-        _asteroidFactory = asteroidFactory;
-        _ufoFactory = ufoFactory;
-    }
-    public void Tick()
-    {
-        if (_enemySpawnerSettings.MaxEnemiesAlive > 0 &&
-            _enemiesRegistry.AliveCount >= _enemySpawnerSettings.MaxEnemiesAlive)
+        [Inject]
+        public void Construct(IObjectResolver resolver, EnemySpawnerSettings enemySpawnerSettings,
+            ScreenBoundsTrackerSettings screenBoundsTrackerSettings, AsteroidFactory asteroidFactory,
+            UfoFactory ufoFactory, EnemyRegistry enemiesRegistry, EnemySettings enemySettings)
         {
-            return;
+            _enemiesRegistry = enemiesRegistry;
+
+            _enemySpawnerSettings = enemySpawnerSettings;
+            _enemySettings = enemySettings;
+
+            _resolver = resolver;
+
+            _boundsTracker = GetComponent<ScreenBoundsTracker>();
+            _resolver.Inject(_boundsTracker);
+            _boundsTracker.ChangeTrackingBounds(screenBoundsTrackerSettings.EnemyBoundsMultiplier);
+
+            _asteroidFactory = asteroidFactory;
+            _ufoFactory = ufoFactory;
         }
-
-        float deltaTime = Time.deltaTime;
-        if (deltaTime <= 0f)
+        public void Tick()
         {
-            return;
-        }
-
-        float asteroidSpawnChancePerSecond = Mathf.Max(0f, _enemySpawnerSettings.AsteroidSpawnChancePerSecond);
-        float ufoSpawnChancePerSecond = Mathf.Max(0f, _enemySpawnerSettings.UfoSpawnChancePerSecond);
-        float totalSpawnChancePerSecond = asteroidSpawnChancePerSecond + ufoSpawnChancePerSecond;
-
-        if (totalSpawnChancePerSecond <= 0f)
-        {
-            return;
-        }
-
-        float probabilityToSpawnThisTick = 1f - Mathf.Exp(-totalSpawnChancePerSecond * deltaTime);
-        if (Random.value >= probabilityToSpawnThisTick)
-        {
-            return;
-        }
-
-        bool shouldSpawnAsteroid = ChooseAsteroid(asteroidSpawnChancePerSecond, totalSpawnChancePerSecond);
-        Vector3 spawnPosition = _boundsTracker.GetRandomPointOnPerimeter();
-
-        IEnemy enemy;
-        if (shouldSpawnAsteroid)
-        {
-            IEnemy parentAsteroid = _asteroidFactory.SpawnOne(spawnPosition);
-            _enemiesRegistry.RegisterEnemy(parentAsteroid);
-
-            for (int i = 0; i != _enemySettings.AsteroidFragmentsNumber; i++)
+            if (_enemySpawnerSettings.MaxEnemiesAlive > 0 &&
+                _enemiesRegistry.AliveCount >= _enemySpawnerSettings.MaxEnemiesAlive)
             {
-                IEnemy fragment = _asteroidFactory.SpawnFragment(spawnPosition, (Asteroid)parentAsteroid);
-                _enemiesRegistry.RegisterEnemy(fragment);
+                return;
             }
+
+            float deltaTime = Time.deltaTime;
+            if (deltaTime <= 0f)
+            {
+                return;
+            }
+
+            float asteroidSpawnChancePerSecond = Mathf.Max(0f, _enemySpawnerSettings.AsteroidSpawnChancePerSecond);
+            float ufoSpawnChancePerSecond = Mathf.Max(0f, _enemySpawnerSettings.UfoSpawnChancePerSecond);
+            float totalSpawnChancePerSecond = asteroidSpawnChancePerSecond + ufoSpawnChancePerSecond;
+
+            if (totalSpawnChancePerSecond <= 0f)
+            {
+                return;
+            }
+
+            float probabilityToSpawnThisTick = 1f - Mathf.Exp(-totalSpawnChancePerSecond * deltaTime);
+            if (Random.value >= probabilityToSpawnThisTick)
+            {
+                return;
+            }
+
+            bool shouldSpawnAsteroid = ChooseAsteroid(asteroidSpawnChancePerSecond, totalSpawnChancePerSecond);
+            Vector3 spawnPosition = _boundsTracker.GetRandomPointOnPerimeter();
+
+            IEnemy enemy;
+            if (shouldSpawnAsteroid)
+            {
+                IEnemy parentAsteroid = _asteroidFactory.SpawnOne(spawnPosition);
+                _enemiesRegistry.RegisterEnemy(parentAsteroid);
+
+                for (int i = 0; i != _enemySettings.AsteroidFragmentsNumber; i++)
+                {
+                    IEnemy fragment = _asteroidFactory.SpawnFragment(spawnPosition, (Asteroid)parentAsteroid);
+                    _enemiesRegistry.RegisterEnemy(fragment);
+                }
+            }
+            else
+            {
+                enemy = _ufoFactory.SpawnOne(spawnPosition);
+                _enemiesRegistry.RegisterEnemy(enemy);
+            }
+
         }
-        else
+
+        private bool ChooseAsteroid(float asteroidSpawnChancePerSecond, float totalSpawnChancePerSecond)
         {
-            enemy = _ufoFactory.SpawnOne(spawnPosition);
-            _enemiesRegistry.RegisterEnemy(enemy);
+            if (asteroidSpawnChancePerSecond <= 0f)
+            {
+                return false;
+            }
+
+            float randomValue = Random.value * totalSpawnChancePerSecond;
+            return randomValue < asteroidSpawnChancePerSecond;
         }
-
-    }
-
-    private bool ChooseAsteroid(float asteroidSpawnChancePerSecond, float totalSpawnChancePerSecond)
-    {
-        if (asteroidSpawnChancePerSecond <= 0f)
-        {
-            return false;
-        }
-
-        float randomValue = Random.value * totalSpawnChancePerSecond;
-        return randomValue < asteroidSpawnChancePerSecond;
     }
 }

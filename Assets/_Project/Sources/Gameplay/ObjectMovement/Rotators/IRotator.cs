@@ -1,6 +1,9 @@
-﻿public interface IRotator
+﻿namespace Asteroids.Gameplay.ObjectMovement
 {
-    public float CurrentAngle { get; }
-    public void Rotate();
-    public void SetEnabled(bool enabled);
+    public interface IRotator
+    {
+        public float CurrentAngle { get; }
+        public void Rotate();
+        public void SetEnabled(bool enabled);
+    }
 }
