@@ -1,9 +1,9 @@
-﻿using Asteroids.Gameplay.DamageSystem;
-using Asteroids.Settings;
+﻿using _Project.Sources.Gameplay.DamageSystem.DamageSource;
+using _Project.Sources.Settings;
 using UnityEngine;
 using VContainer;
 
-namespace Asteroids.Gameplay.WeaponSystem
+namespace _Project.Sources.Gameplay.WeaponSystem
 {
     [RequireComponent(typeof(PlayerDamageSource))]
     public class Laser : MonoBehaviour

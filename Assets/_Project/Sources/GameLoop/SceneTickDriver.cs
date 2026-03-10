@@ -1,11 +1,11 @@
-using Asteroids.Gameplay;
-using Asteroids.Gameplay.EnemySystem;
-using Asteroids.Gameplay.WeaponSystem;
-using Asteroids.PlayerInput;
+using _Project.Sources.Gameplay;
+using _Project.Sources.Gameplay.EnemySystem.EnemySpawn;
+using _Project.Sources.Gameplay.WeaponSystem;
+using _Project.Sources.Input;
 using VContainer;
 using VContainer.Unity;
 
-namespace Asteroids.GameLoop
+namespace _Project.Sources.GameLoop
 {
     public class SceneTickDriver : ITickable
     {

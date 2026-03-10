@@ -1,6 +1,7 @@
+using _Project.Sources.Gameplay.DamageSystem.Damageable;
 using UnityEngine;
 
-namespace Asteroids.Gameplay.DamageSystem
+namespace _Project.Sources.Gameplay.DamageSystem.DamageSource
 {
     [RequireComponent(typeof(BoxCollider2D))]
     public class EnemyDamageSource : MonoBehaviour, IDamageSource

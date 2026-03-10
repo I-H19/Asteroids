@@ -1,7 +1,7 @@
-﻿using Asteroids.Settings;
+﻿using _Project.Sources.Settings.Movement;
 using UnityEngine;
 
-namespace Asteroids.Gameplay.ObjectMovement
+namespace _Project.Sources.Gameplay.ObjectMovement.Rotators
 {
     public class InertialRotator : MonoBehaviour, IRotator
     {

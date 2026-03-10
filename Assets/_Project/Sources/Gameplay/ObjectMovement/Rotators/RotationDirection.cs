@@ -1,4 +1,4 @@
-﻿namespace Asteroids.Gameplay.ObjectMovement
+﻿namespace _Project.Sources.Gameplay.ObjectMovement.Rotators
 {
     public enum RotationDirection
     {

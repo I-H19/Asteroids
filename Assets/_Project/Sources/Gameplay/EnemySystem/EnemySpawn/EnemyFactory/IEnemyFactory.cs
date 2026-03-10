@@ -1,6 +1,7 @@
+using _Project.Sources.Gameplay.EnemySystem.Enemy;
 using UnityEngine;
 
-namespace Asteroids.Gameplay.EnemySystem
+namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory
 {
     public interface IEnemyFactory
     {

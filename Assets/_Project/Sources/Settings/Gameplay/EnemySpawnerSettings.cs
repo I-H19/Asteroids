@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Asteroids.Settings
+namespace _Project.Sources.Settings.Gameplay
 {
     public class EnemySpawnerSettings : MonoBehaviour
     {

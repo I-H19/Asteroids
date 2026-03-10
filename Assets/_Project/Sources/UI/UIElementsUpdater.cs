@@ -1,10 +1,10 @@
-using Asteroids.Gameplay;
-using Asteroids.Gameplay.WeaponSystem;
+using _Project.Sources.Gameplay;
+using _Project.Sources.Gameplay.WeaponSystem;
 using TMPro;
 using UnityEngine;
 using VContainer;
 
-namespace Asteroids.UI
+namespace _Project.Sources.UI
 {
     public class UIElementsUpdater : MonoBehaviour
     {

@@ -1,9 +1,11 @@
-using Asteroids.Settings;
+using _Project.Sources.Gameplay.EnemySystem.Enemy;
+using _Project.Sources.Settings;
+using _Project.Sources.Settings.Gameplay;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace Asteroids.Gameplay.EnemySystem
+namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory
 {
     public class UfoFactory : IEnemyFactory
     {

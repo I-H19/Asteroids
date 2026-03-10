@@ -1,11 +1,15 @@
-using Asteroids.GameLoop;
-using Asteroids.Gameplay.DamageSystem;
-using Asteroids.Gameplay.ObjectMovement;
-using Asteroids.Settings;
 using System;
+using _Project.Sources.GameLoop;
+using _Project.Sources.Gameplay.DamageSystem.Damageable;
+using _Project.Sources.Gameplay.DamageSystem.DamageSource;
+using _Project.Sources.Gameplay.ObjectMovement;
+using _Project.Sources.Gameplay.ObjectMovement.Movers;
+using _Project.Sources.Gameplay.ObjectMovement.Rotators;
+using _Project.Sources.Settings;
+using _Project.Sources.Settings.Movement;
 using UnityEngine;
 
-namespace Asteroids.Gameplay.EnemySystem
+namespace _Project.Sources.Gameplay.EnemySystem.Enemy
 {
     [RequireComponent(typeof(DirectionalMover))]
     [RequireComponent(typeof(LookAtRotator))]

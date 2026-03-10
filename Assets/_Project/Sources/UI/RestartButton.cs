@@ -1,9 +1,9 @@
-using Asteroids.GameLoop;
+using _Project.Sources.GameLoop;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
-namespace Asteroids.UI
+namespace _Project.Sources.UI
 {
     public class RestartButton : MonoBehaviour
     {

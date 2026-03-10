@@ -1,10 +1,11 @@
-﻿using Asteroids.Gameplay.DamageSystem;
-using Asteroids.Gameplay.ObjectMovement;
-using Asteroids.Settings;
-using System;
+﻿using System;
+using _Project.Sources.Gameplay.DamageSystem.DamageSource;
+using _Project.Sources.Gameplay.ObjectMovement;
+using _Project.Sources.Gameplay.ObjectMovement.Movers;
+using _Project.Sources.Settings.Movement;
 using UnityEngine;
 
-namespace Asteroids.Gameplay.WeaponSystem
+namespace _Project.Sources.Gameplay.WeaponSystem
 {
     [RequireComponent(typeof(ScreenBoundsTracker))]
     [RequireComponent(typeof(Rigidbody2D))]

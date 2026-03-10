@@ -1,6 +1,7 @@
+using _Project.Sources.Settings.Movement;
 using UnityEngine;
 
-namespace Asteroids.Settings
+namespace _Project.Sources.Settings.Gameplay
 {
     public class EnemySettings : MonoBehaviour
     {

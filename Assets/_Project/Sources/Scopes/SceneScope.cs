@@ -1,15 +1,18 @@
-using Asteroids.GameLoop;
-using Asteroids.Gameplay;
-using Asteroids.Gameplay.EnemySystem;
-using Asteroids.Gameplay.WeaponSystem;
-using Asteroids.PlayerInput;
-using Asteroids.Settings;
-using Asteroids.UI;
+using _Project.Sources.GameLoop;
+using _Project.Sources.Gameplay;
+using _Project.Sources.Gameplay.EnemySystem.EnemySpawn;
+using _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory;
+using _Project.Sources.Gameplay.WeaponSystem;
+using _Project.Sources.Input;
+using _Project.Sources.Settings;
+using _Project.Sources.Settings.Gameplay;
+using _Project.Sources.Settings.Movement;
+using _Project.Sources.UI;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace Asteroids.Scopes
+namespace _Project.Sources.Scopes
 {
     public class SceneScope : LifetimeScope
     {

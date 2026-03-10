@@ -1,10 +1,10 @@
-using Asteroids.Settings;
 using System.Collections.Generic;
+using _Project.Sources.Settings;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace Asteroids.Gameplay.WeaponSystem
+namespace _Project.Sources.Gameplay.WeaponSystem
 {
     public class BulletSpawner
     {

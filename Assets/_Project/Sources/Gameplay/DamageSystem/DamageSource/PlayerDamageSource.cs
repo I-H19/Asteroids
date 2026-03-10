@@ -1,7 +1,8 @@
 ﻿using System;
+using _Project.Sources.Gameplay.DamageSystem.Damageable;
 using UnityEngine;
 
-namespace Asteroids.Gameplay.DamageSystem
+namespace _Project.Sources.Gameplay.DamageSystem.DamageSource
 {
     public class PlayerDamageSource : MonoBehaviour, IDamageSource
     {

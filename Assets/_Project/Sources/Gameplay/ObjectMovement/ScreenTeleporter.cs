@@ -1,7 +1,7 @@
-using Asteroids.GameLoop;
+using _Project.Sources.GameLoop;
 using UnityEngine;
 
-namespace Asteroids.Gameplay.ObjectMovement
+namespace _Project.Sources.Gameplay.ObjectMovement
 {
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(ScreenBoundsTracker))]

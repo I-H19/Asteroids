@@ -1,8 +1,8 @@
-﻿using Asteroids.Settings;
-using System;
+﻿using System;
+using _Project.Sources.Settings.Movement;
 using UnityEngine;
 
-namespace Asteroids.Gameplay.ObjectMovement
+namespace _Project.Sources.Gameplay.ObjectMovement.Movers
 {
     public class DirectionalMover : MonoBehaviour, IMover
     {

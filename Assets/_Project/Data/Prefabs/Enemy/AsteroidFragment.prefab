@@ -117,10 +117,10 @@ GameObject:
   - component: {fileID: 6332187027667423721}
   - component: {fileID: 5086821672209584047}
   - component: {fileID: -5936753371275340054}
-  - component: {fileID: -8278625478078350598}
   - component: {fileID: 7731742904836919945}
   - component: {fileID: -6106983257749436363}
   - component: {fileID: 1295911348532094998}
+  - component: {fileID: 6952870469170526523}
   m_Layer: 0
   m_Name: AsteroidFragment
   m_TagString: Untagged
@@ -241,21 +241,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f625aaa96c03e2c4a8c376bb3253a9b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DirectionalMover
---- !u!114 &-8278625478078350598
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8207766781003968305}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 256f13502bc2fd04581124489c4122b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Asteroid
-  <IsFragment>k__BackingField: 1
-  <IsActiveFragment>k__BackingField: 0
-  <Fragments>k__BackingField: []
 --- !u!114 &7731742904836919945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -292,3 +277,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ecb59b507717144a0e517a476135f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDamageSource
+--- !u!114 &6952870469170526523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8207766781003968305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ee1668784bb417ca9698ae338fad7d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Sources.Gameplay.EnemySystem.Enemy.AsteroidFragment

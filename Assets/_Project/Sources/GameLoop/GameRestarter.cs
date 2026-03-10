@@ -1,9 +1,9 @@
-using Asteroids.Gameplay;
-using Asteroids.Gameplay.EnemySystem;
-using Asteroids.UI;
+using _Project.Sources.Gameplay;
+using _Project.Sources.Gameplay.EnemySystem.EnemySpawn;
+using _Project.Sources.UI;
 using VContainer;
 
-namespace Asteroids.GameLoop
+namespace _Project.Sources.GameLoop
 {
     public class GameRestarter
     {

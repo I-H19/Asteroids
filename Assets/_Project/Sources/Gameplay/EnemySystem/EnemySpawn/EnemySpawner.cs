@@ -1,10 +1,13 @@
-﻿using Asteroids.GameLoop;
-using Asteroids.Gameplay.ObjectMovement;
-using Asteroids.Settings;
+﻿using _Project.Sources.GameLoop;
+using _Project.Sources.Gameplay.EnemySystem.Enemy;
+using _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory;
+using _Project.Sources.Gameplay.ObjectMovement;
+using _Project.Sources.Settings.Gameplay;
+using _Project.Sources.Settings.Movement;
 using UnityEngine;
 using VContainer;
 
-namespace Asteroids.Gameplay.EnemySystem
+namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 {
     [RequireComponent(typeof(ScreenBoundsTracker))]
     public class EnemySpawner : MonoBehaviour, ISceneTickable
@@ -71,7 +74,6 @@ namespace Asteroids.Gameplay.EnemySystem
             bool shouldSpawnAsteroid = ChooseAsteroid(asteroidSpawnChancePerSecond, totalSpawnChancePerSecond);
             Vector3 spawnPosition = _boundsTracker.GetRandomPointOnPerimeter();
 
-            IEnemy enemy;
             if (shouldSpawnAsteroid)
             {
                 IEnemy parentAsteroid = _asteroidFactory.SpawnOne(spawnPosition);
@@ -85,7 +87,7 @@ namespace Asteroids.Gameplay.EnemySystem
             }
             else
             {
-                enemy = _ufoFactory.SpawnOne(spawnPosition);
+                IEnemy enemy = _ufoFactory.SpawnOne(spawnPosition);
                 _enemiesRegistry.RegisterEnemy(enemy);
             }
 

@@ -1,10 +1,11 @@
-using Asteroids.Gameplay;
-using Asteroids.Gameplay.ObjectMovement;
 using System;
+using _Project.Sources.Gameplay;
+using _Project.Sources.Gameplay.ObjectMovement.Movers;
+using _Project.Sources.Gameplay.ObjectMovement.Rotators;
 using UnityEngine;
 using VContainer;
 
-namespace Asteroids.UI
+namespace _Project.Sources.UI
 {
     public class PlayerMovementData : MonoBehaviour
     {

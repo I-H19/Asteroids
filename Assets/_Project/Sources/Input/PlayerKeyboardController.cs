@@ -1,10 +1,11 @@
-﻿using Asteroids.Gameplay.ObjectMovement;
-using Asteroids.Gameplay.WeaponSystem;
-using Asteroids.Settings;
+﻿using _Project.Sources.Gameplay.ObjectMovement.Movers;
+using _Project.Sources.Gameplay.ObjectMovement.Rotators;
+using _Project.Sources.Gameplay.WeaponSystem;
+using _Project.Sources.Settings;
 using UnityEngine;
 using VContainer;
 
-namespace Asteroids.PlayerInput
+namespace _Project.Sources.Input
 {
     public class PlayerKeyboardController : MonoBehaviour
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Asteroids.Gameplay.ObjectMovement
+namespace _Project.Sources.Gameplay.ObjectMovement
 {
     public class ScreenBounds
     {

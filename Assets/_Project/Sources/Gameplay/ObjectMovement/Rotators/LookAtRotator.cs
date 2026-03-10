@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Asteroids.Gameplay.ObjectMovement
+namespace _Project.Sources.Gameplay.ObjectMovement.Rotators
 {
     [RequireComponent(typeof(Rigidbody2D))]
     public sealed class LookAtRotator : MonoBehaviour, IRotator

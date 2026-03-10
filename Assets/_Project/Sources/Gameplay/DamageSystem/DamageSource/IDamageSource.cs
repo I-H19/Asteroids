@@ -1,4 +1,6 @@
-﻿namespace Asteroids.Gameplay.DamageSystem
+﻿using _Project.Sources.Gameplay.DamageSystem.Damageable;
+
+namespace _Project.Sources.Gameplay.DamageSystem.DamageSource
 {
     public interface IDamageSource
     {

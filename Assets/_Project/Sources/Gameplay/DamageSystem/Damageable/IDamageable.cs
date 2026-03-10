@@ -1,4 +1,4 @@
-namespace Asteroids.Gameplay.DamageSystem
+namespace _Project.Sources.Gameplay.DamageSystem.Damageable
 {
     public interface IDamageable
     {

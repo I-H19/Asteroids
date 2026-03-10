@@ -2,7 +2,7 @@
 using UnityEngine;
 using VContainer;
 
-namespace Asteroids.Gameplay.ObjectMovement
+namespace _Project.Sources.Gameplay.ObjectMovement
 {
     [RequireComponent(typeof(Rigidbody2D))]
     public class ScreenBoundsTracker : MonoBehaviour

@@ -1,7 +1,8 @@
-﻿using Asteroids.GameLoop;
+﻿using _Project.Sources.GameLoop;
+using _Project.Sources.Gameplay.EnemySystem.Enemy;
 using VContainer;
 
-namespace Asteroids.Gameplay.EnemySystem
+namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 {
     public class EnemyDriver : ISceneTickable
     {

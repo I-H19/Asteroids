@@ -1,11 +1,14 @@
-﻿using Asteroids.Gameplay;
-using Asteroids.Gameplay.ObjectMovement;
-using Asteroids.PlayerInput;
-using Asteroids.Settings;
+﻿using _Project.Sources.Gameplay;
+using _Project.Sources.Gameplay.ObjectMovement;
+using _Project.Sources.Gameplay.ObjectMovement.Movers;
+using _Project.Sources.Gameplay.ObjectMovement.Rotators;
+using _Project.Sources.Input;
+using _Project.Sources.Settings;
+using _Project.Sources.Settings.Movement;
 using VContainer;
 using VContainer.Unity;
 
-namespace Asteroids.GameLoop
+namespace _Project.Sources.GameLoop
 {
     public class SceneEntryPoint : IInitializable
     {

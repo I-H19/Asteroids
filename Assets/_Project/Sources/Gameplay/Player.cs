@@ -1,13 +1,15 @@
-using Asteroids.GameLoop;
-using Asteroids.Gameplay.DamageSystem;
-using Asteroids.Gameplay.ObjectMovement;
-using Asteroids.Gameplay.WeaponSystem;
-using Asteroids.Settings;
 using System;
+using _Project.Sources.GameLoop;
+using _Project.Sources.Gameplay.DamageSystem.Damageable;
+using _Project.Sources.Gameplay.ObjectMovement;
+using _Project.Sources.Gameplay.ObjectMovement.Movers;
+using _Project.Sources.Gameplay.ObjectMovement.Rotators;
+using _Project.Sources.Gameplay.WeaponSystem;
+using _Project.Sources.Settings;    
 using UnityEngine;
 using VContainer;
 
-namespace Asteroids.Gameplay
+namespace _Project.Sources.Gameplay
 {
     [RequireComponent(typeof(ScreenTeleporter))]
     [RequireComponent(typeof(ScreenBoundsTracker))]

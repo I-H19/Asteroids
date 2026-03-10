@@ -1,15 +1,14 @@
-using Asteroids.GameLoop;
-using Asteroids.Gameplay.ObjectMovement;
 using System;
+using _Project.Sources.GameLoop;
+using _Project.Sources.Gameplay.ObjectMovement.Movers;
 using UnityEngine;
 
-namespace Asteroids.Gameplay.EnemySystem
+namespace _Project.Sources.Gameplay.EnemySystem.Enemy
 {
     public interface IEnemy : ISceneTickable
     {
         public Action<IEnemy> Killed { get; set; }
         public IMover Mover { get; }
-        public GameObject EnemyGameObject { get; }
         public void Kill();
     }
 }

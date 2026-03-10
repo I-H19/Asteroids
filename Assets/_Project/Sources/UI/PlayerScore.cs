@@ -1,6 +1,6 @@
 using System;
 
-namespace Asteroids.UI
+namespace _Project.Sources.UI
 {
     public class PlayerScore
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Asteroids.Gameplay.DamageSystem
+namespace _Project.Sources.Gameplay.DamageSystem.Damageable
 {
     public class PlayerLife : MonoBehaviour, IDamageable
     {
