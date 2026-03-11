@@ -9,25 +9,25 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory
 {
     public class UfoFactory : IEnemyFactory
     {
-        private SceneObjectHolder _sceneObjectHolder;
         private IObjectResolver _resolver;
         private GameObject _enemyPrefab;
         private EnemySettings _enemySettings;
+        private Player _player;
 
         [Inject]
-        public void Construct(IObjectResolver resolver, PrefabHolder prefabHolder, EnemySettings enemySettings, SceneObjectHolder sceneObjectHolder)
+        public void Construct(IObjectResolver resolver, PrefabHolder prefabHolder, EnemySettings enemySettings, Player player)
         {
             _resolver = resolver;
             _enemyPrefab = prefabHolder.UFO;
             _enemySettings = enemySettings;
-            _sceneObjectHolder = sceneObjectHolder;
+            _player = player;
         }
         public IEnemy SpawnOne(Vector3 position)
         {
             GameObject enemy = _resolver.Instantiate(_enemyPrefab, position, Quaternion.identity);
             UFO ufo = enemy.GetComponent<UFO>();
 
-            ufo.Init(enemy, _enemySettings.UfoMovingSettings, _sceneObjectHolder, _enemySettings.UfoDamage);
+            ufo.Init(_enemySettings.UfoMovingSettings, _player, _enemySettings.UfoDamage);
 
             return ufo;
         }

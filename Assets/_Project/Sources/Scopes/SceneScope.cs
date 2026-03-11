@@ -16,32 +16,21 @@ namespace _Project.Sources.Scopes
 {
     public class SceneScope : LifetimeScope
     {
-        [Header("Core")]
-        [SerializeField] private Camera _camera;
+        [Header("Core")] [SerializeField] private Camera _camera;
 
-        [Header("GameFlow")]
-        [SerializeField] private GameFinisher _gameFinisher;
-
-        [Header("Player")]
-        [SerializeField] private Player _player;
-        [SerializeField] private PlayerKeyboardController _playerKeyboardController;
+        [Header("Player")] [SerializeField] private Player _player;
         [SerializeField] private PlayerMovementSettings _playerMovementSettings;
         [SerializeField] private PlayerCombatSettings _playerCombatSettings;
         [SerializeField] private Laser _playerLaser;
-        [SerializeField] private PlayerMovementData _playerMovementData;
 
-        [Header("Gameplay")]
-        [SerializeField] private PrefabHolder _prefabHolder;
+        [Header("Gameplay")] [SerializeField] private PrefabHolder _prefabHolder;
         [SerializeField] private SceneObjectHolder _sceneObjectHolder;
         [SerializeField] private ScreenBoundsTrackerSettings _screenBoundsTrackerSettings;
         [SerializeField] private EnemySpawnerSettings _enemySpawnerSettings;
         [SerializeField] private EnemySettings _enemySettings;
         [SerializeField] private EnemySpawner _enemySpawner;
-        [SerializeField] private EnemyRegistry _enemyRegistry;
 
-        [Header("UI")]
-        [SerializeField] private UIElementsHolder _uiElementsHolder;
-        [SerializeField] private UIElementsUpdater _uiElementsUpdater;
+        [Header("UI")] [SerializeField] private UIElementsHolder _uiElementsHolder;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -70,10 +59,8 @@ namespace _Project.Sources.Scopes
         private void RegisterPlayer(IContainerBuilder builder)
         {
             builder.RegisterComponent(_player);
-            builder.RegisterComponent(_playerKeyboardController);
             builder.RegisterComponent(_playerMovementSettings);
             builder.RegisterComponent(_playerCombatSettings);
-            builder.RegisterComponent(_playerMovementData);
             builder.RegisterComponent(_playerLaser);
 
             builder.Register<BulletSpawner>(Lifetime.Singleton);
@@ -81,6 +68,10 @@ namespace _Project.Sources.Scopes
 
             builder.RegisterInstance(_playerMovementSettings.MoverSettings);
             builder.RegisterInstance(_playerMovementSettings.RotationSettings);
+
+            builder.Register<PlayerMovementData>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
+
+            builder.Register<PlayerKeyboardController>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
         }
 
         private void RegisterGameplay(IContainerBuilder builder)
@@ -91,22 +82,25 @@ namespace _Project.Sources.Scopes
             builder.RegisterComponent(_enemySpawnerSettings);
             builder.RegisterComponent(_enemySettings);
             builder.RegisterComponent(_enemySpawner);
-            builder.RegisterComponent(_enemyRegistry);
 
             builder.Register<EnemyDriver>(Lifetime.Singleton);
+
+            builder.Register<EnemyRegistry>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
         }
 
         private void RegisterUI(IContainerBuilder builder)
         {
             builder.RegisterComponent(_uiElementsHolder);
-            builder.RegisterComponent(_uiElementsUpdater);
+
+            builder.Register<UIElementsUpdater>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
         }
 
         private void RegisterGameFlow(IContainerBuilder builder)
         {
-            builder.RegisterComponent(_gameFinisher);
             builder.Register<GameRestarter>(Lifetime.Singleton);
             builder.Register<GamePause>(Lifetime.Singleton);
+
+            builder.Register<GameFinisher>(Lifetime.Scoped).AsSelf().AsImplementedInterfaces();
         }
 
         private static void RegisterFactories(IContainerBuilder builder)

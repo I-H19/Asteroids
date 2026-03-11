@@ -7,7 +7,7 @@ using VContainer;
 
 namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 {
-    public class EnemyRegistry : MonoBehaviour
+    public class EnemyRegistry : IDisposable
     {
         public readonly List<IEnemy> AliveEnemies = new();
         private PlayerScore _playerScore;
@@ -32,7 +32,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
                 if (enemy != null)
                 {
                     Component enemyComponent = enemy as Component;
-                    if (enemyComponent != null) Destroy(enemyComponent.gameObject);
+                    if (enemyComponent != null) enemy.Kill();
                     else throw new NullReferenceException($"enemyComponent is null");
                 }
             }
@@ -67,5 +67,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 
             _playerScore.Increment();
         }
+
+        public void Dispose() => Unsubscribe();
     }
 }

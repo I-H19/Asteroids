@@ -7,7 +7,7 @@ using VContainer;
 
 namespace _Project.Sources.UI
 {
-    public class PlayerMovementData : MonoBehaviour
+    public class PlayerMovementData : IDisposable
     {
         public Action Changed;
         public float CurrentAngle { get; private set; }
@@ -16,8 +16,7 @@ namespace _Project.Sources.UI
         private InertialMover _playerMover;
         private DirectionalRotator _playerRotator;
 
-        [Inject]
-        public void Construct(Player player)
+        public void Init(Player player)
         {
             _playerMover = player.InertialMoverTemplate;
             _playerRotator = player.DirectionalRotatorTemplate;
@@ -36,17 +35,19 @@ namespace _Project.Sources.UI
             _playerMover.SpeedChanged -= OnSpeedChanged;
             _playerRotator.AngleChanged -= OnAngleChanged;
         }
-        public void OnDestroy() => Unsubscribe();
 
         private void OnAngleChanged()
         {
             CurrentAngle = _playerRotator.CurrentAngle;
             Changed?.Invoke();
         }
+
         private void OnSpeedChanged()
         {
             CurrentSpeed = _playerMover.CurrentSpeed;
             Changed?.Invoke();
         }
+
+        public void Dispose() => Unsubscribe();
     }
 }

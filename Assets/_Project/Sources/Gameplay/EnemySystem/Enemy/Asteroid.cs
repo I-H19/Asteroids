@@ -14,7 +14,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(EnemyLife))]
     [RequireComponent(typeof(EnemyDamageSource))]
-    public class Asteroid : MonoBehaviour, IEnemy, ISceneTickable
+    public class Asteroid : MonoBehaviour, IEnemy
     {
         public Action<IEnemy> Killed { get; set; }
         public DirectionalMoverSettings MoverSettings { get; private set; }

@@ -19,7 +19,6 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
     [RequireComponent(typeof(EnemyDamageSource))]
     public class UFO : MonoBehaviour, IEnemy, ISceneTickable
     {
-        public GameObject EnemyGameObject { get; private set; }
         public DirectionalMoverSettings MoverSettings { get; private set; }
 
         public IMover Mover { get; private set; }
@@ -30,13 +29,12 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
         private Rigidbody2D _rigidbody2D;
         private LookAtRotator _lookAtRotator;
 
-        public void Init(GameObject gameObject, DirectionalMoverSettings moverSettings, SceneObjectHolder sceneObjectHolder, float damageCount)
+        public void Init(DirectionalMoverSettings moverSettings, Player player, float damageCount)
         {
-            EnemyGameObject = gameObject;
             MoverSettings = moverSettings;
 
             float randomAngleDegrees = UnityEngine.Random.Range(0f, 360f);
-            EnemyGameObject.transform.rotation = Quaternion.Euler(0f, 0f, randomAngleDegrees);
+            gameObject.transform.rotation = Quaternion.Euler(0f, 0f, randomAngleDegrees);
 
             _enemyLife = GetComponent<EnemyLife>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
@@ -48,7 +46,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
             damageSource.Init(damageCount);
 
             _lookAtRotator = GetComponent<LookAtRotator>();
-            _lookAtRotator.Init(sceneObjectHolder.Player.transform);
+            _lookAtRotator.Init(player.transform);
 
             _enemyLife.OnDeath += OnDeath;
         }
@@ -59,7 +57,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
         }
         public void Kill()
         {
-            Destroy(EnemyGameObject);
+            Destroy(gameObject);
         }
 
         public void Tick()

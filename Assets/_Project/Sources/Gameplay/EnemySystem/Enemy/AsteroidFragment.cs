@@ -13,7 +13,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(EnemyLife))]
     [RequireComponent(typeof(EnemyDamageSource))]
-    public class AsteroidFragment : MonoBehaviour, IEnemy, ISceneTickable
+    public class AsteroidFragment : MonoBehaviour, IEnemy
     {
         private Asteroid _parentAsteroid;
         public Action<IEnemy> Killed { get; set; }

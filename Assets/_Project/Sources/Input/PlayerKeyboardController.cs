@@ -1,13 +1,13 @@
-﻿using _Project.Sources.Gameplay.ObjectMovement.Movers;
+﻿using System;
+using _Project.Sources.Gameplay.ObjectMovement.Movers;
 using _Project.Sources.Gameplay.ObjectMovement.Rotators;
 using _Project.Sources.Gameplay.WeaponSystem;
-using _Project.Sources.Settings;
 using UnityEngine;
 using VContainer;
 
 namespace _Project.Sources.Input
 {
-    public class PlayerKeyboardController : MonoBehaviour
+    public class PlayerKeyboardController : IDisposable
     {
         private DirectionalRotator _playerRotator;
         private InertialMover _playerMover;
@@ -17,13 +17,18 @@ namespace _Project.Sources.Input
         private Laser _laser;
 
         [Inject]
-        public void Construct(SceneObjectHolder sceneObjectHolder, KeyboardMonitor keyboardMonitor, BulletSpawner bulletSpawner, Laser laser)
+        public void Construct(KeyboardMonitor keyboardMonitor,
+            BulletSpawner bulletSpawner, Laser laser)
         {
             _keyboardMonitor = keyboardMonitor;
-            _playerMover = sceneObjectHolder.Player.GetComponent<InertialMover>();
-            _playerRotator = sceneObjectHolder.Player.GetComponent<DirectionalRotator>();
             _bulletSpawner = bulletSpawner;
             _laser = laser;
+        }
+
+        public void Init(InertialMover inertialMover, DirectionalRotator directionalRotator)
+        {
+            _playerMover = inertialMover;
+            _playerRotator = directionalRotator;
         }
 
         public void Tick()
@@ -31,7 +36,7 @@ namespace _Project.Sources.Input
             _playerMover.Move();
             _playerRotator.Rotate();
         }
-        private void OnDestroy() => KeyboardMonitorUnsubscribe();
+
         public void KeyboardMonitorSubscribe()
         {
             _keyboardMonitor.ForwardButtonDown += HandleForwardDown;
@@ -51,7 +56,8 @@ namespace _Project.Sources.Input
 
             _keyboardMonitor.LaserButtonDown += HandleLaserDown;
         }
-        public void KeyboardMonitorUnsubscribe()
+
+        public void Unsubscribe()
         {
             _keyboardMonitor.ForwardButtonDown -= HandleForwardDown;
             _keyboardMonitor.ForwardButtonUp -= HandleForwardUp;
@@ -85,5 +91,6 @@ namespace _Project.Sources.Input
 
         private void HandleRightDown() => _playerRotator.SetRotateRight(true);
         private void HandleRightUp() => _playerRotator.SetRotateRight(false);
+        public void Dispose() => Unsubscribe();
     }
 }

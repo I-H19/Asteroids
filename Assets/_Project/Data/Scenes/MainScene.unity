@@ -186,26 +186,20 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects:
-  - {fileID: 220171505}
   - {fileID: 686193787}
   - {fileID: 885972174}
   _camera: {fileID: 519420031}
-  _gameFinisher: {fileID: 395901772}
   _player: {fileID: 220171515}
-  _playerKeyboardController: {fileID: 220171511}
   _playerMovementSettings: {fileID: 1606115111}
   _playerCombatSettings: {fileID: 1606115110}
   _playerLaser: {fileID: 450163609}
-  _playerMovementData: {fileID: 1606115112}
   _prefabHolder: {fileID: 1060627451}
   _sceneObjectHolder: {fileID: 1060627450}
   _screenBoundsTrackerSettings: {fileID: 1060627447}
   _enemySpawnerSettings: {fileID: 1060627449}
   _enemySettings: {fileID: 1060627448}
   _enemySpawner: {fileID: 686193789}
-  _enemyRegistry: {fileID: 1060627452}
   _uiElementsHolder: {fileID: 1065447359}
-  _uiElementsUpdater: {fileID: 1065447358}
 --- !u!4 &187408685
 Transform:
   m_ObjectHideFlags: 0
@@ -232,7 +226,6 @@ GameObject:
   - component: {fileID: 220171508}
   - component: {fileID: 220171507}
   - component: {fileID: 220171506}
-  - component: {fileID: 220171511}
   - component: {fileID: 220171509}
   - component: {fileID: 220171512}
   - component: {fileID: 220171513}
@@ -349,18 +342,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 494118005a8385348b8630566f3505af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMover
---- !u!114 &220171511
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 220171505}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0640b7545d80a2478d56a4896e0a71b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerKeyboardController
 --- !u!114 &220171512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -649,50 +630,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &395901770
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 395901771}
-  - component: {fileID: 395901772}
-  m_Layer: 0
-  m_Name: GameFlow
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &395901771
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 395901770}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 819316856}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &395901772
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 395901770}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b6d1b9442960f941b2466628a7f1892, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameFinisher
 --- !u!1 &450163607
 GameObject:
   m_ObjectHideFlags: 0
@@ -1175,7 +1112,6 @@ Transform:
   - {fileID: 1606115109}
   - {fileID: 1060627446}
   - {fileID: 1065447355}
-  - {fileID: 395901771}
   m_Father: {fileID: 1702698126}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &885972174
@@ -1495,7 +1431,6 @@ GameObject:
   - component: {fileID: 1060627449}
   - component: {fileID: 1060627448}
   - component: {fileID: 1060627447}
-  - component: {fileID: 1060627452}
   m_Layer: 0
   m_Name: Gameplay
   m_TagString: Untagged
@@ -1578,7 +1513,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 478dbeefc4968a547a6af7580606f003, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameObjectHolder
-  <Player>k__BackingField: {fileID: 220171505}
   <LaserVisual>k__BackingField: {fileID: 346234714}
 --- !u!114 &1060627451
 MonoBehaviour:
@@ -1596,18 +1530,6 @@ MonoBehaviour:
   <Asteroid>k__BackingField: {fileID: 8207766781003968305, guid: bc72ad307a225a946b0e1ba90e72ab4e, type: 3}
   <AsteroidFragment>k__BackingField: {fileID: 8207766781003968305, guid: afe36e0dc4079184f870c37e4d49ffd7, type: 3}
   <UFO>k__BackingField: {fileID: 8665940895236888010, guid: 7df4d2a343d909f41b68010e5f69e315, type: 3}
---- !u!114 &1060627452
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1060627445}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46af6efd397065946afb6e48a6553bc7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyRegistry
 --- !u!1 &1065447354
 GameObject:
   m_ObjectHideFlags: 0
@@ -1618,7 +1540,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1065447355}
   - component: {fileID: 1065447359}
-  - component: {fileID: 1065447358}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -1641,18 +1562,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 819316856}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1065447358
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1065447354}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 773b972061f30424ab5ff3107c95b014, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UIElementsUpdater
 --- !u!114 &1065447359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1894,7 +1803,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1606115109}
-  - component: {fileID: 1606115112}
   - component: {fileID: 1606115111}
   - component: {fileID: 1606115110}
   m_Layer: 0
@@ -1961,18 +1869,6 @@ MonoBehaviour:
     <StopEpsilon>k__BackingField: 0.02
   <RotationSettings>k__BackingField:
     <RotationSpeed>k__BackingField: 300
---- !u!114 &1606115112
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1606115108}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f89a6613d9984a84199aa121f3c650c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovementData
 --- !u!1 &1663530260
 GameObject:
   m_ObjectHideFlags: 0

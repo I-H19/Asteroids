@@ -1,12 +1,12 @@
+using System;
 using _Project.Sources.Gameplay;
 using _Project.Sources.Gameplay.WeaponSystem;
 using TMPro;
-using UnityEngine;
 using VContainer;
 
 namespace _Project.Sources.UI
 {
-    public class UIElementsUpdater : MonoBehaviour
+    public class UIElementsUpdater : IDisposable
     {
         private PlayerMovementData _movementData;
         private PlayerScore _playerScore;
@@ -17,7 +17,8 @@ namespace _Project.Sources.UI
         private TextMeshProUGUI _textMovementData;
 
         [Inject]
-        public void Construct(UIElementsHolder elementsHolder, PlayerMovementData movementData, PlayerScore playerScore, Player player, Laser laser)
+        public void Construct(UIElementsHolder elementsHolder, PlayerMovementData movementData, PlayerScore playerScore,
+            Player player, Laser laser)
         {
             _laser = laser;
             _player = player;
@@ -28,7 +29,6 @@ namespace _Project.Sources.UI
 
             _movementData = movementData;
             _playerScore = playerScore;
-            Subscribe();
         }
 
         public void Subscribe()
@@ -36,13 +36,13 @@ namespace _Project.Sources.UI
             _movementData.Changed += OnMovementDataChanged;
             _playerScore.Changed += OnScoreChanged;
         }
+
         public void Unsubscribe()
         {
             _movementData.Changed -= OnMovementDataChanged;
             _playerScore.Changed -= OnScoreChanged;
         }
 
-        private void OnDestroy() => Unsubscribe();
         private void OnScoreChanged()
         {
             _textScore.text = $"GameScore: {_playerScore.Score}";
@@ -59,5 +59,7 @@ namespace _Project.Sources.UI
                 $"LaserReloadTime: {_laser.ReloadingTime}\n" +
                 $"LaserCooldown: {_laser.ShootingCooldown}";
         }
+
+        public void Dispose() => Unsubscribe();
     }
 }
