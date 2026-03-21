@@ -16,20 +16,24 @@ namespace _Project.Sources.GameLoop
         private EnemyDriver _enemyDriver;
         private EnemySpawner _enemySpawner;
         private Player _player;
-        private bool _isPaused = false;
+        private bool _isPaused;
 
         [Inject]
-        public void Construct(EnemyDriver enemyTickDriver, Player player,
-            Laser laser, BulletSpawner bulletSpawner,
-            PlayerKeyboardController keyboardController, KeyboardMonitor keyboardMonitor, EnemySpawner enemySpawner)
+        public void Construct(EnemyDriver enemyTickDriver, PlayerKeyboardController keyboardController, 
+            KeyboardMonitor keyboardMonitor, EnemySpawner enemySpawner)
         {
             _enemySpawner = enemySpawner;
             _keyboardMonitor = keyboardMonitor;
             _keyboardController = keyboardController;
-            _bulletSpawner = bulletSpawner;
-            _laser = laser;
+
             _enemyDriver = enemyTickDriver;
+        }
+
+        public void Init(Player player, BulletSpawner bulletSpawner)
+        {
             _player = player;
+            _laser = player.PlayerLaser;
+            _bulletSpawner = bulletSpawner;
         }
 
         public void Tick()

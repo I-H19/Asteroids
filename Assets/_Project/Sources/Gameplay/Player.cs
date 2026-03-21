@@ -1,11 +1,11 @@
 using System;
+using _Project.Sources.Config;
 using _Project.Sources.GameLoop;
 using _Project.Sources.Gameplay.DamageSystem.Damageable;
 using _Project.Sources.Gameplay.ObjectMovement;
 using _Project.Sources.Gameplay.ObjectMovement.Movers;
 using _Project.Sources.Gameplay.ObjectMovement.Rotators;
 using _Project.Sources.Gameplay.WeaponSystem;
-using _Project.Sources.Settings;    
 using UnityEngine;
 using VContainer;
 
@@ -24,23 +24,26 @@ namespace _Project.Sources.Gameplay
         public Rigidbody2D RigidBodyTemplate { get; private set; }
         public InertialMover InertialMoverTemplate { get; private set; }
         public DirectionalRotator DirectionalRotatorTemplate { get; private set; }
+        public Laser PlayerLaser { get; private set; }
+        public BulletSpawner BulletSpawner { get; private set; }
 
         private ScreenTeleporter _playerTeleporter;
         private IObjectResolver _resolver;
-        private Laser _laser;
         private PlayerLife _life;
         private float _maxHealth;
 
         [Inject]
-        public void Construct(IObjectResolver resolver, PlayerCombatSettings combatSettings, Laser laser)
+        public void Construct(IObjectResolver resolver, PlayerCombatSettings combatSettings)
         {
             _resolver = resolver;
-            _laser = laser;
             _maxHealth = combatSettings.MaxHealth;
         }
 
-        public void Init()
+        public void Init(Laser laser, BulletSpawner bulletSpawner)
         {
+            PlayerLaser = laser;
+            BulletSpawner = bulletSpawner;
+            
             _playerTeleporter = GetComponent<ScreenTeleporter>();
 
             ScreenBoundsTrackerTemplate = GetComponent<ScreenBoundsTracker>();
@@ -72,7 +75,7 @@ namespace _Project.Sources.Gameplay
             RigidBodyTemplate.position = Vector3.zero;
             RigidBodyTemplate.rotation = 0;
 
-            _laser.ResetParameters();
+            PlayerLaser.ResetParameters();
         }
         private void OnDestroy() => _life.OnDeath -= Death;
     }

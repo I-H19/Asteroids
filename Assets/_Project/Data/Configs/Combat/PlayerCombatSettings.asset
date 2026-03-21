@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c4b7635c7b7ae5438f117bfa9632e98, type: 3}
+  m_Name: PlayerCombatSettings
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Sources.Settings.PlayerCombatSettings
+  <BulletCooldown>k__BackingField: 0.5
+  <BulletMoverSettings>k__BackingField:
+    <MovingSpeed>k__BackingField: 10
+  <BulletDamage>k__BackingField: 99999
+  <LaserDamage>k__BackingField: 99999
+  <LaserOperatingTime>k__BackingField: 0.8
+  <LaserChargeReloadingTime>k__BackingField: 10
+  <LaserShootCooldown>k__BackingField: 4
+  <MaxLaserCharge>k__BackingField: 5
+  <StartLaserCharges>k__BackingField: 2
+  <MaxHealth>k__BackingField: 1

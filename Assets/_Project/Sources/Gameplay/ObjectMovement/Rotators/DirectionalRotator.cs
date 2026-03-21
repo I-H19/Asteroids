@@ -1,5 +1,5 @@
 ﻿using System;
-using _Project.Sources.Settings.Movement;
+using _Project.Sources.Config.Movement;
 using UnityEngine;
 
 namespace _Project.Sources.Gameplay.ObjectMovement.Rotators

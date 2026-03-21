@@ -1,6 +1,6 @@
+using _Project.Sources.Config;
+using _Project.Sources.Config.Gameplay;
 using _Project.Sources.Gameplay.EnemySystem.Enemy;
-using _Project.Sources.Settings;
-using _Project.Sources.Settings.Gameplay;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -37,7 +37,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory
             GameObject enemy = _resolver.Instantiate(_fragmentPrefab, position, Quaternion.identity);
             AsteroidFragment fragment = enemy.GetComponent<AsteroidFragment>();
 
-            fragment.Init(_enemySettings.AsteroidMovingSettings, _enemySettings.AsteroidDamage);
+            fragment.Init(_enemySettings.FragmentMovingSettings, _enemySettings.AsteroidDamage);
             fragment.SetParent(parent);
             parent.AddFragment(enemy);
 

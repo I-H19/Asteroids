@@ -1,5 +1,5 @@
 ﻿using System;
-using _Project.Sources.Settings.Movement;
+using _Project.Sources.Config.Movement;
 using UnityEngine;
 
 namespace _Project.Sources.Gameplay.ObjectMovement.Movers
@@ -17,17 +17,17 @@ namespace _Project.Sources.Gameplay.ObjectMovement.Movers
         private float _moveSpeed;
         private bool _enabled = true;
 
-        public void Init(IMoverSettings moverSettings, Rigidbody2D rigidbody)
+        public void Init(IMoverSettings moverSettings, Rigidbody2D moveRigidbody)
         {
             if (moverSettings is not DirectionalMoverSettings)
                 throw new Exception("Incorrect mover settings");
 
             DirectionalMoverSettings directionalMoverSettings = (DirectionalMoverSettings)moverSettings;
 
-            _rigidBody = rigidbody;
+            _rigidBody = moveRigidbody;
             _moveSpeed = directionalMoverSettings.MovingSpeed;
 
-            ObjectTransform = rigidbody.transform;
+            ObjectTransform = moveRigidbody.transform;
             CurrentSpeed = 0f;
         }
 

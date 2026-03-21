@@ -2,7 +2,6 @@
 using _Project.Sources.Gameplay.ObjectMovement.Movers;
 using _Project.Sources.Gameplay.ObjectMovement.Rotators;
 using _Project.Sources.Gameplay.WeaponSystem;
-using UnityEngine;
 using VContainer;
 
 namespace _Project.Sources.Input
@@ -17,18 +16,15 @@ namespace _Project.Sources.Input
         private Laser _laser;
 
         [Inject]
-        public void Construct(KeyboardMonitor keyboardMonitor,
-            BulletSpawner bulletSpawner, Laser laser)
-        {
-            _keyboardMonitor = keyboardMonitor;
-            _bulletSpawner = bulletSpawner;
-            _laser = laser;
-        }
+        public void Construct(KeyboardMonitor keyboardMonitor) => _keyboardMonitor = keyboardMonitor;
 
-        public void Init(InertialMover inertialMover, DirectionalRotator directionalRotator)
+        public void Init(InertialMover inertialMover, DirectionalRotator directionalRotator,
+            BulletSpawner bulletSpawner, Laser laser)
         {
             _playerMover = inertialMover;
             _playerRotator = directionalRotator;
+            _bulletSpawner = bulletSpawner;
+            _laser = laser;
         }
 
         public void Tick()
@@ -57,7 +53,7 @@ namespace _Project.Sources.Input
             _keyboardMonitor.LaserButtonDown += HandleLaserDown;
         }
 
-        public void Unsubscribe()
+        private void Unsubscribe()
         {
             _keyboardMonitor.ForwardButtonDown -= HandleForwardDown;
             _keyboardMonitor.ForwardButtonUp -= HandleForwardUp;

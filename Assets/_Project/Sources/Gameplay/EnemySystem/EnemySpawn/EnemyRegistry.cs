@@ -9,13 +9,10 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 {
     public class EnemyRegistry : IDisposable
     {
+        public Action ScoredKilled;
         public readonly List<IEnemy> AliveEnemies = new();
-        private PlayerScore _playerScore;
 
         public int AliveCount { get; private set; }
-
-        [Inject]
-        public void Construct(PlayerScore playerScore) => _playerScore = playerScore;
 
         public void RegisterEnemy(IEnemy enemy)
         {
@@ -65,7 +62,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
             enemy.Killed -= ScoredKill;
             enemy.Kill();
 
-            _playerScore.Increment();
+            ScoredKilled?.Invoke();
         }
 
         public void Dispose() => Unsubscribe();

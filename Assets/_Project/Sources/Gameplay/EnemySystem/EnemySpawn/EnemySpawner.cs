@@ -1,9 +1,8 @@
-﻿using _Project.Sources.GameLoop;
+﻿using _Project.Sources.Config.Gameplay;
+using _Project.Sources.GameLoop;
 using _Project.Sources.Gameplay.EnemySystem.Enemy;
 using _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory;
 using _Project.Sources.Gameplay.ObjectMovement;
-using _Project.Sources.Settings.Gameplay;
-using _Project.Sources.Settings.Movement;
 using UnityEngine;
 using VContainer;
 
@@ -25,7 +24,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 
         [Inject]
         public void Construct(IObjectResolver resolver, EnemySpawnerSettings enemySpawnerSettings,
-            ScreenBoundsTrackerSettings screenBoundsTrackerSettings, AsteroidFactory asteroidFactory,
+            AsteroidFactory asteroidFactory,
             UfoFactory ufoFactory, EnemyRegistry enemiesRegistry, EnemySettings enemySettings)
         {
             _enemiesRegistry = enemiesRegistry;
@@ -37,7 +36,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 
             _boundsTracker = GetComponent<ScreenBoundsTracker>();
             _resolver.Inject(_boundsTracker);
-            _boundsTracker.ChangeTrackingBounds(screenBoundsTrackerSettings.EnemyBoundsMultiplier);
+            _boundsTracker.Init();
 
             _asteroidFactory = asteroidFactory;
             _ufoFactory = ufoFactory;

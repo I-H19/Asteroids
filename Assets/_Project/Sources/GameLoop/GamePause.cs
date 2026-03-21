@@ -13,13 +13,18 @@ namespace _Project.Sources.GameLoop
         private Player _player;
 
         [Inject]
-        public void Construct(SceneTickDriver sceneTickDriver, EnemyDriver enemyTickDriver, Player player, BulletSpawner bulletSpawner)
+        public void Construct(SceneTickDriver sceneTickDriver, EnemyDriver enemyTickDriver)
         {
-            _bulletSpawner = bulletSpawner;
             _enemyDriver = enemyTickDriver;
             _sceneTickDriver = sceneTickDriver;
+        }
+
+        public void Init(Player player, BulletSpawner bulletSpawner)
+        {
+            _bulletSpawner = bulletSpawner;
             _player = player;
         }
+
         public void SetPause(bool pause)
         {
             _sceneTickDriver.SetPause(pause);

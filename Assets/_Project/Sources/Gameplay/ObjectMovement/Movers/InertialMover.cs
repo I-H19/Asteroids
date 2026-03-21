@@ -1,5 +1,5 @@
 ﻿using System;
-using _Project.Sources.Settings.Movement;
+using _Project.Sources.Config.Movement;
 using UnityEngine;
 
 namespace _Project.Sources.Gameplay.ObjectMovement.Movers
@@ -8,6 +8,7 @@ namespace _Project.Sources.Gameplay.ObjectMovement.Movers
     {
         public float CurrentSpeed { get; private set; }
         public Action SpeedChanged;
+        public Action PositionChanged;
         public MovingDirection MovingDirection { get; private set; } = MovingDirection.None;
         public Transform ObjectTransform { get; private set; }
 
@@ -21,27 +22,29 @@ namespace _Project.Sources.Gameplay.ObjectMovement.Movers
         private float _stopEpsilon;
         private bool _enabled = true;
 
-        public void Init(IMoverSettings moverSettings, Rigidbody2D rigidbody)
+        public void Init(IMoverSettings moverSettings, Rigidbody2D moverRigidbody)
         {
             if (moverSettings is not InertialMoverSettings)
                 throw new Exception("Incorrect mover settings");
 
             InertialMoverSettings inertialMoverSettings = (InertialMoverSettings)moverSettings;
 
-            _rigidBody = rigidbody;
+            _rigidBody = moverRigidbody;
             _maxForwardSpeed = inertialMoverSettings.MaxForwardSpeed;
             _forwardAcceleration = inertialMoverSettings.ForwardAcceleration;
             _coastDeceleration = inertialMoverSettings.CoastDeceleration;
             _brakeDeceleration = inertialMoverSettings.BrakeDeceleration;
             _stopEpsilon = inertialMoverSettings.StopEpsilon;
 
-            ObjectTransform = rigidbody.transform;
+            ObjectTransform = moverRigidbody.transform;
             CurrentSpeed = 0;
         }
         public void Move()
         {
             if (!_enabled) return;
-
+            
+            PositionChanged?.Invoke();
+            
             Vector2 forward = ObjectTransform.up;
 
             CurrentSpeed = Vector2.Dot(_rigidBody.linearVelocity, forward);

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7868b0f5fe0767408b70127f87bed4f, type: 3}
+  m_Name: PrefabHolder
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Sources.Config.PrefabHolder
+  <Bullet>k__BackingField: {fileID: 1307927974123800649, guid: e28b5744c9c38e043a310edb8f6d46b4, type: 3}
+  <Asteroid>k__BackingField: {fileID: 8207766781003968305, guid: bc72ad307a225a946b0e1ba90e72ab4e, type: 3}
+  <AsteroidFragment>k__BackingField: {fileID: 8207766781003968305, guid: afe36e0dc4079184f870c37e4d49ffd7, type: 3}
+  <UFO>k__BackingField: {fileID: 8665940895236888010, guid: 7df4d2a343d909f41b68010e5f69e315, type: 3}
+  <RootCanvas>k__BackingField: {fileID: 1600867565135665993, guid: bcdd23ca41d43114ea87a8bced0b228b, type: 3}
+  <PlayerRuntimeScore>k__BackingField: {fileID: 9106913187098758313, guid: 9ce90ab8dde975a4fb719f351849e73b, type: 3}
+  <PlayerResultScore>k__BackingField: {fileID: 5018947143270832215, guid: 3e666f8ed08d5004ba73b70274b7bfdf, type: 3}
+  <PlayerStats>k__BackingField: {fileID: 6094415760303342797, guid: 3872abf50d87685449f1ebc3e4b80d3a, type: 3}
+  <RestartPanel>k__BackingField: {fileID: 8578836239075844665, guid: 21bfbc0d59db25d4f9e03c09849af8a7, type: 3}
+  <RestartGameButton>k__BackingField: {fileID: 8895305532617820594, guid: 669b1f3e2caf83b4fbc4424d8daeed5d, type: 3}
+  <EventSystem>k__BackingField: {fileID: 8397967691047963620, guid: b21b3a6888e8a8f48bd1116e0609c300, type: 3}
+  <PlayerRoot>k__BackingField: {fileID: 969946958450443039, guid: d1e3afc129c5a4c4696bd4fd4e00ae97, type: 3}
+  <PlayerVisual>k__BackingField: {fileID: 1520926362658498810, guid: 999afd34d0dd44c4f97f8e4de95cd439, type: 3}
+  <Laser>k__BackingField: {fileID: 8386675775655481288, guid: 2648a1da7eff6244aa875c4100a91989, type: 3}
+  <LaserVisual>k__BackingField: {fileID: 7515903644787681715, guid: 793d6313c120f2c44988b56b251366b8, type: 3}

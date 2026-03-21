@@ -7,7 +7,6 @@ namespace _Project.Sources.Gameplay.ObjectMovement
     [RequireComponent(typeof(Rigidbody2D))]
     public class ScreenBoundsTracker : MonoBehaviour
     {
-        private readonly float _defaultBoundsMultiplier = 1f;
 
         private Camera _camera;
         private Rigidbody2D _rigidbody;
@@ -19,26 +18,15 @@ namespace _Project.Sources.Gameplay.ObjectMovement
         {
             _camera = mainCamera;
             _rigidbody = GetComponent<Rigidbody2D>();
-            CalculateScreenBounds(_defaultBoundsMultiplier);
+            Init();
         }
 
-        public void ChangeTrackingBounds(float multiplier)
+        public void Init()
         {
-            CalculateScreenBounds(multiplier);
-        }
-
-        private void CalculateScreenBounds(float multiplier)
-        {
-            if (multiplier < 1f)
-                multiplier = 1f;
-
             Vector3 cameraWorldPosition = _camera.transform.position;
 
             float halfScreenHeight = _camera.orthographicSize;
             float halfScreenWidth = halfScreenHeight * _camera.aspect;
-
-            halfScreenHeight *= multiplier;
-            halfScreenWidth *= multiplier;
 
             float leftScreenBorder = cameraWorldPosition.x - halfScreenWidth;
             float rightScreenBorder = cameraWorldPosition.x + halfScreenWidth;

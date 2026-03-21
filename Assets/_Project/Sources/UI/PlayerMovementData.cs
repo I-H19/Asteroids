@@ -7,47 +7,23 @@ using VContainer;
 
 namespace _Project.Sources.UI
 {
-    public class PlayerMovementData : IDisposable
+    public class PlayerStats
     {
-        public Action Changed;
-        public float CurrentAngle { get; private set; }
-        public float CurrentSpeed { get; private set; }
+        public Vector2 PlayerPosition { get; private set; }
+        public float Angle { get; private set; }
+        public float Speed { get; private set; }
+        public int TotalAmmo { get; private set; }
+        public int MaxChargesNumber { get; private set; }
+        public float ReloadingTime { get; private set; }
+        public float ShootingCooldown { get; private set; }
 
-        private InertialMover _playerMover;
-        private DirectionalRotator _playerRotator;
-
-        public void Init(Player player)
-        {
-            _playerMover = player.InertialMoverTemplate;
-            _playerRotator = player.DirectionalRotatorTemplate;
-            Subscribe();
-        }
-
-        public void Subscribe()
-        {
-            _playerMover.SpeedChanged += OnSpeedChanged;
-            _playerRotator.AngleChanged += OnAngleChanged;
-        }
-
-
-        public void Unsubscribe()
-        {
-            _playerMover.SpeedChanged -= OnSpeedChanged;
-            _playerRotator.AngleChanged -= OnAngleChanged;
-        }
-
-        private void OnAngleChanged()
-        {
-            CurrentAngle = _playerRotator.CurrentAngle;
-            Changed?.Invoke();
-        }
-
-        private void OnSpeedChanged()
-        {
-            CurrentSpeed = _playerMover.CurrentSpeed;
-            Changed?.Invoke();
-        }
-
-        public void Dispose() => Unsubscribe();
+        
+        public void ChangePosition(Vector2 position) => PlayerPosition = position;
+        public void ChangeAngle(float angle) => Angle = angle;
+        public void ChangeSpeed(float speed) => Speed = speed;
+        public void ChangeTotalAmmo(int totalAmmo) => TotalAmmo = totalAmmo;
+        public void ChangeMaxCharges(int maxCharges) => MaxChargesNumber = maxCharges;
+        public void ChangeReloadingTime(float reloadingTime) => ReloadingTime = reloadingTime;
+        public void ChangeShootingCooldown(float cooldown) => ShootingCooldown =  cooldown;
     }
 }

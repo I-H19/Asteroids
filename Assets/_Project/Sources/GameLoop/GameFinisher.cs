@@ -8,17 +8,13 @@ namespace _Project.Sources.GameLoop
 {
     public class GameFinisher : IDisposable
     {
-        private UIElementsHolder _uiElementsHolder;
+        public Action Finished;
+
         private GamePause _gamePause;
         private Player _player;
 
         [Inject]
-        public void Construct(GamePause gamePause, UIElementsHolder uIElementsHolder)
-        {
-            _gamePause = gamePause;
-            _uiElementsHolder = uIElementsHolder;
-        }
-
+        public void Construct(GamePause gamePause) => _gamePause = gamePause;
 
         public void Init(Player player)
         {
@@ -28,7 +24,7 @@ namespace _Project.Sources.GameLoop
 
         private void Finish()
         {
-            _uiElementsHolder.RestartGamePanel.SetActive(true);
+            Finished?.Invoke();
             _gamePause.SetPause(true);
         }
 

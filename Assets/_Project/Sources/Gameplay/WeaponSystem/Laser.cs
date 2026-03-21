@@ -1,5 +1,6 @@
-﻿using _Project.Sources.Gameplay.DamageSystem.DamageSource;
-using _Project.Sources.Settings;
+﻿using System;
+using _Project.Sources.Config;
+using _Project.Sources.Gameplay.DamageSystem.DamageSource;
 using UnityEngine;
 using VContainer;
 
@@ -8,16 +9,19 @@ namespace _Project.Sources.Gameplay.WeaponSystem
     [RequireComponent(typeof(PlayerDamageSource))]
     public class Laser : MonoBehaviour
     {
-        private PlayerDamageSource _damageSource;
-        private GameObject _laserVisual;
+        public Action AmmoChanged;
+        public Action Ticked;
 
         public int MaxChargesNumber { get; private set; }
 
-        private int _startCharges;
+        public int TotalAmmo { get; private set; }
+        public float ReloadingTime { get; private set; }
+        public float ShootingCooldown { get; private set; }
 
-        public int TotalAmmo { get; private set; } = 4;
-        public float ReloadingTime { get; private set; } = 0;
-        public float ShootingCooldown { get; private set; } = 0;
+        private PlayerDamageSource _damageSource;
+        private GameObject _laserVisual;
+
+        private int _startCharges;
 
         private float _operatingTime;
         private float _endOfOperatingTime;
@@ -27,19 +31,16 @@ namespace _Project.Sources.Gameplay.WeaponSystem
         private float _nextChargeTime;
         private float _nextShootTime;
 
-        private bool _isShooting = false;
+        private bool _isShooting;
 
 
         [Inject]
-        public void Construct(PlayerCombatSettings combatSettings, SceneObjectHolder sceneObjectHolder)
+        public void Construct(PlayerCombatSettings combatSettings)
         {
-            _laserVisual = sceneObjectHolder.LaserVisual;
             _damageSource = GetComponent<PlayerDamageSource>();
 
             _damageSource.ChangeDamage(combatSettings.LaserDamage);
             _damageSource.ChangeType(true);
-
-            SetLaserActive(false);
 
 
             MaxChargesNumber = combatSettings.MaxLaserCharge;
@@ -54,24 +55,36 @@ namespace _Project.Sources.Gameplay.WeaponSystem
             _nextChargeTime = Time.time;
         }
 
+        public void Init(GameObject laserVisual)
+        {
+            _laserVisual = laserVisual;
+            SetLaserActive(false);
+        }
+
         public void TryShoot()
         {
             if (Time.time <= _nextShootTime || TotalAmmo == 0 || _isShooting) return;
 
             SetLaserActive(true);
             TotalAmmo--;
+            AmmoChanged?.Invoke();
             _nextShootTime = Time.time + _shootingCooldown;
         }
+
         public void ResetParameters()
         {
             SetLaserActive(false);
 
             TotalAmmo = _startCharges;
+            AmmoChanged?.Invoke();
             _nextShootTime = Time.time;
             _nextChargeTime = Time.time;
         }
+
         public void Tick()
         {
+            Ticked?.Invoke();
+
             if (_isShooting) _damageSource.Tick();
 
             float reloadingTime = _nextChargeTime - Time.time;
@@ -96,9 +109,10 @@ namespace _Project.Sources.Gameplay.WeaponSystem
             {
                 _nextChargeTime = Time.time + _reloadingChargeTime;
                 TotalAmmo++;
+                AmmoChanged?.Invoke();
             }
-
         }
+
         private void SetLaserActive(bool isActive)
         {
             if (isActive)
@@ -115,6 +129,5 @@ namespace _Project.Sources.Gameplay.WeaponSystem
                 _laserVisual.SetActive(false);
             }
         }
-
     }
 }

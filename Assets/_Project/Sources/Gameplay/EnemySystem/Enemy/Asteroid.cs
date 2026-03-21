@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using _Project.Sources.Config.Movement;
 using _Project.Sources.GameLoop;
 using _Project.Sources.Gameplay.DamageSystem.Damageable;
 using _Project.Sources.Gameplay.DamageSystem.DamageSource;
 using _Project.Sources.Gameplay.ObjectMovement;
 using _Project.Sources.Gameplay.ObjectMovement.Movers;
-using _Project.Sources.Settings.Movement;
 using UnityEngine;
 
 namespace _Project.Sources.Gameplay.EnemySystem.Enemy

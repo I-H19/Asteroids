@@ -1,8 +1,8 @@
 ﻿using System;
+using _Project.Sources.Config.Movement;
 using _Project.Sources.Gameplay.DamageSystem.DamageSource;
 using _Project.Sources.Gameplay.ObjectMovement;
 using _Project.Sources.Gameplay.ObjectMovement.Movers;
-using _Project.Sources.Settings.Movement;
 using UnityEngine;
 
 namespace _Project.Sources.Gameplay.WeaponSystem
@@ -15,22 +15,19 @@ namespace _Project.Sources.Gameplay.WeaponSystem
     {
         public Action<Bullet> Destroyed;
 
-        private readonly DirectionalMoverSettings _moverSettings = new();
         private DirectionalMover _mover;
         private PlayerDamageSource _damageSource;
         private ScreenBoundsTracker _boundsTracker;
 
-        public void Init(float bulletSpeed, float bulletDamage)
+        public void Init(IMoverSettings bulletMoverSettings, float bulletDamage)
         {
             _boundsTracker = GetComponent<ScreenBoundsTracker>();
 
             _mover = GetComponent<DirectionalMover>();
             _damageSource = GetComponent<PlayerDamageSource>();
             _damageSource.ChangeDamage(bulletDamage);
-
-            _moverSettings.ChangeValues(bulletSpeed);
-
-            _mover.Init(_moverSettings, GetComponent<Rigidbody2D>());
+            
+            _mover.Init(bulletMoverSettings, GetComponent<Rigidbody2D>());
             _damageSource.TargetDamaged += OnHit;
 
             _mover.SetMoving(true);
