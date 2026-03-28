@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 4831003898220601983}
   - component: {fileID: 4245855031021392843}
   - component: {fileID: 2388905024700113591}
-  - component: {fileID: 6855777750045316654}
   - component: {fileID: 6018801142347838370}
   - component: {fileID: 353718448825259163}
   m_Layer: 0
@@ -148,18 +147,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b445dda7e6b0f54a847457c66566357, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScreenTeleporter
---- !u!114 &6855777750045316654
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 969946958450443039}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eccedcb242e9dfd43afd0efd1b41879a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ScreenBoundsTracker
 --- !u!114 &6018801142347838370
 MonoBehaviour:
   m_ObjectHideFlags: 0

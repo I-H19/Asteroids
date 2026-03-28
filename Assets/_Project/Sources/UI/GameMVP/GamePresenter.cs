@@ -5,17 +5,17 @@ using _Project.Sources.Gameplay.EnemySystem.EnemySpawn;
 using _Project.Sources.Gameplay.ObjectMovement.Movers;
 using _Project.Sources.Gameplay.ObjectMovement.Rotators;
 using _Project.Sources.Gameplay.WeaponSystem;
-using _Project.Sources.UI.GUI;
 using UnityEngine;
+using UnityEngine.UI;
 using VContainer;
 
-namespace _Project.Sources.UI.MVP
+namespace _Project.Sources.UI.GameMVP
 {
     public class Presenter : IDisposable
     {
         private Model _model;
         private View _view;
-        private RestartButton _restartButton;
+        private Button _restartGameButton;
 
         private Player _player;
         private Rigidbody2D _playerRigidBody;
@@ -37,12 +37,13 @@ namespace _Project.Sources.UI.MVP
             _gameFinisher = gameFinisher;
         }
 
-        public void Init(Model model, View view, RestartButton restartButton, Player player)
+        public void Init(Model model, View view, Player player, Button restartGameButton)
         {
             _model = model;
             _view = view;
-            _restartButton = restartButton;
 
+            _restartGameButton = restartGameButton;
+            
             _player = player;
             _playerMover = _player.InertialMoverTemplate;
             _playerRotator = _player.DirectionalRotatorTemplate;
@@ -71,7 +72,7 @@ namespace _Project.Sources.UI.MVP
 
             _laser.Ticked += OnCooldownChanged;
 
-            _restartButton.Clicked += DeactivateRestartPanel;
+            _restartGameButton.onClick.AddListener(OnRestartButtonClick);
             _gameFinisher.Finished += ActivateRestartPanel;
         }
 
@@ -88,9 +89,15 @@ namespace _Project.Sources.UI.MVP
 
             _laser.Ticked -= OnCooldownChanged;
             _gameFinisher.Finished -= ActivateRestartPanel;
-            _restartButton.Clicked -= DeactivateRestartPanel;
+            _restartGameButton.onClick.RemoveAllListeners();            
         }
 
+        private void OnRestartButtonClick()
+        {
+            _gameRestarter.RestartGame();
+            DeactivateRestartPanel();
+        } 
+        
         private void OnCooldownChanged()
         {
             _model.PlayerStats.ChangeShootingCooldown(_laser.ShootingCooldown);
@@ -131,8 +138,7 @@ namespace _Project.Sources.UI.MVP
 
         private void ActivateRestartPanel() => _view.SetRestartPanelEnabled(true);
         private void DeactivateRestartPanel() => _view.SetRestartPanelEnabled(false);
-
-
+        
         private void ResetScore()
         {
             _model.ResetScore();

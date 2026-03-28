@@ -9,7 +9,7 @@ namespace _Project.Sources.GameLoop
 {
     public class GameRestarter
     {
-        public Action Restarted;
+        public event Action Restarted;
 
         private GamePause _gamePause;
         private EnemyRegistry _enemiesRegistry;

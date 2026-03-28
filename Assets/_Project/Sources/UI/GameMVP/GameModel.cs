@@ -1,6 +1,4 @@
-﻿using VContainer;
-
-namespace _Project.Sources.UI.MVP
+﻿namespace _Project.Sources.UI.GameMVP
 {
     public class Model
     {

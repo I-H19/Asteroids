@@ -7,7 +7,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
 {
     public interface IEnemy : ISceneTickable
     {
-        public Action<IEnemy> Killed { get; set; }
+        public event Action<IEnemy> Killed;
         public IMover Mover { get; }
         public void Kill();
     }

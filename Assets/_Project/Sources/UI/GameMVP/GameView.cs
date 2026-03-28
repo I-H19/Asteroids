@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-namespace _Project.Sources.UI.MVP
+namespace _Project.Sources.UI.GameMVP
 {
     public class View : MonoBehaviour
     {

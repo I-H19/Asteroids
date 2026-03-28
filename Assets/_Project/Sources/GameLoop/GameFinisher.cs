@@ -8,7 +8,7 @@ namespace _Project.Sources.GameLoop
 {
     public class GameFinisher : IDisposable
     {
-        public Action Finished;
+        public event Action Finished;
 
         private GamePause _gamePause;
         private Player _player;

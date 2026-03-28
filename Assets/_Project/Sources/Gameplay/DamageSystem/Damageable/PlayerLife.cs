@@ -6,7 +6,7 @@ namespace _Project.Sources.Gameplay.DamageSystem.Damageable
     public class PlayerLife : MonoBehaviour, IDamageable
     {
         public float Health { get; private set; }
-        public Action OnDeath;
+        public event Action OnDeath;
 
         public void Init(float healthCount) => Health = healthCount;
         public void TakeDamage(float damage)

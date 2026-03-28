@@ -7,8 +7,8 @@ namespace _Project.Sources.Gameplay.ObjectMovement.Movers
     public class InertialMover : MonoBehaviour, IMover
     {
         public float CurrentSpeed { get; private set; }
-        public Action SpeedChanged;
-        public Action PositionChanged;
+        public event Action SpeedChanged;
+        public event Action PositionChanged;
         public MovingDirection MovingDirection { get; private set; } = MovingDirection.None;
         public Transform ObjectTransform { get; private set; }
 

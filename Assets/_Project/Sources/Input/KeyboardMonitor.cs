@@ -5,22 +5,22 @@ namespace _Project.Sources.Input
 {
     public class KeyboardMonitor
     {
-        public Action ForwardButtonDown;
-        public Action ForwardButtonUp;
+        public event Action ForwardButtonDown;
+        public event Action ForwardButtonUp;
 
-        public Action BackwardButtonDown;
-        public Action BackwardButtonUp;
+        public event Action BackwardButtonDown;
+        public event Action BackwardButtonUp;
 
-        public Action LeftButtonDown;
-        public Action LeftButtonUp;
+        public event Action LeftButtonDown;
+        public event Action LeftButtonUp;
 
-        public Action RightButtonDown;
-        public Action RightButtonUp;
+        public event Action RightButtonDown;
+        public event Action RightButtonUp;
 
-        public Action ShootButtonDown;
-        public Action ShootButtonUp;
+        public event Action ShootButtonDown;
+        public event Action ShootButtonUp;
 
-        public Action LaserButtonDown;
+        public event Action LaserButtonDown;
 
         public void Tick()
         {

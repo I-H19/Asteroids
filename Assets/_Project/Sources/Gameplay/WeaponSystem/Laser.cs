@@ -9,8 +9,8 @@ namespace _Project.Sources.Gameplay.WeaponSystem
     [RequireComponent(typeof(PlayerDamageSource))]
     public class Laser : MonoBehaviour
     {
-        public Action AmmoChanged;
-        public Action Ticked;
+        public event Action AmmoChanged;
+        public event Action Ticked;
 
         public int MaxChargesNumber { get; private set; }
 
@@ -19,7 +19,7 @@ namespace _Project.Sources.Gameplay.WeaponSystem
         public float ShootingCooldown { get; private set; }
 
         private PlayerDamageSource _damageSource;
-        private GameObject _laserVisual;
+        private LaserVisual _laserVisual;
 
         private int _startCharges;
 
@@ -55,7 +55,7 @@ namespace _Project.Sources.Gameplay.WeaponSystem
             _nextChargeTime = Time.time;
         }
 
-        public void Init(GameObject laserVisual)
+        public void Init(LaserVisual laserVisual)
         {
             _laserVisual = laserVisual;
             SetLaserActive(false);
@@ -119,14 +119,14 @@ namespace _Project.Sources.Gameplay.WeaponSystem
             {
                 _isShooting = true;
                 _damageSource.enabled = true;
-                _laserVisual.SetActive(true);
+                _laserVisual.Show();
                 _endOfOperatingTime = Time.time + _operatingTime;
             }
             else
             {
                 _isShooting = false;
                 _damageSource.enabled = false;
-                _laserVisual.SetActive(false);
+                _laserVisual.Hide();
             }
         }
     }

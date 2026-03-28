@@ -9,7 +9,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 {
     public class EnemyRegistry : IDisposable
     {
-        public Action ScoredKilled;
+        public event Action ScoredKilled;
         public readonly List<IEnemy> AliveEnemies = new();
 
         public int AliveCount { get; private set; }

@@ -1,5 +1,9 @@
-﻿using TMPro;
+﻿using _Project.Sources.Gameplay;
+using _Project.Sources.Gameplay.EnemySystem.Enemy;
+using _Project.Sources.Gameplay.WeaponSystem;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace _Project.Sources.Config
@@ -9,29 +13,29 @@ namespace _Project.Sources.Config
     {
         [Header("Gameplay")]
         
-        [field: SerializeField] public GameObject Bullet { get; private set; }
-        [field: SerializeField] public GameObject Asteroid { get; private set; }
-        [field: SerializeField] public GameObject AsteroidFragment { get; private set; }
-        [field: SerializeField] public GameObject UFO { get; private set; }
+        [field: SerializeField] public Bullet BulletTemplate { get; private set; }
+        [field: SerializeField] public Asteroid AsteroidTemplate { get; private set; }
+        [field: SerializeField] public AsteroidFragment AsteroidFragmentTemplate { get; private set; }
+        [field: SerializeField] public UFO UfoTemplate { get; private set; }
         
         [field: Space]
         
         [Header("UI")]
-        [field: SerializeField] public GameObject RootCanvas { get; private set; }
-        [field: SerializeField] public GameObject PlayerRuntimeScore { get; private set; }
-        [field: SerializeField] public GameObject PlayerResultScore { get; private set; }
-        [field: SerializeField] public GameObject PlayerStats { get; private set; }
-        [field: SerializeField] public GameObject RestartPanel { get; private set; }
-        [field: SerializeField] public GameObject RestartGameButton { get; private set; }
-        [field: SerializeField] public GameObject EventSystem { get; private set; }
+        [field: SerializeField] public Canvas RootCanvas { get; private set; }
+        [field: SerializeField] public TextMeshProUGUI PlayerRuntimeScore { get; private set; }
+        [field: SerializeField] public TextMeshProUGUI PlayerResultScore { get; private set; }
+        [field: SerializeField] public TextMeshProUGUI PlayerStats { get; private set; }
+        [field: SerializeField] public Image RestartPanel { get; private set; }
+        [field: SerializeField] public Button RestartGameButton { get; private set; }
+        [field: SerializeField] public EventSystem EventSystemTemplate { get; private set; }
         
         
         [field: Space]
         
         [Header("Player")]
-        [field: SerializeField] public GameObject PlayerRoot { get; private set; }
-        [field: SerializeField] public GameObject PlayerVisual { get; private set; }
-        [field: SerializeField] public GameObject Laser { get; private set; }
-        [field: SerializeField] public GameObject LaserVisual { get; private set; }
+        [field: SerializeField] public Player PlayerRoot { get; private set; }
+        [field: SerializeField] public SpriteRenderer PlayerVisual { get; private set; }
+        [field: SerializeField] public Laser LaserTemplate { get; private set; }
+        [field: SerializeField] public LaserVisual LaserVisualTemplate { get; private set; }
     }
 }

@@ -8,7 +8,7 @@ namespace _Project.Sources.Gameplay.ObjectMovement.Rotators
     {
         public float CurrentAngle { get; private set; }
 
-        public Action AngleChanged;
+        public event Action AngleChanged;
 
         private Rigidbody2D _rigidBody;
 

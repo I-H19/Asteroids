@@ -7,7 +7,7 @@ namespace _Project.Sources.Gameplay.DamageSystem.DamageSource
     public class PlayerDamageSource : MonoBehaviour, IDamageSource
     {
         public float DamageCount { get; private set; }
-        public Action TargetDamaged;
+        public event Action TargetDamaged;
 
         private bool _isLaser;
 

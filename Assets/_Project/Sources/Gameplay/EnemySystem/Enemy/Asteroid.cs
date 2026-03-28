@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using _Project.Sources.Config.Movement;
-using _Project.Sources.GameLoop;
 using _Project.Sources.Gameplay.DamageSystem.Damageable;
 using _Project.Sources.Gameplay.DamageSystem.DamageSource;
 using _Project.Sources.Gameplay.ObjectMovement;
 using _Project.Sources.Gameplay.ObjectMovement.Movers;
 using UnityEngine;
+using VContainer;
 
 namespace _Project.Sources.Gameplay.EnemySystem.Enemy
 {
@@ -16,7 +16,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
     [RequireComponent(typeof(EnemyDamageSource))]
     public class Asteroid : MonoBehaviour, IEnemy
     {
-        public Action<IEnemy> Killed { get; set; }
+        public event Action<IEnemy> Killed;
         public DirectionalMoverSettings MoverSettings { get; private set; }
         public IMover Mover { get; private set; }
         [field: SerializeField] public bool IsFragment { get; private set; } = false;
@@ -26,7 +26,12 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
         private Rigidbody2D _rigidbody2D;
         private EnemyLife _enemyLife;
         private ScreenTeleporter _screenTeleporter;
+        private ScreenBoundsTracker _screenBoundsTracker;
+        private Camera _camera;
 
+
+        [Inject]
+        public void Construct(Camera mainCamera) => _camera = mainCamera;
         public void Init(DirectionalMoverSettings moverSettings, float damageCount, bool isFragment)
         {
             float randomAngleDegrees = UnityEngine.Random.Range(0f, 360f);
@@ -45,10 +50,15 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
             EnemyDamageSource damageSource = GetComponent<EnemyDamageSource>();
             damageSource.Init(damageCount);
 
-            _enemyLife.OnDeath += OnDeath;
 
             _screenTeleporter = GetComponent<ScreenTeleporter>();
-            _screenTeleporter.Init();
+
+            _screenBoundsTracker = new ScreenBoundsTracker();
+            _screenBoundsTracker.Init(_rigidbody2D, _camera);
+
+            _screenTeleporter.Init(_screenBoundsTracker);
+            
+            _enemyLife.OnDeath += OnDeath;
         }
 
         public void ActivateFragments()
@@ -60,7 +70,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
             }
         }
 
-        public void AddFragment(GameObject fragmentGameObject)
+        public void AddFragment(AsteroidFragment fragmentGameObject)
         {
             AsteroidFragment fragment = fragmentGameObject.GetComponent<AsteroidFragment>();
             Fragments.Add(fragment);

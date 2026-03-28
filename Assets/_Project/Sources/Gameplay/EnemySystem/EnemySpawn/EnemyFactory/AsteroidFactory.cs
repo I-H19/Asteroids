@@ -10,22 +10,21 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory
     public class AsteroidFactory : IEnemyFactory
     {
         private IObjectResolver _resolver;
-        private GameObject _asteroidPrefab;
-        private GameObject _fragmentPrefab;
+        private Asteroid _asteroidPrefab;
+        private AsteroidFragment _fragmentPrefab;
         private EnemySettings _enemySettings;
 
         [Inject]
         public void Construct(IObjectResolver resolver, PrefabHolder prefabHolder, EnemySettings enemySettings)
         {
             _resolver = resolver;
-            _asteroidPrefab = prefabHolder.Asteroid;
-            _fragmentPrefab = prefabHolder.AsteroidFragment;
+            _asteroidPrefab = prefabHolder.AsteroidTemplate;
+            _fragmentPrefab = prefabHolder.AsteroidFragmentTemplate;
             _enemySettings = enemySettings;
         }
         public IEnemy SpawnOne(Vector3 position)
         {
-            GameObject enemy = _resolver.Instantiate(_asteroidPrefab, position, Quaternion.identity);
-            Asteroid asteroid = enemy.GetComponent<Asteroid>();
+            Asteroid asteroid = _resolver.Instantiate(_asteroidPrefab, position, Quaternion.identity);
 
             asteroid.Init(_enemySettings.AsteroidMovingSettings, _enemySettings.AsteroidDamage, false);
 
@@ -34,14 +33,13 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory
 
         public AsteroidFragment SpawnFragment(Vector3 position, Asteroid parent)
         {
-            GameObject enemy = _resolver.Instantiate(_fragmentPrefab, position, Quaternion.identity);
-            AsteroidFragment fragment = enemy.GetComponent<AsteroidFragment>();
+            AsteroidFragment fragment = _resolver.Instantiate(_fragmentPrefab, position, Quaternion.identity);
 
             fragment.Init(_enemySettings.FragmentMovingSettings, _enemySettings.AsteroidDamage);
             fragment.SetParent(parent);
-            parent.AddFragment(enemy);
+            parent.AddFragment(fragment);
 
-            enemy.SetActive(false);
+            fragment.gameObject.SetActive(false);
 
             return fragment;
         }

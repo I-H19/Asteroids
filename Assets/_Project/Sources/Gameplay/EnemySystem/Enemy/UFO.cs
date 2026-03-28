@@ -7,6 +7,7 @@ using _Project.Sources.Gameplay.ObjectMovement;
 using _Project.Sources.Gameplay.ObjectMovement.Movers;
 using _Project.Sources.Gameplay.ObjectMovement.Rotators;
 using UnityEngine;
+using VContainer;
 
 namespace _Project.Sources.Gameplay.EnemySystem.Enemy
 {
@@ -22,12 +23,16 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
 
         public IMover Mover { get; private set; }
 
-        public Action<IEnemy> Killed { get; set; }
+        public event Action<IEnemy> Killed;
 
         private EnemyLife _enemyLife;
         private Rigidbody2D _rigidbody2D;
         private LookAtRotator _lookAtRotator;
+        private ScreenBoundsTracker _screenBoundsTracker;
+        private Camera _camera;
 
+        [Inject]
+        public void Construct(Camera mainCamera) => _camera = mainCamera;
         public void Init(DirectionalMoverSettings moverSettings, Player player, float damageCount)
         {
             MoverSettings = moverSettings;
@@ -47,6 +52,9 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
             _lookAtRotator = GetComponent<LookAtRotator>();
             _lookAtRotator.Init(player.transform);
 
+            _screenBoundsTracker = new ScreenBoundsTracker();
+            _screenBoundsTracker.Init(_rigidbody2D, _camera);
+            
             _enemyLife.OnDeath += OnDeath;
         }
 

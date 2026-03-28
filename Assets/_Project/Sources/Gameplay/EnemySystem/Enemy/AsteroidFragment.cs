@@ -6,6 +6,7 @@ using _Project.Sources.Gameplay.DamageSystem.DamageSource;
 using _Project.Sources.Gameplay.ObjectMovement;
 using _Project.Sources.Gameplay.ObjectMovement.Movers;
 using UnityEngine;
+using VContainer;
 
 namespace _Project.Sources.Gameplay.EnemySystem.Enemy
 {
@@ -16,15 +17,18 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
     public class AsteroidFragment : MonoBehaviour, IEnemy
     {
         private Asteroid _parentAsteroid;
-        public Action<IEnemy> Killed { get; set; }
+        public event Action<IEnemy> Killed;
         public IMover Mover { get; private set; }
-        public bool IsActiveFragment { get; private set; }
 
         private DirectionalMoverSettings _moverSettings;
         private Rigidbody2D _rigidbody2D;
         private EnemyLife _enemyLife;
         private ScreenTeleporter _screenTeleporter;
+        private ScreenBoundsTracker _screenBoundsTracker;
+        private Camera _camera;
 
+        [Inject]
+        public void Construct(Camera mainCamera) => _camera = mainCamera;
         public void Init(DirectionalMoverSettings moverSettings, float damageCount)
         {
             _moverSettings = moverSettings;
@@ -42,16 +46,19 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
             EnemyDamageSource damageSource = GetComponent<EnemyDamageSource>();
             damageSource.Init(damageCount);
 
-            _enemyLife.OnDeath += OnDeath;
-
             _screenTeleporter = GetComponent<ScreenTeleporter>();
-            _screenTeleporter.Init();
+
+            _screenBoundsTracker = new ScreenBoundsTracker();
+            _screenBoundsTracker.Init(_rigidbody2D, _camera);
+            
+            _screenTeleporter.Init(_screenBoundsTracker);
+
+            _enemyLife.OnDeath += OnDeath;
         }
 
         public void Activate()
         {
             gameObject.SetActive(true);
-            IsActiveFragment = true;
             Mover.SetPosition(_parentAsteroid.transform.position);
             Mover.SetEnabled(true);
             Mover.SetMoving(true);

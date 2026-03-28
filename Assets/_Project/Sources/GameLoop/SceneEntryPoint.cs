@@ -2,16 +2,15 @@
 using _Project.Sources.Config.Movement;
 using _Project.Sources.Gameplay;
 using _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory;
-using _Project.Sources.Gameplay.ObjectMovement;
 using _Project.Sources.Gameplay.ObjectMovement.Movers;
 using _Project.Sources.Gameplay.ObjectMovement.Rotators;
 using _Project.Sources.Gameplay.WeaponSystem;
 using _Project.Sources.Input;
 using _Project.Sources.UI;
-using _Project.Sources.UI.GUI;
-using _Project.Sources.UI.MVP;
+using _Project.Sources.UI.GameMVP;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using VContainer;
 using VContainer.Unity;
 
@@ -29,7 +28,7 @@ namespace _Project.Sources.GameLoop
         private IObjectResolver _resolver;
         private GamePause _gamePause;
         private Laser _laser;
-        private GameObject _laserVisual;
+        private LaserVisual _laserVisual;
         private BulletSpawner _bulletSpawner;
         private GameRestarter _gameRestarter;
         private SceneTickDriver _sceneTickDriver;
@@ -55,14 +54,12 @@ namespace _Project.Sources.GameLoop
         public void Initialize()
         {
             ConstructPlayer();
-            _player.Init(_laser, _bulletSpawner);
+            _player.Init(_laser);
 
             InitializePlayerMovement();
 
             ConstructUI();
-
-            InitializePlayerScreenBounds();
-
+            
             _playerKeyboardController.Init(_player.InertialMoverTemplate, _player.DirectionalRotatorTemplate,
                 _bulletSpawner, _laser);
             _playerKeyboardController.KeyboardMonitorSubscribe();
@@ -73,12 +70,6 @@ namespace _Project.Sources.GameLoop
             _sceneTickDriver.Init(_player, _bulletSpawner);
             
             _ufoFactory.Init(_player);
-        }
-
-        private void InitializePlayerScreenBounds()
-        {
-            ScreenBoundsTracker playerScreenBoundsTracker = _player.ScreenBoundsTrackerTemplate;
-            playerScreenBoundsTracker.Init();
         }
 
         private void InitializePlayerMovement()
@@ -92,15 +83,13 @@ namespace _Project.Sources.GameLoop
 
         private void ConstructPlayer()
         {
-            GameObject playerRoot = _resolver.Instantiate(_prefabHolder.PlayerRoot);
-            _player = playerRoot.GetComponent<Player>();
+            _player = _resolver.Instantiate(_prefabHolder.PlayerRoot);
+            
+            SpriteRenderer playerVisual = _resolver.Instantiate(_prefabHolder.PlayerVisual, _player.transform);
+            
+            _laser = _resolver.Instantiate(_prefabHolder.LaserTemplate, playerVisual.transform);
 
-            GameObject playerVisual = _resolver.Instantiate(_prefabHolder.PlayerVisual, playerRoot.transform);
-
-            GameObject laser = _resolver.Instantiate(_prefabHolder.Laser, playerVisual.transform);
-            _laser = laser.GetComponent<Laser>();
-
-            _laserVisual = _resolver.Instantiate(_prefabHolder.LaserVisual, laser.transform);
+            _laserVisual = _resolver.Instantiate(_prefabHolder.LaserVisualTemplate, _laser.transform);
             _laser.Init(_laserVisual);
 
             _bulletSpawner = new BulletSpawner();
@@ -111,29 +100,26 @@ namespace _Project.Sources.GameLoop
         private void ConstructUI()
         {
             GameObject uiRoot = new("[UI]");
-            GameObject rootCanvas = _resolver.Instantiate(_prefabHolder.RootCanvas, uiRoot.transform);
-            GameObject runtimeScore = _resolver.Instantiate(_prefabHolder.PlayerRuntimeScore, rootCanvas.transform);
-            GameObject playerStatsView = _resolver.Instantiate(_prefabHolder.PlayerStats, rootCanvas.transform);
-            _resolver.Instantiate(_prefabHolder.EventSystem, uiRoot.transform);
+            Canvas rootCanvas = _resolver.Instantiate(_prefabHolder.RootCanvas, uiRoot.transform);
+            TextMeshProUGUI runtimeScore = _resolver.Instantiate(_prefabHolder.PlayerRuntimeScore, rootCanvas.transform);
+            TextMeshProUGUI playerStatsView = _resolver.Instantiate(_prefabHolder.PlayerStats, rootCanvas.transform);
+            _resolver.Instantiate(_prefabHolder.EventSystemTemplate, uiRoot.transform);
 
-            GameObject restartPanel = _resolver.Instantiate(_prefabHolder.RestartPanel, rootCanvas.transform);
-            GameObject resultScore = _resolver.Instantiate(_prefabHolder.PlayerResultScore, restartPanel.transform);
-            GameObject restartButton = _resolver.Instantiate(_prefabHolder.RestartGameButton, restartPanel.transform);
+            Image restartPanel = _resolver.Instantiate(_prefabHolder.RestartPanel, rootCanvas.transform);
+            TextMeshProUGUI resultScore = _resolver.Instantiate(_prefabHolder.PlayerResultScore, restartPanel.transform);
+            Button restartButton = _resolver.Instantiate(_prefabHolder.RestartGameButton, restartPanel.transform);
 
             Presenter presenter = new();
             _resolver.Inject(presenter);
 
-            RestartButton restartButtonComponent = restartButton.GetComponent<RestartButton>();
             View view = rootCanvas.GetComponent<View>();
             
             PlayerStats playerStatsModel = new();
             Model model = new(playerStatsModel);
-
-            restartButtonComponent.Init();
-
-            view.Init(runtimeScore.GetComponent<TextMeshProUGUI>(), resultScore.GetComponent<TextMeshProUGUI>(),
-                playerStatsView.GetComponent<TextMeshProUGUI>(), restartPanel);
-            presenter.Init(model, view, restartButtonComponent, _player);
+            
+            view.Init(runtimeScore, resultScore,
+                playerStatsView, restartPanel.gameObject);
+            presenter.Init(model, view, _player, restartButton);
         }
     }
 }

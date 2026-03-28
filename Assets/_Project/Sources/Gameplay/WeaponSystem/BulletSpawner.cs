@@ -10,7 +10,7 @@ namespace _Project.Sources.Gameplay.WeaponSystem
     public class BulletSpawner
     {
         private Player _player;
-        private GameObject _bulletTemplate;
+        private Bullet _bulletTemplate;
         private float _bulletCooldown;
         private IMoverSettings _bulletMoverSettings;
         private IObjectResolver _resolver;
@@ -22,16 +22,18 @@ namespace _Project.Sources.Gameplay.WeaponSystem
         private readonly List<Bullet> _bullets = new();
 
         [Inject]
-        public void Construct(IObjectResolver resolver, PrefabHolder spawnerPrefabs, PlayerCombatSettings playerCombatSettings)
+        public void Construct(IObjectResolver resolver, PrefabHolder spawnerPrefabs,
+            PlayerCombatSettings playerCombatSettings)
         {
             _resolver = resolver;
-            _bulletTemplate = spawnerPrefabs.Bullet;
+            _bulletTemplate = spawnerPrefabs.BulletTemplate;
             _bulletCooldown = playerCombatSettings.BulletCooldown;
             _bulletMoverSettings = playerCombatSettings.BulletMoverSettings;
             _bulletDamage = playerCombatSettings.BulletDamage;
 
             _nextShotTime = Time.time;
         }
+
         public void Init(Player player) => _player = player;
 
         public void StartSpawning() => _isSpawning = true;
@@ -49,17 +51,16 @@ namespace _Project.Sources.Gameplay.WeaponSystem
                 _nextShotTime = Time.time + _bulletCooldown;
             }
         }
+
         private void SpawnBullet()
         {
-            GameObject bulletTemplate = _resolver.Instantiate(_bulletTemplate, _player.transform.position, _player.transform.rotation);
+            Bullet bullet =
+                _resolver.Instantiate(_bulletTemplate, _player.transform.position, _player.transform.rotation);
 
-            if (bulletTemplate.TryGetComponent(out Bullet bullet))
-            {
-                bullet.Init(_bulletMoverSettings, _bulletDamage);
-                _bullets.Add(bullet);
+            bullet.Init(_bulletMoverSettings, _bulletDamage);
+            _bullets.Add(bullet);
 
-                bullet.Destroyed += OnBulletDestroy;
-            }
+            bullet.Destroyed += OnBulletDestroy;
         }
 
         private void OnBulletDestroy(Bullet bullet)

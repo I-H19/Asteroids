@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1156688384179839041}
   - component: {fileID: 6472134716448366344}
-  - component: {fileID: 2529060575948367163}
   - component: {fileID: 7565061007743808623}
   - component: {fileID: 6769417143361149630}
   - component: {fileID: 3313316512710218508}
@@ -64,18 +63,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &2529060575948367163
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1307927974123800649}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eccedcb242e9dfd43afd0efd1b41879a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ScreenBoundsTracker
 --- !u!114 &7565061007743808623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88,9 +75,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69b41efa90b19384bb1f3674732aba86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
-  _bulletDamage: 999
-  _moverSettings:
-    <MovingSpeed>k__BackingField: 1
 --- !u!114 &6769417143361149630
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103,7 +87,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df6ad23b939a46746aa485fd85903db9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDamageSource
-  _isLaser: 0
 --- !u!114 &3313316512710218508
 MonoBehaviour:
   m_ObjectHideFlags: 0

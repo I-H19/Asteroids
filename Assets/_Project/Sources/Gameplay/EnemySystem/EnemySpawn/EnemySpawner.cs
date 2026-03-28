@@ -8,19 +8,17 @@ using VContainer;
 
 namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 {
-    [RequireComponent(typeof(ScreenBoundsTracker))]
-    public class EnemySpawner : MonoBehaviour, ISceneTickable
+    public class EnemySpawner : ISceneTickable
     {
         private EnemyRegistry _enemiesRegistry;
 
         private EnemySpawnerSettings _enemySpawnerSettings;
         private EnemySettings _enemySettings;
         private IObjectResolver _resolver;
-        private ScreenBoundsTracker _boundsTracker;
 
         private AsteroidFactory _asteroidFactory;
         private UfoFactory _ufoFactory;
-
+        private ScreenBoundsTracker _boundsTracker;
 
         [Inject]
         public void Construct(IObjectResolver resolver, EnemySpawnerSettings enemySpawnerSettings,
@@ -34,10 +32,10 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 
             _resolver = resolver;
 
-            _boundsTracker = GetComponent<ScreenBoundsTracker>();
+            _boundsTracker = new ScreenBoundsTracker();
             _resolver.Inject(_boundsTracker);
-            _boundsTracker.Init();
-
+            _boundsTracker.InitBounds();
+            
             _asteroidFactory = asteroidFactory;
             _ufoFactory = ufoFactory;
         }

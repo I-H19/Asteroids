@@ -10,7 +10,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory
     public class UfoFactory : IEnemyFactory
     {
         private IObjectResolver _resolver;
-        private GameObject _enemyPrefab;
+        private UFO _enemyPrefab;
         private EnemySettings _enemySettings;
         private Player _player;
 
@@ -18,14 +18,13 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory
         public void Construct(IObjectResolver resolver, PrefabHolder prefabHolder, EnemySettings enemySettings)
         {
             _resolver = resolver;
-            _enemyPrefab = prefabHolder.UFO;
+            _enemyPrefab = prefabHolder.UfoTemplate;
             _enemySettings = enemySettings;
         }
         public void Init(Player player) => _player = player;
         public IEnemy SpawnOne(Vector3 position)
         {
-            GameObject enemy = _resolver.Instantiate(_enemyPrefab, position, Quaternion.identity);
-            UFO ufo = enemy.GetComponent<UFO>();
+            UFO ufo = _resolver.Instantiate(_enemyPrefab, position, Quaternion.identity);
 
             ufo.Init(_enemySettings.UfoMovingSettings, _player, _enemySettings.UfoDamage);
 

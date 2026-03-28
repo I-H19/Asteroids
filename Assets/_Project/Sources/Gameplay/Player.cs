@@ -12,52 +12,52 @@ using VContainer;
 namespace _Project.Sources.Gameplay
 {
     [RequireComponent(typeof(ScreenTeleporter))]
-    [RequireComponent(typeof(ScreenBoundsTracker))]
     [RequireComponent(typeof(InertialMover))]
     [RequireComponent(typeof(DirectionalRotator))]
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(PlayerLife))]
     public class Player : MonoBehaviour, ISceneTickable
     {
-        public Action Death;
+        public event Action Death;
         public ScreenBoundsTracker ScreenBoundsTrackerTemplate { get; private set; }
         public Rigidbody2D RigidBodyTemplate { get; private set; }
         public InertialMover InertialMoverTemplate { get; private set; }
         public DirectionalRotator DirectionalRotatorTemplate { get; private set; }
         public Laser PlayerLaser { get; private set; }
-        public BulletSpawner BulletSpawner { get; private set; }
 
         private ScreenTeleporter _playerTeleporter;
         private IObjectResolver _resolver;
         private PlayerLife _life;
         private float _maxHealth;
+        private Camera _camera;
 
         [Inject]
-        public void Construct(IObjectResolver resolver, PlayerCombatSettings combatSettings)
+        public void Construct(IObjectResolver resolver, PlayerCombatSettings combatSettings, Camera cameraTemplate)
         {
+            _camera = cameraTemplate;
             _resolver = resolver;
             _maxHealth = combatSettings.MaxHealth;
         }
 
-        public void Init(Laser laser, BulletSpawner bulletSpawner)
+        public void Init(Laser laser)
         {
             PlayerLaser = laser;
-            BulletSpawner = bulletSpawner;
-            
+
             _playerTeleporter = GetComponent<ScreenTeleporter>();
 
-            ScreenBoundsTrackerTemplate = GetComponent<ScreenBoundsTracker>();
             RigidBodyTemplate = GetComponent<Rigidbody2D>();
 
             InertialMoverTemplate = GetComponent<InertialMover>();
             DirectionalRotatorTemplate = GetComponent<DirectionalRotator>();
-
-            _resolver.Inject(ScreenBoundsTrackerTemplate);
-
-            _playerTeleporter.Init();
-
+            
             _life = GetComponent<PlayerLife>();
             _life.Init(_maxHealth);
+
+            ScreenBoundsTrackerTemplate = new ScreenBoundsTracker();
+            ScreenBoundsTrackerTemplate.Init(RigidBodyTemplate, _camera);
+
+            _playerTeleporter.Init(ScreenBoundsTrackerTemplate);
+
             _life.OnDeath += OnDeath;
         }
 

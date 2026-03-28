@@ -22,7 +22,6 @@ namespace _Project.Sources.Scopes
         [SerializeField] private PrefabHolder _prefabHolder;
         [SerializeField] private EnemySpawnerSettings _enemySpawnerSettings;
         [SerializeField] private EnemySettings _enemySettings;
-        [SerializeField] private EnemySpawner _enemySpawner;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -63,10 +62,9 @@ namespace _Project.Sources.Scopes
             builder.RegisterComponent(_prefabHolder);
             builder.RegisterComponent(_enemySpawnerSettings);
             builder.RegisterComponent(_enemySettings);
-            builder.RegisterComponent(_enemySpawner);
 
+            builder.Register<EnemySpawner>(Lifetime.Scoped).AsSelf();
             builder.Register<EnemyDriver>(Lifetime.Singleton);
-
             builder.Register<EnemyRegistry>(Lifetime.Scoped).AsSelf();
         }
         
