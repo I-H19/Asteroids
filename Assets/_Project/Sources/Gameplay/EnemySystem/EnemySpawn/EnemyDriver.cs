@@ -20,27 +20,26 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
         public void Tick()
         {
             if (!_isEnemiesTicking) return;
-
-            foreach (IEnemy enemy in _enemiesRegistry.AliveEnemies)
+            _enemiesRegistry.ForEachEnemy(enemy =>
             {
                 enemy.Tick();
-            }
+            });
         }
 
         public void FreezeEnemyMoving()
         {
-            foreach (IEnemy enemy in _enemiesRegistry.AliveEnemies)
+            _enemiesRegistry.ForEachEnemy(enemy =>
             {
                 enemy.Mover.SetEnabled(false);
-            }
+            });
         }
 
         public void UnfreezeEnemyMoving()
         {
-            foreach (IEnemy enemy in _enemiesRegistry.AliveEnemies)
+            _enemiesRegistry.ForEachEnemy(enemy =>
             {
                 enemy.Mover.SetEnabled(true);
-            }
+            });
         }
 
     }

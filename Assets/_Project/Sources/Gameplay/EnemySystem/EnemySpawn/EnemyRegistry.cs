@@ -10,31 +10,28 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
     public class EnemyRegistry : IDisposable
     {
         public event Action ScoredKilled;
-        public readonly List<IEnemy> AliveEnemies = new();
+        private readonly List<IEnemy> _aliveEnemies = new();
 
         public int AliveCount { get; private set; }
 
         public void RegisterEnemy(IEnemy enemy)
         {
             enemy.Killed += ScoredKill;
-            
-            AliveEnemies.Add(enemy);
+
+            _aliveEnemies.Add(enemy);
             AliveCount++;
         }
 
         public void KillAll()
         {
-            foreach (IEnemy enemy in AliveEnemies)
+            foreach (IEnemy enemy in _aliveEnemies)
             {
                 if (enemy != null)
-                {
-                    Component enemyComponent = enemy as Component;
-                    if (enemyComponent != null) enemy.Kill();
-                    else throw new NullReferenceException($"enemyComponent is null");
-                }
+                    enemy.Kill();
+                else throw new NullReferenceException($"enemy is null");
             }
 
-            AliveEnemies.Clear();
+            _aliveEnemies.Clear();
             AliveCount = 0;
         }
 
@@ -42,7 +39,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 
         private void Unsubscribe()
         {
-            foreach (IEnemy enemy in AliveEnemies)
+            foreach (IEnemy enemy in _aliveEnemies)
             {
                 enemy.Killed -= ScoredKill;
             }
@@ -50,19 +47,21 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 
         private void ScoredKill(IEnemy enemy)
         {
-            if (enemy is Asteroid asteroid)
-            {
-                if (asteroid.IsFragment && !asteroid.IsActiveFragment) return;
-                if (!asteroid.IsFragment) asteroid.ActivateFragments();
-            }
-
             AliveCount--;
-            AliveEnemies.Remove(enemy);
+            _aliveEnemies.Remove(enemy);
 
             enemy.Killed -= ScoredKill;
             enemy.Kill();
 
             ScoredKilled?.Invoke();
+        }
+
+        public void ForEachEnemy(Action<IEnemy> action)
+        {
+            foreach (IEnemy enemy in _aliveEnemies)
+            {
+                action(enemy);
+            }
         }
 
         public void Dispose() => Unsubscribe();

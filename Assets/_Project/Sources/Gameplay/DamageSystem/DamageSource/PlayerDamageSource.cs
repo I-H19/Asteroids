@@ -21,9 +21,9 @@ namespace _Project.Sources.Gameplay.DamageSystem.DamageSource
         public void ChangeType(bool isLaser) => _isLaser = isLaser;
         public void Tick()
         {
-            Vector2 origin = (Vector2)transform.position;
-            Vector2 laserDirection = (Vector2)transform.up;
-            Vector2 bulletDirection = (Vector2)transform.forward;
+            Vector2 origin = transform.position;
+            Vector2 laserDirection = transform.up;
+            Vector2 bulletDirection = transform.forward;
 
             if (_isLaser)
             {

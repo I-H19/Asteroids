@@ -26,16 +26,14 @@ namespace _Project.Sources.Gameplay
         public Laser PlayerLaser { get; private set; }
 
         private ScreenTeleporter _playerTeleporter;
-        private IObjectResolver _resolver;
         private PlayerLife _life;
         private float _maxHealth;
         private Camera _camera;
 
         [Inject]
-        public void Construct(IObjectResolver resolver, PlayerCombatSettings combatSettings, Camera cameraTemplate)
+        public void Construct(PlayerCombatSettings combatSettings, Camera cameraTemplate)
         {
             _camera = cameraTemplate;
-            _resolver = resolver;
             _maxHealth = combatSettings.MaxHealth;
         }
 

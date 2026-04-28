@@ -13,7 +13,6 @@ namespace _Project.Sources.GameLoop
 
         private GamePause _gamePause;
         private EnemyRegistry _enemiesRegistry;
-        private PlayerScore _playerScore;
         private Player _player;
 
 

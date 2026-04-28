@@ -19,7 +19,6 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
         public event Action<IEnemy> Killed;
         public DirectionalMoverSettings MoverSettings { get; private set; }
         public IMover Mover { get; private set; }
-        [field: SerializeField] public bool IsFragment { get; private set; } = false;
         [field: SerializeField] public bool IsActiveFragment { get; private set; } = false;
         [field: SerializeField] public List<AsteroidFragment> Fragments { get; private set; } = new();
 
@@ -32,6 +31,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
 
         [Inject]
         public void Construct(Camera mainCamera) => _camera = mainCamera;
+
         public void Init(DirectionalMoverSettings moverSettings, float damageCount, bool isFragment)
         {
             float randomAngleDegrees = UnityEngine.Random.Range(0f, 360f);
@@ -44,8 +44,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
             Mover = GetComponent<DirectionalMover>();
             Mover.Init(MoverSettings, _rigidbody2D);
 
-            if (IsFragment) Mover.SetEnabled(false);
-            else Mover.SetMoving(true);
+            Mover.SetMoving(true);
 
             EnemyDamageSource damageSource = GetComponent<EnemyDamageSource>();
             damageSource.Init(damageCount);
@@ -57,24 +56,11 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
             _screenBoundsTracker.Init(_rigidbody2D, _camera);
 
             _screenTeleporter.Init(_screenBoundsTracker);
-            
+
             _enemyLife.OnDeath += OnDeath;
         }
 
-        public void ActivateFragments()
-        {
-            if (!IsFragment)
-            {
-                foreach (AsteroidFragment fragment in Fragments)
-                    fragment.Activate();
-            }
-        }
-
-        public void AddFragment(AsteroidFragment fragmentGameObject)
-        {
-            AsteroidFragment fragment = fragmentGameObject.GetComponent<AsteroidFragment>();
-            Fragments.Add(fragment);
-        }
+        public void AddFragment(AsteroidFragment fragment) => Fragments.Add(fragment);
 
         public void Tick()
         {
@@ -82,7 +68,18 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
             _screenTeleporter.Tick();
         }
 
-        public void Kill() => Destroy(gameObject);
+        public void Kill()
+        {
+            ActivateFragments();
+            Destroy(gameObject);
+        }
+
+        private void ActivateFragments()
+        {
+            foreach (AsteroidFragment fragment in Fragments)
+                fragment.Activate();
+        }
+
         private void OnDeath() => Killed?.Invoke(this);
     }
 }
