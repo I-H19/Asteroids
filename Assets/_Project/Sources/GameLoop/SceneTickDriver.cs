@@ -1,58 +1,27 @@
-using _Project.Sources.Gameplay;
-using _Project.Sources.Gameplay.EnemySystem.EnemySpawn;
-using _Project.Sources.Gameplay.WeaponSystem;
-using _Project.Sources.Input;
+using System.Collections;
+using System.Collections.Generic;
 using VContainer;
 using VContainer.Unity;
 
 namespace _Project.Sources.GameLoop
 {
-    public class SceneTickDriver : ITickable
+    public class SceneTickDriver : ITickable, IPausable
     {
-        private KeyboardMonitor _keyboardMonitor;
-        private PlayerKeyboardController _keyboardController;
-        private BulletSpawner _bulletSpawner;
-        private Laser _laser;
-        private EnemyDriver _enemyDriver;
-        private EnemySpawner _enemySpawner;
-        private Player _player;
         private bool _isPaused;
+        private IEnumerable _sceneTickables;
 
         [Inject]
-        public void Construct(EnemyDriver enemyTickDriver, PlayerKeyboardController keyboardController, 
-            KeyboardMonitor keyboardMonitor, EnemySpawner enemySpawner)
-        {
-            _enemySpawner = enemySpawner;
-            _keyboardMonitor = keyboardMonitor;
-            _keyboardController = keyboardController;
-
-            _enemyDriver = enemyTickDriver;
-        }
-
-        public void Init(Player player, BulletSpawner bulletSpawner)
-        {
-            _player = player;
-            _laser = player.PlayerLaser;
-            _bulletSpawner = bulletSpawner;
-        }
+        public void Construct(IEnumerable<ISceneTickable> sceneTickables) 
+            =>  _sceneTickables  = sceneTickables;
+        
 
         public void Tick()
         {
             if (!_isPaused)
-            {
-                _keyboardController.Tick();
-                _keyboardMonitor.Tick();
-                _bulletSpawner.Tick();
-                _enemyDriver.Tick();
-                _enemySpawner.Tick();
-                _player.Tick();
-                _laser.Tick();
-            }
+                foreach (ISceneTickable sceneTickable in _sceneTickables) sceneTickable.Tick();
         }
-
-        public void SetPause(bool isPaused)
-        {
-            _isPaused = isPaused;
-        }
+        
+        public void Pause() => _isPaused = true;
+        public void Unpause() => _isPaused = false;
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace _Project.Sources.Gameplay.ObjectMovement.Movers
 {
-    public enum MovingDirection
+    public enum MovingDirection : byte
     {
         Acceleration,
         Bracking,

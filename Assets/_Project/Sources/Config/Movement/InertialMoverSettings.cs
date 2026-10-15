@@ -3,7 +3,7 @@
 namespace _Project.Sources.Config.Movement
 {
     [CreateAssetMenu(fileName ="InertialMoverSettings", menuName = "Settings/Movement/InertialMoverSettings")]
-    public class InertialMoverSettings :  ScriptableObject, IMoverSettings
+    public class InertialMoverSettings :  ScriptableObject
     {
         [field: SerializeField] public float MaxForwardSpeed { get; private set; } = 200f;
         [field: SerializeField] public float ForwardAcceleration { get; private set; } = 600f;

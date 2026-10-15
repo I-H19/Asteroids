@@ -1,9 +1,10 @@
 ﻿using System;
+using _Project.Sources.GameLoop;
 using UnityEngine;
 
 namespace _Project.Sources.Input
 {
-    public class KeyboardMonitor
+    public class KeyboardMonitor: ISceneTickable
     {
         public event Action ForwardButtonDown;
         public event Action ForwardButtonUp;

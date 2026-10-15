@@ -1,10 +1,9 @@
 ﻿using _Project.Sources.GameLoop;
-using _Project.Sources.Gameplay.EnemySystem.Enemy;
 using VContainer;
 
 namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 {
-    public class EnemyDriver : ISceneTickable
+    public class EnemyDriver : ISceneTickable, IPausable
     {
         private EnemyRegistry _enemiesRegistry;
 
@@ -30,7 +29,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
         {
             _enemiesRegistry.ForEachEnemy(enemy =>
             {
-                enemy.Mover.SetEnabled(false);
+                enemy.Mover.DisableMoving();
             });
         }
 
@@ -38,9 +37,11 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
         {
             _enemiesRegistry.ForEachEnemy(enemy =>
             {
-                enemy.Mover.SetEnabled(true);
+                enemy.Mover.EnableMoving();
             });
         }
 
+        public void Pause() => FreezeEnemyMoving();
+        public void Unpause() => UnfreezeEnemyMoving();
     }
 }

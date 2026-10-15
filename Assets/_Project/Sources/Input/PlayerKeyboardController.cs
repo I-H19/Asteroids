@@ -1,4 +1,5 @@
 ﻿using System;
+using _Project.Sources.GameLoop;
 using _Project.Sources.Gameplay.ObjectMovement.Movers;
 using _Project.Sources.Gameplay.ObjectMovement.Rotators;
 using _Project.Sources.Gameplay.WeaponSystem;
@@ -6,7 +7,7 @@ using VContainer;
 
 namespace _Project.Sources.Input
 {
-    public class PlayerKeyboardController : IDisposable
+    public class PlayerKeyboardController : IDisposable, IPausable, ISceneTickable
     {
         private DirectionalRotator _playerRotator;
         private InertialMover _playerMover;
@@ -14,12 +15,16 @@ namespace _Project.Sources.Input
 
         private BulletSpawner _bulletSpawner;
         private Laser _laser;
+        private bool _isPause;
 
         [Inject]
         public void Construct(KeyboardMonitor keyboardMonitor) => _keyboardMonitor = keyboardMonitor;
 
-        public void Init(InertialMover inertialMover, DirectionalRotator directionalRotator,
-            BulletSpawner bulletSpawner, Laser laser)
+        public void Init(
+            InertialMover inertialMover,
+            DirectionalRotator directionalRotator,
+            BulletSpawner bulletSpawner,
+            Laser laser)
         {
             _playerMover = inertialMover;
             _playerRotator = directionalRotator;
@@ -29,11 +34,13 @@ namespace _Project.Sources.Input
 
         public void Tick()
         {
+            if (_isPause) return;
+            
             _playerMover.Move();
             _playerRotator.Rotate();
         }
 
-        public void KeyboardMonitorSubscribe()
+        public void KeyboardSubscribe()
         {
             _keyboardMonitor.ForwardButtonDown += HandleForwardDown;
             _keyboardMonitor.ForwardButtonUp += HandleForwardUp;
@@ -53,7 +60,7 @@ namespace _Project.Sources.Input
             _keyboardMonitor.LaserButtonDown += HandleLaserDown;
         }
 
-        private void Unsubscribe()
+        private void KeyboardUnsubscribe()
         {
             _keyboardMonitor.ForwardButtonDown -= HandleForwardDown;
             _keyboardMonitor.ForwardButtonUp -= HandleForwardUp;
@@ -76,17 +83,19 @@ namespace _Project.Sources.Input
         private void HandleLaserDown() => _laser.TryShoot();
         private void HandleShootDown() => _bulletSpawner.StartSpawning();
         private void HandleShootUp() => _bulletSpawner.StopSpawning();
-        private void HandleForwardDown() => _playerMover.SetMoving(true);
-        private void HandleForwardUp() => _playerMover.SetMoving(false);
+        private void HandleForwardDown() => _playerMover.StartAcceleration(true);
+        private void HandleForwardUp() => _playerMover.StartAcceleration(false);
 
-        private void HandleBackwardDown() => _playerMover.SetBraking(true);
-        private void HandleBackwardUp() => _playerMover.SetBraking(false);
+        private void HandleBackwardDown() => _playerMover.StartBraking(true);
+        private void HandleBackwardUp() => _playerMover.StartBraking(false);
 
         private void HandleLeftDown() => _playerRotator.SetRotateLeft(true);
         private void HandleLeftUp() => _playerRotator.SetRotateLeft(false);
 
         private void HandleRightDown() => _playerRotator.SetRotateRight(true);
         private void HandleRightUp() => _playerRotator.SetRotateRight(false);
-        public void Dispose() => Unsubscribe();
+        public void Dispose() => KeyboardUnsubscribe();
+        public void Pause() => _isPause = true;
+        public void Unpause() => _isPause = false;
     }
 }

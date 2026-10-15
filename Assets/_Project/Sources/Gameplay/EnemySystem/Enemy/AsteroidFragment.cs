@@ -1,6 +1,5 @@
 ﻿using System;
 using _Project.Sources.Config.Movement;
-using _Project.Sources.GameLoop;
 using _Project.Sources.Gameplay.DamageSystem.Damageable;
 using _Project.Sources.Gameplay.DamageSystem.DamageSource;
 using _Project.Sources.Gameplay.ObjectMovement;
@@ -18,8 +17,9 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
     {
         private Asteroid _parentAsteroid;
         public event Action<IEnemy> Killed;
-        public IMover Mover { get; private set; }
+        public IMover Mover => _directionalMover;
 
+        private DirectionalMover _directionalMover;
         private DirectionalMoverSettings _moverSettings;
         private Rigidbody2D _rigidbody2D;
         private EnemyLife _enemyLife;
@@ -28,7 +28,11 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
         private Camera _camera;
 
         [Inject]
-        public void Construct(Camera mainCamera) => _camera = mainCamera;
+        public void Construct(Camera mainCamera, ScreenBoundsTracker screenBoundsTracker)
+        {
+            _camera = mainCamera;
+            _screenBoundsTracker = screenBoundsTracker;
+        }
         public void Init(DirectionalMoverSettings moverSettings, float damageCount)
         {
             _moverSettings = moverSettings;
@@ -38,17 +42,16 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
 
             _enemyLife = GetComponent<EnemyLife>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
-            Mover = GetComponent<DirectionalMover>();
-            Mover.Init(_moverSettings, _rigidbody2D);
+            _directionalMover = GetComponent<DirectionalMover>();
+            _directionalMover.Init(_moverSettings, _rigidbody2D);
 
-            Mover.SetEnabled(false);
+            _directionalMover.DisableMoving();
 
             EnemyDamageSource damageSource = GetComponent<EnemyDamageSource>();
             damageSource.Init(damageCount);
 
             _screenTeleporter = GetComponent<ScreenTeleporter>();
 
-            _screenBoundsTracker = new ScreenBoundsTracker();
             _screenBoundsTracker.Init(_rigidbody2D, _camera);
             
             _screenTeleporter.Init(_screenBoundsTracker);
@@ -59,16 +62,15 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
         public void Activate()
         {
             gameObject.SetActive(true);
-            Mover.SetPosition(_parentAsteroid.transform.position);
-            Mover.SetEnabled(true);
-            Mover.SetMoving(true);
+            _directionalMover.SetPosition(_parentAsteroid.transform.position);
+            _directionalMover.EnableMoving();
         }
 
         public void SetParent(Asteroid parentAsteroid) => _parentAsteroid = parentAsteroid;
 
         public void Tick()
         {
-            Mover.Move();
+            _directionalMover.Move();
             _screenTeleporter.Tick();
         }
 

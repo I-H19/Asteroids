@@ -16,47 +16,53 @@ namespace _Project.Sources.Gameplay
     [RequireComponent(typeof(DirectionalRotator))]
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(PlayerLife))]
-    public class Player : MonoBehaviour, ISceneTickable
+    public class Player : MonoBehaviour, ISceneTickable, IPausable
     {
         public event Action Death;
-        public ScreenBoundsTracker ScreenBoundsTrackerTemplate { get; private set; }
-        public Rigidbody2D RigidBodyTemplate { get; private set; }
-        public InertialMover InertialMoverTemplate { get; private set; }
-        public DirectionalRotator DirectionalRotatorTemplate { get; private set; }
-        public Laser PlayerLaser { get; private set; }
+        public Rigidbody2D PlayerRigidBody { get; private set; }
+        public InertialMover PlayerInertialMover { get; private set; }
+        public DirectionalRotator PlayerDirectionalRotator { get; private set; }
+        [field: SerializeField] public Laser PlayerLaser { get; private set; }
+        [field: SerializeField] public LaserVisual PlayerLaserVisual { get; private set; }
 
+        private ScreenBoundsTracker _screenBoundsTracker; 
         private ScreenTeleporter _playerTeleporter;
         private PlayerLife _life;
         private float _maxHealth;
         private Camera _camera;
+        private PlayerCombatSettings _playerCombatSettings;
 
         [Inject]
-        public void Construct(PlayerCombatSettings combatSettings, Camera cameraTemplate)
+        public void Construct(
+            PlayerCombatSettings combatSettings, 
+            Camera mainCamera,
+            ScreenBoundsTracker boundsTracker)
         {
-            _camera = cameraTemplate;
+            _camera = mainCamera;
             _maxHealth = combatSettings.MaxHealth;
+            _playerCombatSettings =  combatSettings;
+            _screenBoundsTracker = boundsTracker;
         }
 
-        public void Init(Laser laser)
+        public void Init()
         {
-            PlayerLaser = laser;
-
             _playerTeleporter = GetComponent<ScreenTeleporter>();
 
-            RigidBodyTemplate = GetComponent<Rigidbody2D>();
+            PlayerRigidBody = GetComponent<Rigidbody2D>();
 
-            InertialMoverTemplate = GetComponent<InertialMover>();
-            DirectionalRotatorTemplate = GetComponent<DirectionalRotator>();
+            PlayerInertialMover = GetComponent<InertialMover>();
+            PlayerDirectionalRotator = GetComponent<DirectionalRotator>();
             
             _life = GetComponent<PlayerLife>();
             _life.Init(_maxHealth);
 
-            ScreenBoundsTrackerTemplate = new ScreenBoundsTracker();
-            ScreenBoundsTrackerTemplate.Init(RigidBodyTemplate, _camera);
+            _screenBoundsTracker.Init(PlayerRigidBody, _camera);
 
-            _playerTeleporter.Init(ScreenBoundsTrackerTemplate);
+            _playerTeleporter.Init(_screenBoundsTracker);
 
             _life.OnDeath += OnDeath;
+            
+            PlayerLaser.Init(PlayerLaserVisual, _playerCombatSettings);
         }
 
         private void OnDeath()
@@ -67,14 +73,26 @@ namespace _Project.Sources.Gameplay
         public void Tick()
         {
             _playerTeleporter.Tick();
+            PlayerLaser.LocalTick();
         }
         public void ResetPlayer()
         {
-            RigidBodyTemplate.position = Vector3.zero;
-            RigidBodyTemplate.rotation = 0;
+            PlayerRigidBody.position = Vector3.zero;
+            PlayerRigidBody.rotation = 0;
 
             PlayerLaser.ResetParameters();
         }
         private void OnDestroy() => _life.OnDeath -= Death;
+        public void Pause()
+        {
+            PlayerInertialMover.DisableMoving();
+            PlayerDirectionalRotator.SetEnabled(false);
+        }
+
+        public void Unpause()
+        {
+            PlayerInertialMover.EnableMoving();
+            PlayerDirectionalRotator.SetEnabled(true);
+        }
     }
 }

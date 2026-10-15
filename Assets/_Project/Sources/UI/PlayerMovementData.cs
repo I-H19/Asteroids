@@ -1,9 +1,4 @@
-using System;
-using _Project.Sources.Gameplay;
-using _Project.Sources.Gameplay.ObjectMovement.Movers;
-using _Project.Sources.Gameplay.ObjectMovement.Rotators;
 using UnityEngine;
-using VContainer;
 
 namespace _Project.Sources.UI
 {

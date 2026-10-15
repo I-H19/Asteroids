@@ -21,10 +21,10 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
     {
         public DirectionalMoverSettings MoverSettings { get; private set; }
 
-        public IMover Mover { get; private set; }
-
+        public IMover Mover => _directionalMover;
         public event Action<IEnemy> Killed;
 
+        private DirectionalMover _directionalMover;
         private EnemyLife _enemyLife;
         private Rigidbody2D _rigidbody2D;
         private LookAtRotator _lookAtRotator;
@@ -32,8 +32,15 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
         private Camera _camera;
 
         [Inject]
-        public void Construct(Camera mainCamera) => _camera = mainCamera;
-        public void Init(DirectionalMoverSettings moverSettings, Player player, float damageCount)
+        public void Construct(Camera mainCamera, ScreenBoundsTracker screenBoundsTracker)
+        {
+            _camera = mainCamera;
+            _screenBoundsTracker = screenBoundsTracker;
+        }
+        public void Init(
+            DirectionalMoverSettings moverSettings,
+            Player player,
+            float damageCount)
         {
             MoverSettings = moverSettings;
 
@@ -42,9 +49,9 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
 
             _enemyLife = GetComponent<EnemyLife>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
-            Mover = GetComponent<DirectionalMover>();
-            Mover.Init(MoverSettings, _rigidbody2D);
-            Mover.SetMoving(true);
+            _directionalMover = GetComponent<DirectionalMover>();
+            _directionalMover.Init(MoverSettings, _rigidbody2D);
+            _directionalMover.EnableMoving();
 
             EnemyDamageSource damageSource = GetComponent<EnemyDamageSource>();
             damageSource.Init(damageCount);
@@ -52,7 +59,6 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
             _lookAtRotator = GetComponent<LookAtRotator>();
             _lookAtRotator.Init(player.transform);
 
-            _screenBoundsTracker = new ScreenBoundsTracker();
             _screenBoundsTracker.Init(_rigidbody2D, _camera);
             
             _enemyLife.OnDeath += OnDeath;
@@ -70,7 +76,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
         public void Tick()
         {
             _lookAtRotator.Rotate();
-            Mover.Move();
+            _directionalMover.Move();
         }
     }
 }

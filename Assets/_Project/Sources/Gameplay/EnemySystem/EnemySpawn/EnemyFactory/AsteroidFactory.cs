@@ -15,18 +15,21 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory
         private EnemySettings _enemySettings;
 
         [Inject]
-        public void Construct(IObjectResolver resolver, PrefabHolder prefabHolder, EnemySettings enemySettings)
+        public void Construct(
+            IObjectResolver resolver,
+            PrefabHolder prefabHolder,
+            EnemySettings enemySettings)
         {
             _resolver = resolver;
-            _asteroidPrefab = prefabHolder.AsteroidTemplate;
-            _fragmentPrefab = prefabHolder.AsteroidFragmentTemplate;
+            _asteroidPrefab = prefabHolder.AsteroidPrefab;
+            _fragmentPrefab = prefabHolder.AsteroidFragmentPrefab;
             _enemySettings = enemySettings;
         }
         public IEnemy SpawnOne(Vector3 position)
         {
             Asteroid asteroid = _resolver.Instantiate(_asteroidPrefab, position, Quaternion.identity);
 
-            asteroid.Init(_enemySettings.AsteroidMovingSettings, _enemySettings.AsteroidDamage, false);
+            asteroid.Init(_enemySettings.AsteroidMovingSettings, _enemySettings.AsteroidDamage);
 
             return asteroid;
         }

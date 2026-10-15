@@ -18,10 +18,11 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
     {
         public event Action<IEnemy> Killed;
         public DirectionalMoverSettings MoverSettings { get; private set; }
-        public IMover Mover { get; private set; }
+        public IMover Mover => _directionalMover;
         [field: SerializeField] public bool IsActiveFragment { get; private set; } = false;
         [field: SerializeField] public List<AsteroidFragment> Fragments { get; private set; } = new();
 
+        private DirectionalMover _directionalMover;
         private Rigidbody2D _rigidbody2D;
         private EnemyLife _enemyLife;
         private ScreenTeleporter _screenTeleporter;
@@ -30,9 +31,15 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
 
 
         [Inject]
-        public void Construct(Camera mainCamera) => _camera = mainCamera;
+        public void Construct(Camera mainCamera, ScreenBoundsTracker screenBoundsTracker)
+        {
+            _camera = mainCamera;
+            _screenBoundsTracker = screenBoundsTracker;
+        }
 
-        public void Init(DirectionalMoverSettings moverSettings, float damageCount, bool isFragment)
+        public void Init(
+            DirectionalMoverSettings moverSettings,
+            float damageCount)
         {
             float randomAngleDegrees = UnityEngine.Random.Range(0f, 360f);
             gameObject.transform.localEulerAngles = new Vector3(0f, 0f, randomAngleDegrees);
@@ -41,10 +48,10 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
 
             _enemyLife = GetComponent<EnemyLife>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
-            Mover = GetComponent<DirectionalMover>();
-            Mover.Init(MoverSettings, _rigidbody2D);
+            _directionalMover = GetComponent<DirectionalMover>();
+            _directionalMover.Init(MoverSettings, _rigidbody2D);
 
-            Mover.SetMoving(true);
+            _directionalMover.EnableMoving();
 
             EnemyDamageSource damageSource = GetComponent<EnemyDamageSource>();
             damageSource.Init(damageCount);
@@ -52,7 +59,6 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
 
             _screenTeleporter = GetComponent<ScreenTeleporter>();
 
-            _screenBoundsTracker = new ScreenBoundsTracker();
             _screenBoundsTracker.Init(_rigidbody2D, _camera);
 
             _screenTeleporter.Init(_screenBoundsTracker);
@@ -64,7 +70,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
 
         public void Tick()
         {
-            Mover.Move();
+            _directionalMover.Move();
             _screenTeleporter.Tick();
         }
 

@@ -15,10 +15,13 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory
         private Player _player;
 
         [Inject]
-        public void Construct(IObjectResolver resolver, PrefabHolder prefabHolder, EnemySettings enemySettings)
+        public void Construct(
+            IObjectResolver resolver,
+            PrefabHolder prefabHolder,
+            EnemySettings enemySettings)
         {
             _resolver = resolver;
-            _enemyPrefab = prefabHolder.UfoTemplate;
+            _enemyPrefab = prefabHolder.UfoPrefab;
             _enemySettings = enemySettings;
         }
         public void Init(Player player) => _player = player;

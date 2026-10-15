@@ -1,7 +1,6 @@
 using System;
 using _Project.Sources.GameLoop;
 using _Project.Sources.Gameplay.ObjectMovement.Movers;
-using UnityEngine;
 
 namespace _Project.Sources.Gameplay.EnemySystem.Enemy
 {

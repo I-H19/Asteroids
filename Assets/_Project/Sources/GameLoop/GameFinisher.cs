@@ -1,7 +1,5 @@
 using System;
 using _Project.Sources.Gameplay;
-using _Project.Sources.UI;
-using UnityEngine;
 using VContainer;
 
 namespace _Project.Sources.GameLoop

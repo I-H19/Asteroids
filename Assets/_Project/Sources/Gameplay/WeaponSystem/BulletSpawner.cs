@@ -1,32 +1,36 @@
 using System.Collections.Generic;
 using _Project.Sources.Config;
 using _Project.Sources.Config.Movement;
+using _Project.Sources.GameLoop;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
 namespace _Project.Sources.Gameplay.WeaponSystem
 {
-    public class BulletSpawner
+    public class BulletSpawner : IPausable, ISceneTickable
     {
         private Player _player;
-        private Bullet _bulletTemplate;
+        private Bullet _bulletPrefab;
         private float _bulletCooldown;
-        private IMoverSettings _bulletMoverSettings;
+        private DirectionalMoverSettings _bulletMoverSettings;
         private IObjectResolver _resolver;
 
         private bool _isSpawning;
+        private bool _isPause;
         private float _nextShotTime;
         private float _bulletDamage;
 
         private readonly List<Bullet> _bullets = new();
-
+        
         [Inject]
-        public void Construct(IObjectResolver resolver, PrefabHolder spawnerPrefabs,
+        public void Construct(
+            IObjectResolver resolver,
+            PrefabHolder spawnerPrefabs,
             PlayerCombatSettings playerCombatSettings)
         {
             _resolver = resolver;
-            _bulletTemplate = spawnerPrefabs.BulletTemplate;
+            _bulletPrefab = spawnerPrefabs.BulletPrefab;
             _bulletCooldown = playerCombatSettings.BulletCooldown;
             _bulletMoverSettings = playerCombatSettings.BulletMoverSettings;
             _bulletDamage = playerCombatSettings.BulletDamage;
@@ -41,6 +45,8 @@ namespace _Project.Sources.Gameplay.WeaponSystem
 
         public void Tick()
         {
+            if(_isPause) return;
+            
             foreach (Bullet bullet in _bullets) bullet.Tick();
 
             if (!_isSpawning) return;
@@ -55,7 +61,7 @@ namespace _Project.Sources.Gameplay.WeaponSystem
         private void SpawnBullet()
         {
             Bullet bullet =
-                _resolver.Instantiate(_bulletTemplate, _player.transform.position, _player.transform.rotation);
+                _resolver.Instantiate(_bulletPrefab, _player.transform.position, _player.transform.rotation);
 
             bullet.Init(_bulletMoverSettings, _bulletDamage);
             _bullets.Add(bullet);
@@ -67,6 +73,19 @@ namespace _Project.Sources.Gameplay.WeaponSystem
         {
             _bullets.Remove(bullet);
             bullet.Destroyed -= OnBulletDestroy;
+        }
+
+        public void Pause()
+        {
+            _isPause = true;
+            StopSpawning();
+            foreach (Bullet bullet in _bullets) bullet.Pause();
+        }
+
+        public void Unpause()
+        {
+            _isPause = false;
+            foreach (Bullet bullet in _bullets) bullet.Unpause();
         }
     }
 }

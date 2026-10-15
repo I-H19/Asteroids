@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Project.Sources.Gameplay.EnemySystem.Enemy;
-using _Project.Sources.UI;
-using UnityEngine;
-using VContainer;
 
 namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 {
@@ -34,9 +31,7 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
             _aliveEnemies.Clear();
             AliveCount = 0;
         }
-
-        private void OnDestroy() => Unsubscribe();
-
+        
         private void Unsubscribe()
         {
             foreach (IEnemy enemy in _aliveEnemies)

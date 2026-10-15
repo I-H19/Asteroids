@@ -14,26 +14,26 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 
         private EnemySpawnerSettings _enemySpawnerSettings;
         private EnemySettings _enemySettings;
-        private IObjectResolver _resolver;
 
         private AsteroidFactory _asteroidFactory;
         private UfoFactory _ufoFactory;
         private ScreenBoundsTracker _boundsTracker;
 
         [Inject]
-        public void Construct(IObjectResolver resolver, EnemySpawnerSettings enemySpawnerSettings,
+        public void Construct(
+            EnemySpawnerSettings enemySpawnerSettings,
             AsteroidFactory asteroidFactory,
-            UfoFactory ufoFactory, EnemyRegistry enemiesRegistry, EnemySettings enemySettings)
+            UfoFactory ufoFactory,
+            EnemyRegistry enemiesRegistry,
+            EnemySettings enemySettings,
+            ScreenBoundsTracker boundsTracker)
         {
             _enemiesRegistry = enemiesRegistry;
 
             _enemySpawnerSettings = enemySpawnerSettings;
             _enemySettings = enemySettings;
-
-            _resolver = resolver;
-
-            _boundsTracker = new ScreenBoundsTracker();
-            _resolver.Inject(_boundsTracker);
+            
+            _boundsTracker = boundsTracker;
             _boundsTracker.InitBounds();
             
             _asteroidFactory = asteroidFactory;

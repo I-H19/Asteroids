@@ -1,8 +1,8 @@
 ﻿using System;
 using _Project.Sources.Config;
+using _Project.Sources.GameLoop;
 using _Project.Sources.Gameplay.DamageSystem.DamageSource;
 using UnityEngine;
-using VContainer;
 
 namespace _Project.Sources.Gameplay.WeaponSystem
 {
@@ -32,15 +32,14 @@ namespace _Project.Sources.Gameplay.WeaponSystem
         private float _nextShootTime;
 
         private bool _isShooting;
+        
 
-
-        [Inject]
-        public void Construct(PlayerCombatSettings combatSettings)
+        public void Init(LaserVisual laserVisual, PlayerCombatSettings combatSettings)
         {
             _damageSource = GetComponent<PlayerDamageSource>();
 
             _damageSource.ChangeDamage(combatSettings.LaserDamage);
-            _damageSource.ChangeType(true);
+            _damageSource.ChangeHitType(HitDetectionType.HitAll);
 
 
             MaxChargesNumber = combatSettings.MaxLaserCharge;
@@ -53,10 +52,7 @@ namespace _Project.Sources.Gameplay.WeaponSystem
 
             _nextShootTime = Time.time;
             _nextChargeTime = Time.time;
-        }
-
-        public void Init(LaserVisual laserVisual)
-        {
+            
             _laserVisual = laserVisual;
             SetLaserActive(false);
         }
@@ -81,7 +77,7 @@ namespace _Project.Sources.Gameplay.WeaponSystem
             _nextChargeTime = Time.time;
         }
 
-        public void Tick()
+        public void LocalTick()
         {
             Ticked?.Invoke();
 

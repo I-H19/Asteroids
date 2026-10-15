@@ -1,19 +1,19 @@
 using System;
 using _Project.Sources.Gameplay;
 using _Project.Sources.Gameplay.EnemySystem.EnemySpawn;
-using _Project.Sources.Scopes;
-using _Project.Sources.UI;
+using UnityEngine.UI;
 using VContainer;
 
 namespace _Project.Sources.GameLoop
 {
-    public class GameRestarter
+    public class GameRestarter : IDisposable
     {
         public event Action Restarted;
 
         private GamePause _gamePause;
         private EnemyRegistry _enemiesRegistry;
         private Player _player;
+        private Button _gameRestartButton;
 
 
         [Inject]
@@ -23,7 +23,13 @@ namespace _Project.Sources.GameLoop
             _enemiesRegistry = enemiesRegistry;
         }
 
-        public void Init(Player player) => _player = player;
+        public void Init(Player player, Button restartButton)
+        {
+            _player = player;
+            _gameRestartButton =  restartButton;
+            
+            _gameRestartButton.onClick.AddListener(RestartGame);
+        }
 
         public void RestartGame()
         {
@@ -34,5 +40,7 @@ namespace _Project.Sources.GameLoop
 
             _gamePause.SetPause(false);
         }
+
+        public void Dispose() => _gameRestartButton.onClick.RemoveAllListeners();
     }
 }

@@ -9,51 +9,51 @@ namespace _Project.Sources.Gameplay.ObjectMovement.Movers
         public float CurrentSpeed { get; private set; }
         public event Action SpeedChanged;
         public event Action PositionChanged;
-        public MovingDirection MovingDirection { get; private set; } = MovingDirection.None;
-        public Transform ObjectTransform { get; private set; }
 
-        private bool _isAcceleration = false;
-        private bool _isBraking = false;
+        private MovingDirection _movingDirection = MovingDirection.None;
+        private Transform _objectTransform;
+        private bool _isAcceleration;
+        private bool _isBraking;
         private Rigidbody2D _rigidBody;
         private float _maxForwardSpeed;
         private float _forwardAcceleration;
         private float _coastDeceleration;
         private float _brakeDeceleration;
         private float _stopEpsilon;
+        private float _oldSpeed;
         private bool _enabled = true;
 
-        public void Init(IMoverSettings moverSettings, Rigidbody2D moverRigidbody)
+        public void Init(InertialMoverSettings moverSettings, Rigidbody2D moverRigidbody)
         {
-            if (moverSettings is not InertialMoverSettings)
-                throw new Exception("Incorrect mover settings");
-
-            InertialMoverSettings inertialMoverSettings = (InertialMoverSettings)moverSettings;
-
             _rigidBody = moverRigidbody;
-            _maxForwardSpeed = inertialMoverSettings.MaxForwardSpeed;
-            _forwardAcceleration = inertialMoverSettings.ForwardAcceleration;
-            _coastDeceleration = inertialMoverSettings.CoastDeceleration;
-            _brakeDeceleration = inertialMoverSettings.BrakeDeceleration;
-            _stopEpsilon = inertialMoverSettings.StopEpsilon;
+            _maxForwardSpeed = moverSettings.MaxForwardSpeed;
+            _forwardAcceleration = moverSettings.ForwardAcceleration;
+            _coastDeceleration = moverSettings.CoastDeceleration;
+            _brakeDeceleration = moverSettings.BrakeDeceleration;
+            _stopEpsilon = moverSettings.StopEpsilon;
 
-            ObjectTransform = moverRigidbody.transform;
+            _objectTransform = moverRigidbody.transform;
             CurrentSpeed = 0;
         }
+
         public void Move()
         {
+            _oldSpeed = CurrentSpeed;
             if (!_enabled) return;
-            
-            PositionChanged?.Invoke();
-            
-            Vector2 forward = ObjectTransform.up;
+            if (CurrentSpeed > 0)
+                PositionChanged?.Invoke();
+
+
+            Vector2 forward = _objectTransform.up;
 
             CurrentSpeed = Vector2.Dot(_rigidBody.linearVelocity, forward);
-            SpeedChanged?.Invoke();
+            if (!Mathf.Approximately(_oldSpeed, CurrentSpeed))
+                SpeedChanged?.Invoke();
 
             float currentSpeed = Vector2.Dot(_rigidBody.linearVelocity, forward);
             float deltaTime = Time.fixedDeltaTime;
 
-            switch (MovingDirection)
+            switch (_movingDirection)
             {
                 case MovingDirection.Acceleration:
                     currentSpeed = Mathf.MoveTowards(
@@ -82,45 +82,49 @@ namespace _Project.Sources.Gameplay.ObjectMovement.Movers
 
             _rigidBody.linearVelocity = forward * currentSpeed;
         }
-        public void SetMoving(bool value)
+
+        public void StartAcceleration(bool value)
         {
             _isAcceleration = value;
             UpdateMovingDirection();
         }
-        public void SetBraking(bool value)
+
+        public void StartBraking(bool value)
         {
             _isBraking = value;
             UpdateMovingDirection();
         }
 
-        public void SetEnabled(bool enabled)
+        public void EnableMoving()
+            => _enabled = true;
+
+        public void DisableMoving()
         {
-            _enabled = enabled;
+            _enabled = false;
             if (!_enabled)
             {
                 _isAcceleration = false;
                 _isBraking = false;
-                MovingDirection = MovingDirection.None;
+                _movingDirection = MovingDirection.None;
 
                 _rigidBody.linearVelocity = Vector2.zero;
             }
         }
-        public void SetPosition(Vector2 position) => _rigidBody.position = position;
+
         private void UpdateMovingDirection()
         {
             if (_isAcceleration && !_isBraking)
             {
-                MovingDirection = MovingDirection.Acceleration;
+                _movingDirection = MovingDirection.Acceleration;
             }
             else if (_isBraking && !_isAcceleration)
             {
-                MovingDirection = MovingDirection.Bracking;
+                _movingDirection = MovingDirection.Bracking;
             }
             else
             {
-                MovingDirection = MovingDirection.None;
+                _movingDirection = MovingDirection.None;
             }
         }
-
     }
 }

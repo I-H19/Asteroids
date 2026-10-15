@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using _Project.Sources.Gameplay;
 using _Project.Sources.Gameplay.EnemySystem.EnemySpawn;
 using _Project.Sources.Gameplay.WeaponSystem;
@@ -11,37 +13,20 @@ namespace _Project.Sources.GameLoop
         private EnemyDriver _enemyDriver;
         private SceneTickDriver _sceneTickDriver;
         private Player _player;
+        private IEnumerable _pausables;
 
         [Inject]
-        public void Construct(SceneTickDriver sceneTickDriver, EnemyDriver enemyTickDriver)
-        {
-            _enemyDriver = enemyTickDriver;
-            _sceneTickDriver = sceneTickDriver;
-        }
+        public void Construct(IEnumerable<IPausable> pausables) => _pausables = pausables;
 
-        public void Init(Player player, BulletSpawner bulletSpawner)
-        {
-            _bulletSpawner = bulletSpawner;
-            _player = player;
-        }
 
         public void SetPause(bool pause)
         {
-            _sceneTickDriver.SetPause(pause);
-
             if (pause)
-            {
-                _enemyDriver.FreezeEnemyMoving();
-                _player.InertialMoverTemplate.SetEnabled(false);
-                _player.DirectionalRotatorTemplate.SetEnabled(false);
-                _bulletSpawner.StopSpawning();
-            }
+                foreach (IPausable pausable in _pausables)
+                    pausable.Pause();
             else
-            {
-                _enemyDriver.UnfreezeEnemyMoving();
-                _player.InertialMoverTemplate.SetEnabled(true);
-                _player.DirectionalRotatorTemplate.SetEnabled(true);
-            }
+                foreach (IPausable pausable in _pausables)
+                    pausable.Unpause();
         }
     }
 }
