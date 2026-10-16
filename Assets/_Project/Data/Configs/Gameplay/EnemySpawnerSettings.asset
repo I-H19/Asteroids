@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06f9b86f8e8039146930708024b20cca, type: 3}
   m_Name: EnemySpawnerSettings
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Sources.Settings.Gameplay.EnemySpawnerSettings
-  <AsteroidSpawnChancePerSecond>k__BackingField: 0.4
-  <UfoSpawnChancePerSecond>k__BackingField: 0.2
-  <MaxEnemiesAlive>k__BackingField: 20
+  <SpawnTryingInterval>k__BackingField: 1
+  <EnemySpawnChance>k__BackingField: 20
+  <AsteroidSpawnChance>k__BackingField: 45
+  <UfoSpawnChance>k__BackingField: 82
+  <MaxEnemiesAlive>k__BackingField: 25

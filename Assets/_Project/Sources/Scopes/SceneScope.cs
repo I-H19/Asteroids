@@ -93,6 +93,7 @@ namespace _Project.Sources.Scopes
             builder.RegisterComponent(_enemySettings);
 
             builder.Register<ScreenBoundsTracker>(Lifetime.Transient);
+            builder.Register<AsteroidSplitter>(Lifetime.Singleton);
             builder.Register<EnemySpawner>(Lifetime.Singleton)
                 .AsSelf()
                 .AsImplementedInterfaces();
@@ -100,6 +101,7 @@ namespace _Project.Sources.Scopes
                 .AsSelf()
                 .AsImplementedInterfaces();
             builder.Register<EnemyRegistry>(Lifetime.Singleton).AsSelf();
+            builder.Register<SpawnOptionsTable>(Lifetime.Singleton);
         }
         
         private void RegisterGameFlow(IContainerBuilder builder)

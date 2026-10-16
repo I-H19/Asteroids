@@ -1,4 +1,5 @@
 ﻿using _Project.Sources.Config.Movement;
+using _Project.Sources.Config.Gameplay;
 using _Project.Sources.Gameplay;
 using _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory;
 using _Project.Sources.Gameplay.ObjectMovement.Movers;
@@ -23,15 +24,17 @@ namespace _Project.Sources.GameLoop
 
         private GameFinisher _gameFinisher;
         private GameRestarter _gameRestarter;
-        private SceneTickDriver _sceneTickDriver;
 
         private UfoFactory _ufoFactory;
+        private AsteroidFactory _asteroidFactory;
+        private EnemySpawnerSettings _enemySpawnerSettings;
 
         private RootUI _rootUI;
         private GamePresenter _gamePresenter;
         private GameModel _gameModel;
         private GameplayBridge _gameplayBridge;
         private PlayerStats _playerStats;
+        private SpawnOptionsTable _spawnOptionsTable;
 
         [Inject]
         public void Construct(
@@ -39,7 +42,6 @@ namespace _Project.Sources.GameLoop
             PlayerKeyboardController playerKeyboardController,
             GameFinisher gameFinisher,
             GameRestarter gameRestarter,
-            SceneTickDriver sceneTickDriver,
             UfoFactory ufoFactory,
             BulletSpawner bulletSpawner,
             Player player,
@@ -47,7 +49,10 @@ namespace _Project.Sources.GameLoop
             GamePresenter gamePresenter,
             GameModel gameModel,
             GameplayBridge gameplayBridge,
-            PlayerStats playerStats)
+            PlayerStats playerStats,
+            SpawnOptionsTable spawnOptionsTable,
+            AsteroidFactory asteroidFactory,
+            EnemySpawnerSettings enemySpawnerSettings)
         {
             _player = player;
             _bulletSpawner = bulletSpawner;
@@ -62,9 +67,11 @@ namespace _Project.Sources.GameLoop
 
             _gameFinisher = gameFinisher;
             _gameRestarter = gameRestarter;
-            _sceneTickDriver = sceneTickDriver;
-
+            
             _ufoFactory = ufoFactory;
+            _spawnOptionsTable = spawnOptionsTable;
+            _asteroidFactory = asteroidFactory;
+            _enemySpawnerSettings = enemySpawnerSettings;
         }
 
         public void Initialize()
@@ -75,8 +82,19 @@ namespace _Project.Sources.GameLoop
             InitializeGameFlow();
             
             _ufoFactory.Init(_player);
-        }
 
+            InitializeSpawnOptions();
+        }
+        
+        private void InitializeSpawnOptions()
+        {
+            _spawnOptionsTable.AddSpawnOption(
+                new SpawnOption(_enemySpawnerSettings.AsteroidSpawnChance, _asteroidFactory));
+
+            _spawnOptionsTable.AddSpawnOption(
+                new SpawnOption(_enemySpawnerSettings.UfoSpawnChance, _ufoFactory));
+        }
+        
         private void InitializeGameFlow()
         {
             _gameRestarter.Init(_player, _rootUI.RestartButton);

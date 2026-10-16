@@ -13,17 +13,20 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory
         private Asteroid _asteroidPrefab;
         private AsteroidFragment _fragmentPrefab;
         private EnemySettings _enemySettings;
+        private AsteroidSplitter _asteroidSplitter;
 
         [Inject]
         public void Construct(
             IObjectResolver resolver,
             PrefabHolder prefabHolder,
-            EnemySettings enemySettings)
+            EnemySettings enemySettings,
+            AsteroidSplitter asteroidSplitter)
         {
             _resolver = resolver;
             _asteroidPrefab = prefabHolder.AsteroidPrefab;
             _fragmentPrefab = prefabHolder.AsteroidFragmentPrefab;
             _enemySettings = enemySettings;
+            _asteroidSplitter = asteroidSplitter;
         }
         public IEnemy SpawnOne(Vector3 position)
         {
@@ -31,10 +34,16 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory
 
             asteroid.Init(_enemySettings.AsteroidMovingSettings, _enemySettings.AsteroidDamage);
 
+            for (int i = 0; i < _enemySettings.AsteroidFragmentsNumber; i++)
+            {
+                AsteroidFragment fragment = Fragment(position, asteroid);
+                _asteroidSplitter.Track(fragment);
+            }
+
             return asteroid;
         }
 
-        public AsteroidFragment SpawnFragment(Vector3 position, Asteroid parent)
+        private AsteroidFragment Fragment(Vector3 position, Asteroid parent)
         {
             AsteroidFragment fragment = _resolver.Instantiate(_fragmentPrefab, position, Quaternion.identity);
 
