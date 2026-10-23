@@ -3,25 +3,41 @@ using System.Collections.Generic;
 using VContainer;
 using VContainer.Unity;
 
-namespace _Project.Sources.GameLoop
+namespace Asteroids
 {
     public class SceneTickDriver : ITickable, IPausable
     {
         private bool _isPaused;
         private IEnumerable _sceneTickables;
 
-        [Inject]
-        public void Construct(IEnumerable<ISceneTickable> sceneTickables) 
-            =>  _sceneTickables  = sceneTickables;
-        
+        public void Pause()
+        {
+            _isPaused = true;
+        }
+
+        public void Unpause()
+        {
+            _isPaused = false;
+        }
+
 
         public void Tick()
         {
-            if (!_isPaused)
-                foreach (ISceneTickable sceneTickable in _sceneTickables) sceneTickable.Tick();
+            if (_isPaused)
+            {
+                return;
+            }
+
+            foreach (ISceneTickable sceneTickable in _sceneTickables)
+            {
+                sceneTickable.Tick();
+            }
         }
-        
-        public void Pause() => _isPaused = true;
-        public void Unpause() => _isPaused = false;
+
+        [Inject]
+        public void Construct(IEnumerable<ISceneTickable> sceneTickables)
+        {
+            _sceneTickables = sceneTickables;
+        }
     }
 }

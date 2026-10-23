@@ -1,19 +1,31 @@
-using _Project.Sources.Config;
-using _Project.Sources.Config.Gameplay;
-using _Project.Sources.Gameplay.EnemySystem.Enemy;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory
+namespace Asteroids
 {
     public class AsteroidFactory : IEnemyFactory
     {
-        private IObjectResolver _resolver;
         private Asteroid _asteroidPrefab;
-        private AsteroidFragment _fragmentPrefab;
-        private EnemySettings _enemySettings;
         private AsteroidSplitter _asteroidSplitter;
+        private EnemySettings _enemySettings;
+        private AsteroidFragment _fragmentPrefab;
+        private IObjectResolver _resolver;
+
+        public IEnemy SpawnOne(Vector3 position)
+        {
+            Asteroid asteroid = _resolver.Instantiate(_asteroidPrefab, position, Quaternion.identity);
+
+            asteroid.Init(_enemySettings.AsteroidMovingSettings, _enemySettings.AsteroidDamage);
+
+            for (int i = 0; i < _enemySettings.AsteroidFragmentCount; i++)
+            {
+                AsteroidFragment fragment = CreateFragment(position, asteroid);
+                _asteroidSplitter.Track(fragment);
+            }
+
+            return asteroid;
+        }
 
         [Inject]
         public void Construct(
@@ -28,22 +40,8 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory
             _enemySettings = enemySettings;
             _asteroidSplitter = asteroidSplitter;
         }
-        public IEnemy SpawnOne(Vector3 position)
-        {
-            Asteroid asteroid = _resolver.Instantiate(_asteroidPrefab, position, Quaternion.identity);
 
-            asteroid.Init(_enemySettings.AsteroidMovingSettings, _enemySettings.AsteroidDamage);
-
-            for (int i = 0; i < _enemySettings.AsteroidFragmentsNumber; i++)
-            {
-                AsteroidFragment fragment = Fragment(position, asteroid);
-                _asteroidSplitter.Track(fragment);
-            }
-
-            return asteroid;
-        }
-
-        private AsteroidFragment Fragment(Vector3 position, Asteroid parent)
+        private AsteroidFragment CreateFragment(Vector3 position, Asteroid parent)
         {
             AsteroidFragment fragment = _resolver.Instantiate(_fragmentPrefab, position, Quaternion.identity);
 

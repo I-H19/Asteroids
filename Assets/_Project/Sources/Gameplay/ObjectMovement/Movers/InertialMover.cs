@@ -1,27 +1,43 @@
-﻿using System;
-using _Project.Sources.Config.Movement;
+using System;
 using UnityEngine;
 
-namespace _Project.Sources.Gameplay.ObjectMovement.Movers
+namespace Asteroids
 {
     public class InertialMover : MonoBehaviour, IMover
     {
-        public float CurrentSpeed { get; private set; }
-        public event Action SpeedChanged;
-        public event Action PositionChanged;
+        private float _brakeDeceleration;
+        private float _coastDeceleration;
+        private bool _enabled = true;
+        private float _forwardAcceleration;
+        private bool _isAccelerating;
+        private bool _isBraking;
+        private float _maxForwardSpeed;
 
         private MovingDirection _movingDirection = MovingDirection.None;
         private Transform _objectTransform;
-        private bool _isAcceleration;
-        private bool _isBraking;
-        private Rigidbody2D _rigidBody;
-        private float _maxForwardSpeed;
-        private float _forwardAcceleration;
-        private float _coastDeceleration;
-        private float _brakeDeceleration;
-        private float _stopEpsilon;
         private float _oldSpeed;
-        private bool _enabled = true;
+        private Rigidbody2D _rigidBody;
+        private float _stopEpsilon;
+        public float CurrentSpeed { get; private set; }
+
+        public void EnableMoving()
+        {
+            _enabled = true;
+        }
+
+        public void DisableMoving()
+        {
+            _enabled = false;
+            
+            _isAccelerating = false;
+            _isBraking = false;
+            _movingDirection = MovingDirection.None;
+
+            _rigidBody.linearVelocity = Vector2.zero;
+        }
+
+        public event Action SpeedChanged;
+        public event Action PositionChanged;
 
         public void Init(InertialMoverSettings moverSettings, Rigidbody2D moverRigidbody)
         {
@@ -39,87 +55,68 @@ namespace _Project.Sources.Gameplay.ObjectMovement.Movers
         public void Move()
         {
             _oldSpeed = CurrentSpeed;
-            if (!_enabled) return;
+            if (!_enabled)
+            {
+                return;
+            }
+
             if (CurrentSpeed > 0)
+            {
                 PositionChanged?.Invoke();
+            }
 
 
             Vector2 forward = _objectTransform.up;
 
             CurrentSpeed = Vector2.Dot(_rigidBody.linearVelocity, forward);
             if (!Mathf.Approximately(_oldSpeed, CurrentSpeed))
+            {
                 SpeedChanged?.Invoke();
+            }
 
             float currentSpeed = Vector2.Dot(_rigidBody.linearVelocity, forward);
             float deltaTime = Time.fixedDeltaTime;
 
-            switch (_movingDirection)
+            currentSpeed = _movingDirection switch
             {
-                case MovingDirection.Acceleration:
-                    currentSpeed = Mathf.MoveTowards(
-                        currentSpeed,
-                        _maxForwardSpeed,
-                        _forwardAcceleration * deltaTime);
-                    break;
-
-                case MovingDirection.Bracking:
-                    currentSpeed = Mathf.MoveTowards(
-                        currentSpeed,
-                        0f,
-                        _brakeDeceleration * deltaTime);
-                    break;
-
-                case MovingDirection.None:
-                    currentSpeed = Mathf.MoveTowards(
-                        currentSpeed,
-                        0f,
-                        _coastDeceleration * deltaTime);
-                    break;
-            }
+                MovingDirection.Acceleration => Mathf.MoveTowards(
+                    currentSpeed,
+                    _maxForwardSpeed,
+                    _forwardAcceleration * deltaTime),
+                MovingDirection.Braking => Mathf.MoveTowards(currentSpeed, 0f, _brakeDeceleration * deltaTime),
+                MovingDirection.None => Mathf.MoveTowards(currentSpeed, 0f, _coastDeceleration * deltaTime),
+                _ => currentSpeed
+            };
 
             if (currentSpeed < _stopEpsilon)
+            {
                 currentSpeed = 0f;
+            }
 
             _rigidBody.linearVelocity = forward * currentSpeed;
         }
 
-        public void StartAcceleration(bool value)
+        public void SetAccelerating(bool isAccelerating)
         {
-            _isAcceleration = value;
+            _isAccelerating = isAccelerating;
             UpdateMovingDirection();
         }
 
-        public void StartBraking(bool value)
+        public void SetBraking(bool isBraking)
         {
-            _isBraking = value;
+            _isBraking = isBraking;
             UpdateMovingDirection();
-        }
-
-        public void EnableMoving()
-            => _enabled = true;
-
-        public void DisableMoving()
-        {
-            _enabled = false;
-            if (!_enabled)
-            {
-                _isAcceleration = false;
-                _isBraking = false;
-                _movingDirection = MovingDirection.None;
-
-                _rigidBody.linearVelocity = Vector2.zero;
-            }
         }
 
         private void UpdateMovingDirection()
         {
-            if (_isAcceleration && !_isBraking)
+            if (_isAccelerating && !_isBraking)
             {
                 _movingDirection = MovingDirection.Acceleration;
             }
-            else if (_isBraking && !_isAcceleration)
+            else if (_isBraking && !_isAccelerating)
             {
-                _movingDirection = MovingDirection.Bracking;
+                _movingDirection = MovingDirection.Braking;
             }
             else
             {

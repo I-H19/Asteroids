@@ -44,7 +44,7 @@ namespace TextMesh_Pro.Examples___Extras.Scripts
                 //m_textContainer = GetComponent<TextContainer>();
 
 
-                //m_textMeshPro.anchorDampening = true;
+                //m_textMeshPro.anchorDampening = true; 
 
                 if (TMProFont != null)
                     m_textMeshPro.font = TMProFont;

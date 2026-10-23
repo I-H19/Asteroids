@@ -1,11 +1,68 @@
 ﻿using System;
-using _Project.Sources.GameLoop;
 using UnityEngine;
 
-namespace _Project.Sources.Input
+namespace Asteroids
 {
-    public class KeyboardMonitor: ISceneTickable
+    public class KeyboardMonitor : ISceneTickable
     {
+        public void Tick()
+        {
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                ForwardButtonDown?.Invoke();
+            }
+
+            if (Input.GetKeyUp(KeyCode.W))
+            {
+                ForwardButtonUp?.Invoke();
+            }
+
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                BackwardButtonDown?.Invoke();
+            }
+
+            if (Input.GetKeyUp(KeyCode.S))
+            {
+                BackwardButtonUp?.Invoke();
+            }
+
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                LeftButtonDown?.Invoke();
+            }
+
+            if (Input.GetKeyUp(KeyCode.A))
+            {
+                LeftButtonUp?.Invoke();
+            }
+
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                RightButtonDown?.Invoke();
+            }
+
+            if (Input.GetKeyUp(KeyCode.D))
+            {
+                RightButtonUp?.Invoke();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                ShootButtonDown?.Invoke();
+            }
+
+            if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Mouse0))
+            {
+                ShootButtonUp?.Invoke();
+            }
+
+            if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.Mouse1))
+            {
+                LaserButtonDown?.Invoke();
+            }
+        }
+
         public event Action ForwardButtonDown;
         public event Action ForwardButtonUp;
 
@@ -22,26 +79,5 @@ namespace _Project.Sources.Input
         public event Action ShootButtonUp;
 
         public event Action LaserButtonDown;
-
-        public void Tick()
-        {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.W)) ForwardButtonDown?.Invoke();
-            if (UnityEngine.Input.GetKeyUp(KeyCode.W)) ForwardButtonUp?.Invoke();
-
-            if (UnityEngine.Input.GetKeyDown(KeyCode.S)) BackwardButtonDown?.Invoke();
-            if (UnityEngine.Input.GetKeyUp(KeyCode.S)) BackwardButtonUp?.Invoke();
-
-            if (UnityEngine.Input.GetKeyDown(KeyCode.A)) LeftButtonDown?.Invoke();
-            if (UnityEngine.Input.GetKeyUp(KeyCode.A)) LeftButtonUp?.Invoke();
-
-            if (UnityEngine.Input.GetKeyDown(KeyCode.D)) RightButtonDown?.Invoke();
-            if (UnityEngine.Input.GetKeyUp(KeyCode.D)) RightButtonUp?.Invoke();
-
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Space) || UnityEngine.Input.GetKeyDown(KeyCode.Mouse0)) ShootButtonDown?.Invoke();
-            if (UnityEngine.Input.GetKeyUp(KeyCode.Space) || UnityEngine.Input.GetKeyUp(KeyCode.Mouse0)) ShootButtonUp?.Invoke();
-
-            if (UnityEngine.Input.GetKeyDown(KeyCode.LeftControl) || UnityEngine.Input.GetKeyDown(KeyCode.Mouse1)) LaserButtonDown?.Invoke();
-        }
     }
 }
-

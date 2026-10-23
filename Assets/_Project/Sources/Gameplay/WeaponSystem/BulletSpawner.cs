@@ -1,28 +1,69 @@
 using System.Collections.Generic;
-using _Project.Sources.Config;
-using _Project.Sources.Config.Movement;
-using _Project.Sources.GameLoop;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace _Project.Sources.Gameplay.WeaponSystem
+namespace Asteroids
 {
     public class BulletSpawner : IPausable, ISceneTickable
     {
-        private Player _player;
-        private Bullet _bulletPrefab;
+        private readonly List<Bullet> _bullets = new();
         private float _bulletCooldown;
+        private float _bulletDamage;
         private DirectionalMoverSettings _bulletMoverSettings;
-        private IObjectResolver _resolver;
+        private Bullet _bulletPrefab;
+        private bool _isPause;
 
         private bool _isSpawning;
-        private bool _isPause;
         private float _nextShotTime;
-        private float _bulletDamage;
+        private Player _player;
+        private IObjectResolver _resolver;
 
-        private readonly List<Bullet> _bullets = new();
-        
+        public void Pause()
+        {
+            _isPause = true;
+            StopSpawning();
+            foreach (Bullet bullet in _bullets)
+            {
+                bullet.Pause();
+            }
+        }
+
+        public void Unpause()
+        {
+            _isPause = false;
+            foreach (Bullet bullet in _bullets)
+            {
+                bullet.Unpause();
+            }
+        }
+
+        public void Tick()
+        {
+            if (_isPause)
+            {
+                return;
+            }
+
+            foreach (Bullet bullet in _bullets)
+            {
+                bullet.Tick();
+            }
+
+            if (!_isSpawning)
+            {
+                return;
+            }
+
+            if (!(Time.time >= _nextShotTime))
+            {
+                return;
+            }
+
+            SpawnBullet();
+            _nextShotTime = Time.time + _bulletCooldown;
+        }
+
         [Inject]
         public void Construct(
             IObjectResolver resolver,
@@ -38,24 +79,19 @@ namespace _Project.Sources.Gameplay.WeaponSystem
             _nextShotTime = Time.time;
         }
 
-        public void Init(Player player) => _player = player;
-
-        public void StartSpawning() => _isSpawning = true;
-        public void StopSpawning() => _isSpawning = false;
-
-        public void Tick()
+        public void Init(Player player)
         {
-            if(_isPause) return;
-            
-            foreach (Bullet bullet in _bullets) bullet.Tick();
+            _player = player;
+        }
 
-            if (!_isSpawning) return;
+        public void StartSpawning()
+        {
+            _isSpawning = true;
+        }
 
-            if (Time.time >= _nextShotTime)
-            {
-                SpawnBullet();
-                _nextShotTime = Time.time + _bulletCooldown;
-            }
+        public void StopSpawning()
+        {
+            _isSpawning = false;
         }
 
         private void SpawnBullet()
@@ -66,26 +102,13 @@ namespace _Project.Sources.Gameplay.WeaponSystem
             bullet.Init(_bulletMoverSettings, _bulletDamage);
             _bullets.Add(bullet);
 
-            bullet.Destroyed += OnBulletDestroy;
+            bullet.Destroyed += OnBulletDestroyed;
         }
 
-        private void OnBulletDestroy(Bullet bullet)
+        private void OnBulletDestroyed(Bullet bullet)
         {
             _bullets.Remove(bullet);
-            bullet.Destroyed -= OnBulletDestroy;
-        }
-
-        public void Pause()
-        {
-            _isPause = true;
-            StopSpawning();
-            foreach (Bullet bullet in _bullets) bullet.Pause();
-        }
-
-        public void Unpause()
-        {
-            _isPause = false;
-            foreach (Bullet bullet in _bullets) bullet.Unpause();
+            bullet.Destroyed -= OnBulletDestroyed;
         }
     }
 }

@@ -1,21 +1,59 @@
 ﻿using System;
-using _Project.Sources.Config.Movement;
 using UnityEngine;
 
-namespace _Project.Sources.Gameplay.ObjectMovement.Rotators
+namespace Asteroids
 {
-    public class DirectionalRotator : MonoBehaviour, IRotator
+    public class DirectionalRotator : MonoBehaviour
     {
-        public float CurrentAngle { get; private set; }
-
-        public event Action AngleChanged;
+        private bool _enabled = true;
 
         private Rigidbody2D _rigidBody;
-
-        private float _rotationSpeed;
         private bool _rotateLeft;
         private bool _rotateRight;
-        private bool _enabled = true;
+
+        private float _rotationSpeed;
+        public float CurrentAngle { get; private set; }
+
+        public void Rotate()
+        {
+            if (!_enabled)
+            {
+                return;
+            }
+
+            float deltaTime = Time.fixedDeltaTime;
+
+            float direction = 0f;
+
+            if (_rotateLeft && !_rotateRight)
+            {
+                direction = 1f;
+            }
+            else if (_rotateRight && !_rotateLeft)
+            {
+                direction = -1f;
+            }
+
+            _rigidBody.MoveRotation(_rigidBody.rotation + direction * _rotationSpeed * deltaTime);
+
+            CurrentAngle = transform.eulerAngles.z;
+            AngleChanged?.Invoke();
+        }
+
+        public void SetEnabled(bool enabledState)
+        {
+            _enabled = enabledState;
+            if (_enabled)
+            {
+                return;
+            }
+
+            _rigidBody.angularVelocity = 0f;
+            _rotateLeft = false;
+            _rotateRight = false;
+        }
+
+        public event Action AngleChanged;
 
         public void Init(Rigidbody2D rigidBody, DirectionalRotationSettings rotationSettings)
         {
@@ -24,40 +62,15 @@ namespace _Project.Sources.Gameplay.ObjectMovement.Rotators
 
             _rotationSpeed = rotationSettings.RotationSpeed;
         }
-        public void SetRotateLeft(bool value) => _rotateLeft = value;
-        public void SetRotateRight(bool value) => _rotateRight = value;
 
-        public void Rotate()
+        public void SetRotateLeft(bool value)
         {
-            if (!_enabled) return;
-
-            float deltaTime = Time.fixedDeltaTime;
-
-            float direction = 0f;
-
-            if (_rotateLeft && !_rotateRight)
-                direction = 1f;
-            else if (_rotateRight && !_rotateLeft)
-                direction = -1f;
-
-            _rigidBody.MoveRotation(
-                _rigidBody.rotation + direction * _rotationSpeed * deltaTime
-            );
-
-            CurrentAngle = transform.eulerAngles.z;
-            AngleChanged?.Invoke();
+            _rotateLeft = value;
         }
 
-        public void SetEnabled(bool enabled)
+        public void SetRotateRight(bool value)
         {
-            _enabled = enabled;
-            if (!_enabled)
-            {
-                _rigidBody.angularVelocity = 0f;
-                _rotateLeft = false;
-                _rotateRight = false;
-            }
+            _rotateRight = value;
         }
-
     }
 }

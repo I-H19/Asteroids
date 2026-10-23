@@ -1,9 +1,9 @@
-﻿namespace _Project.Sources.Gameplay.ObjectMovement.Movers
+namespace Asteroids
 {
     public enum MovingDirection : byte
     {
         Acceleration,
-        Bracking,
+        Braking,
         None
     }
 }

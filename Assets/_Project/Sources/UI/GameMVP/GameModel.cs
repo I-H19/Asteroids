@@ -1,72 +1,73 @@
 using System;
 using UnityEngine;
 
-namespace _Project.Sources.UI.GameMVP
+namespace Asteroids
 {
     public class GameModel
     {
-        public event Action OnScoreChanged;
-        public event Action OnStatsChanged;
-        public event Action OnGameFinished;
-        public int Score { get; private set; } = 0;
+        public int Score { get; private set; }
         public PlayerStats PlayerStats { get; private set; }
+        public event Action ScoreChanged;
+        public event Action StatsChanged;
+        public event Action GameFinished;
 
         public void Init(PlayerStats playerStats)
         {
             PlayerStats = playerStats;
         }
 
-        public void ScoreIncrement()
+        public void IncrementScore()
         {
             Score++;
-            OnScoreChanged?.Invoke();
+            ScoreChanged?.Invoke();
         }
 
         public void ResetScore()
         {
             Score = 0;
-            OnScoreChanged?.Invoke();
+            ScoreChanged?.Invoke();
         }
 
         public void ChangePosition(Vector2 position)
         {
             PlayerStats.ChangePosition(position);
-            OnStatsChanged?.Invoke();
+            StatsChanged?.Invoke();
         }
 
         public void ChangeAngle(float angle)
         {
             PlayerStats.ChangeAngle(angle);
-            OnStatsChanged?.Invoke();
+            StatsChanged?.Invoke();
         }
 
         public void ChangeSpeed(float speed)
         {
             PlayerStats.ChangeSpeed(speed);
-            OnStatsChanged?.Invoke();
+            StatsChanged?.Invoke();
         }
 
         public void ChangeTotalAmmo(int totalAmmo)
         {
             PlayerStats.ChangeTotalAmmo(totalAmmo);
-            OnStatsChanged?.Invoke();
+            StatsChanged?.Invoke();
         }
 
         public void ChangeMaxCharges(int maxCharges)
         {
             PlayerStats.ChangeMaxCharges(maxCharges);
-            OnStatsChanged?.Invoke();
+            StatsChanged?.Invoke();
         }
 
         public void ChangeCooldown(float shootingCooldown, float reloadingTime)
         {
             PlayerStats.ChangeShootingCooldown(shootingCooldown);
             PlayerStats.ChangeReloadingTime(reloadingTime);
-            OnStatsChanged?.Invoke();
+            StatsChanged?.Invoke();
         }
-        public void GameFinish()
+
+        public void FinishGame()
         {
-            OnGameFinished?.Invoke();
+            GameFinished?.Invoke();
         }
     }
 }

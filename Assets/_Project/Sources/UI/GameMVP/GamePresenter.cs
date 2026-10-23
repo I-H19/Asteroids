@@ -1,54 +1,72 @@
 using System;
 using VContainer;
 
-namespace _Project.Sources.UI.GameMVP
+namespace Asteroids
 {
     public class GamePresenter : IDisposable
     {
         private GameModel _gameModel;
         private GameView _gameView;
 
+        public void Dispose()
+        {
+            Unsubscribe();
+        }
+
         [Inject]
-        public void Construct(
-            GameModel gameModel)
+        public void Construct(GameModel gameModel)
         {
             _gameModel = gameModel;
         }
 
-        public void Init(
-            GameView gameView)
+        public void Init(GameView gameView)
         {
             _gameView = gameView;
 
             Subscribe();
         }
 
-        public void Dispose() => Unsubscribe();
-
         private void Subscribe()
         {
-            _gameModel.OnScoreChanged += OnScoreChanged;
-            _gameModel.OnStatsChanged += OnStatsChanged;
+            _gameModel.ScoreChanged += OnScoreChanged;
+            _gameModel.StatsChanged += OnStatsChanged;
 
-            _gameModel.OnGameFinished += ActivateRestartPanel;
-            _gameView.OnRestartGameButtonClicked += OnRestartButtonClick;
+            _gameModel.GameFinished += OnGameFinished;
+            _gameView.RestartButtonClicked += OnRestartButtonClicked;
         }
 
         private void Unsubscribe()
         {
-            _gameModel.OnScoreChanged -= OnScoreChanged;
-            _gameModel.OnStatsChanged -= OnStatsChanged;
+            _gameModel.ScoreChanged -= OnScoreChanged;
+            _gameModel.StatsChanged -= OnStatsChanged;
 
-            _gameModel.OnGameFinished -= ActivateRestartPanel;
-            _gameView.OnRestartGameButtonClicked -= OnRestartButtonClick;
+            _gameModel.GameFinished -= OnGameFinished;
+            _gameView.RestartButtonClicked -= OnRestartButtonClicked;
         }
 
-        private void OnRestartButtonClick() => DeactivateRestartPanel();
+        private void OnRestartButtonClicked()
+        {
+            DeactivateRestartPanel();
+        }
 
-        private void OnScoreChanged() => _gameView.ChangeScore(_gameModel.Score);
-        private void OnStatsChanged() => _gameView.ChangeHUDStats(_gameModel.PlayerStats);
+        private void OnScoreChanged()
+        {
+            _gameView.ChangeScore(_gameModel.Score);
+        }
 
-        private void ActivateRestartPanel() => _gameView.SetRestartPanelEnabled(true);
-        private void DeactivateRestartPanel() => _gameView.SetRestartPanelEnabled(false);
+        private void OnStatsChanged()
+        {
+            _gameView.ChangeHUDStats(_gameModel.PlayerStats);
+        }
+
+        private void OnGameFinished()
+        {
+            _gameView.SetRestartPanelEnabled(true);
+        }
+
+        private void DeactivateRestartPanel()
+        {
+            _gameView.SetRestartPanelEnabled(false);
+        }
     }
 }

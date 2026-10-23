@@ -1,4 +1,4 @@
-﻿namespace _Project.Sources.GameLoop
+﻿namespace Asteroids
 {
     public interface ISceneTickable
     {

@@ -1,40 +1,41 @@
-﻿using _Project.Sources.Config.Movement;
-using _Project.Sources.Config.Gameplay;
-using _Project.Sources.Gameplay;
-using _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory;
-using _Project.Sources.Gameplay.ObjectMovement.Movers;
-using _Project.Sources.Gameplay.ObjectMovement.Rotators;
-using _Project.Sources.Gameplay.WeaponSystem;
-using _Project.Sources.Input;
-using _Project.Sources.UI;
-using _Project.Sources.UI.GameMVP;
-using VContainer;
+﻿using VContainer;
 using VContainer.Unity;
 
-namespace _Project.Sources.GameLoop
+namespace Asteroids
 {
     public class SceneEntryPoint : IInitializable
     {
-        private Player _player;
-        private BulletSpawner _bulletSpawner;
-        private Laser _laser;
-        private LaserVisual _laserVisual;
-        private PlayerMovementSettings _playerMovementSettings;
-        private PlayerKeyboardController _playerKeyboardController;
-
-        private GameFinisher _gameFinisher;
-        private GameRestarter _gameRestarter;
-
-        private UfoFactory _ufoFactory;
         private AsteroidFactory _asteroidFactory;
+        private BulletSpawner _bulletSpawner;
         private EnemySpawnerSettings _enemySpawnerSettings;
 
-        private RootUI _rootUI;
-        private GamePresenter _gamePresenter;
+        private GameFinisher _gameFinisher;
         private GameModel _gameModel;
         private GameplayBridge _gameplayBridge;
+        private GamePresenter _gamePresenter;
+        private GameRestarter _gameRestarter;
+        private Laser _laser;
+        private Player _player;
+        private PlayerKeyboardController _playerKeyboardController;
+        private PlayerMovementSettings _playerMovementSettings;
         private PlayerStats _playerStats;
+
+        private RootUI _rootUI;
         private SpawnOptionsTable _spawnOptionsTable;
+
+        private UfoFactory _ufoFactory;
+
+        public void Initialize()
+        {
+            InitializePlayer();
+            InitializePlayerMovement();
+            InitializeUI();
+            InitializeGameFlow();
+
+            _ufoFactory.Init(_player);
+
+            InitializeSpawnOptions();
+        }
 
         [Inject]
         public void Construct(
@@ -58,7 +59,7 @@ namespace _Project.Sources.GameLoop
             _bulletSpawner = bulletSpawner;
             _playerMovementSettings = playerMovementSettings;
             _playerKeyboardController = playerKeyboardController;
- 
+
             _rootUI = rootUI;
             _gamePresenter = gamePresenter;
             _gameModel = gameModel;
@@ -67,34 +68,20 @@ namespace _Project.Sources.GameLoop
 
             _gameFinisher = gameFinisher;
             _gameRestarter = gameRestarter;
-            
+
             _ufoFactory = ufoFactory;
             _spawnOptionsTable = spawnOptionsTable;
             _asteroidFactory = asteroidFactory;
             _enemySpawnerSettings = enemySpawnerSettings;
         }
 
-        public void Initialize()
-        {
-            InitializePlayer();
-            InitializePlayerMovement();
-            InitializeUI();
-            InitializeGameFlow();
-            
-            _ufoFactory.Init(_player);
-
-            InitializeSpawnOptions();
-        }
-        
         private void InitializeSpawnOptions()
         {
-            _spawnOptionsTable.AddSpawnOption(
-                new SpawnOption(_enemySpawnerSettings.AsteroidSpawnChance, _asteroidFactory));
+            _spawnOptionsTable.AddSpawnOption(new(_enemySpawnerSettings.AsteroidSpawnChance, _asteroidFactory));
 
-            _spawnOptionsTable.AddSpawnOption(
-                new SpawnOption(_enemySpawnerSettings.UfoSpawnChance, _ufoFactory));
+            _spawnOptionsTable.AddSpawnOption(new(_enemySpawnerSettings.UfoSpawnChance, _ufoFactory));
         }
-        
+
         private void InitializeGameFlow()
         {
             _gameRestarter.Init(_player, _rootUI.RestartButton);
@@ -107,8 +94,11 @@ namespace _Project.Sources.GameLoop
             _laser = _player.PlayerLaser;
             _bulletSpawner.Init(_player);
 
-            _playerKeyboardController.Init(_player.PlayerInertialMover, _player.PlayerDirectionalRotator,
-                _bulletSpawner, _laser);
+            _playerKeyboardController.Init(
+                _player.PlayerInertialMover,
+                _player.PlayerDirectionalRotator,
+                _bulletSpawner,
+                _laser);
             _playerKeyboardController.KeyboardSubscribe();
         }
 
@@ -132,8 +122,7 @@ namespace _Project.Sources.GameLoop
                 _rootUI.GameRestartPanel,
                 _rootUI.RestartButton);
 
-            _gamePresenter.Init(
-                _rootUI.View);
+            _gamePresenter.Init(_rootUI.View);
 
             _gameplayBridge.Init();
         }

@@ -1,29 +1,27 @@
 using System;
-using _Project.Sources.GameLoop;
-using _Project.Sources.Gameplay;
-using _Project.Sources.Gameplay.EnemySystem.EnemySpawn;
-using _Project.Sources.Gameplay.ObjectMovement.Movers;
-using _Project.Sources.Gameplay.ObjectMovement.Rotators;
-using _Project.Sources.Gameplay.WeaponSystem;
 using UnityEngine;
 using VContainer;
 
-namespace _Project.Sources.UI.GameMVP
+namespace Asteroids
 {
     public class GameplayBridge : IDisposable
     {
+        private EnemyRegistry _enemyRegistry;
+        private GameFinisher _gameFinisher;
         private GameModel _gameModel;
 
-        private Player _player;
-        private Rigidbody2D _playerRigidBody;
+        private GameRestarter _gameRestarter;
         private Laser _laser;
+
+        private Player _player;
         private InertialMover _playerMover;
+        private Rigidbody2D _playerRigidBody;
         private DirectionalRotator _playerRotator;
 
-        private EnemyRegistry _enemyRegistry;
-
-        private GameRestarter _gameRestarter;
-        private GameFinisher _gameFinisher;
+        public void Dispose()
+        {
+            Unsubscribe();
+        }
 
         [Inject]
         public void Construct(
@@ -54,12 +52,10 @@ namespace _Project.Sources.UI.GameMVP
             _gameModel.ChangeMaxCharges(_laser.MaxChargesNumber);
             Subscribe();
         }
-        
-        public void Dispose() => Unsubscribe();
 
         private void Subscribe()
         {
-            _enemyRegistry.ScoredKilled += OnScoreIncrement;
+            _enemyRegistry.EnemyKilled += OnEnemyKilled;
             _gameRestarter.Restarted += OnGameRestarted;
 
             _playerMover.SpeedChanged += OnSpeedChanged;
@@ -74,7 +70,7 @@ namespace _Project.Sources.UI.GameMVP
 
         private void Unsubscribe()
         {
-            _enemyRegistry.ScoredKilled -= OnScoreIncrement;
+            _enemyRegistry.EnemyKilled -= OnEnemyKilled;
             _gameRestarter.Restarted -= OnGameRestarted;
 
             _playerMover.SpeedChanged -= OnSpeedChanged;
@@ -87,17 +83,44 @@ namespace _Project.Sources.UI.GameMVP
             _gameFinisher.Finished -= OnGameFinished;
         }
 
-        private void OnScoreIncrement() => _gameModel.ScoreIncrement();
-        private void OnGameRestarted() => _gameModel.ResetScore();
-        private void OnGameFinished() => _gameModel.GameFinish();
+        private void OnEnemyKilled()
+        {
+            _gameModel.IncrementScore();
+        }
 
-        private void OnSpeedChanged() => _gameModel.ChangeSpeed(_playerMover.CurrentSpeed);
-        private void OnPositionChanged() => _gameModel.ChangePosition(_playerRigidBody.position);
-        private void OnAngleChanged() => _gameModel.ChangeAngle(_playerRotator.CurrentAngle);
+        private void OnGameRestarted()
+        {
+            _gameModel.ResetScore();
+        }
 
-        private void OnLaserAmmoChanged() => _gameModel.ChangeTotalAmmo(_laser.TotalAmmo);
+        private void OnGameFinished()
+        {
+            _gameModel.FinishGame();
+        }
 
-        private void OnCooldownChanged() =>
+        private void OnSpeedChanged()
+        {
+            _gameModel.ChangeSpeed(_playerMover.CurrentSpeed);
+        }
+
+        private void OnPositionChanged()
+        {
+            _gameModel.ChangePosition(_playerRigidBody.position);
+        }
+
+        private void OnAngleChanged()
+        {
+            _gameModel.ChangeAngle(_playerRotator.CurrentAngle);
+        }
+
+        private void OnLaserAmmoChanged()
+        {
+            _gameModel.ChangeTotalAmmo(_laser.TotalAmmo);
+        }
+
+        private void OnCooldownChanged()
+        {
             _gameModel.ChangeCooldown(_laser.ShootingCooldown, _laser.ReloadingTime);
+        }
     }
 }

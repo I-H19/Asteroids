@@ -1,5 +1,8 @@
-public enum HitDetectionType : byte
+namespace Asteroids
 {
-    HitAll,
-    HitSingle
+    public enum HitDetectionType : byte
+    {
+        HitAll,
+        HitSingle
+    }
 }

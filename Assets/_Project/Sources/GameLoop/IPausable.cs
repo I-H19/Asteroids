@@ -1,5 +1,8 @@
-public interface IPausable
+namespace Asteroids
 {
-    public void Pause();
-    public void Unpause();
+    public interface IPausable
+    {
+        public void Pause();
+        public void Unpause();
+    }
 }

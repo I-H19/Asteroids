@@ -1,4 +1,4 @@
-﻿namespace _Project.Sources.Gameplay.ObjectMovement.Movers
+﻿namespace Asteroids
 {
     public interface IMover
     {

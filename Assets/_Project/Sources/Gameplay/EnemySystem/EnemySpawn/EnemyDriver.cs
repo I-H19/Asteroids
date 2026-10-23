@@ -1,13 +1,35 @@
-﻿using _Project.Sources.GameLoop;
-using VContainer;
+﻿using VContainer;
 
-namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
+namespace Asteroids
 {
     public class EnemyDriver : ISceneTickable, IPausable
     {
         private EnemyRegistry _enemiesRegistry;
 
         private bool _isEnemiesTicking = true;
+
+        public void Pause()
+        {
+            FreezeEnemyMoving();
+        }
+
+        public void Unpause()
+        {
+            UnfreezeEnemyMoving();
+        }
+
+        public void Tick()
+        {
+            if (!_isEnemiesTicking)
+            {
+                return;
+            }
+
+            _enemiesRegistry.ForEachEnemy(enemy =>
+            {
+                enemy.Tick();
+            });
+        }
 
         [Inject]
         public void Construct(EnemyRegistry enemiesRegistry)
@@ -16,32 +38,25 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
 
             _isEnemiesTicking = true;
         }
-        public void Tick()
-        {
-            if (!_isEnemiesTicking) return;
-            _enemiesRegistry.ForEachEnemy(enemy =>
-            {
-                enemy.Tick();
-            });
-        }
 
-        public void FreezeEnemyMoving()
+        private void FreezeEnemyMoving()
         {
+            _isEnemiesTicking = false;
+            
             _enemiesRegistry.ForEachEnemy(enemy =>
             {
                 enemy.Mover.DisableMoving();
             });
         }
 
-        public void UnfreezeEnemyMoving()
+        private void UnfreezeEnemyMoving()
         {
+            _isEnemiesTicking = true;
+            
             _enemiesRegistry.ForEachEnemy(enemy =>
             {
                 enemy.Mover.EnableMoving();
             });
         }
-
-        public void Pause() => FreezeEnemyMoving();
-        public void Unpause() => UnfreezeEnemyMoving();
     }
 }

@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using _Project.Sources.Gameplay.EnemySystem.Enemy;
 
-namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
+namespace Asteroids
 {
     public class EnemyRegistry : IDisposable
     {
-        public event Action ScoredKilled;
         private readonly List<IEnemy> _aliveEnemies = new();
 
         public int AliveCount { get; private set; }
 
+        public void Dispose()
+        {
+            Unsubscribe();
+        }
+
+        public event Action EnemyKilled;
+
         public void RegisterEnemy(IEnemy enemy)
         {
-            enemy.Killed += ScoredKill;
+            enemy.Killed += OnEnemyKilled;
 
             _aliveEnemies.Add(enemy);
             AliveCount++;
@@ -24,31 +29,36 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
             foreach (IEnemy enemy in _aliveEnemies)
             {
                 if (enemy != null)
+                {
                     enemy.Kill();
-                else throw new NullReferenceException($"enemy is null");
+                }
+                else
+                {
+                    throw new NullReferenceException("enemy is null");
+                }
             }
 
             _aliveEnemies.Clear();
             AliveCount = 0;
         }
-        
+
         private void Unsubscribe()
         {
             foreach (IEnemy enemy in _aliveEnemies)
             {
-                enemy.Killed -= ScoredKill;
+                enemy.Killed -= OnEnemyKilled;
             }
         }
 
-        private void ScoredKill(IEnemy enemy)
+        private void OnEnemyKilled(IEnemy enemy)
         {
             AliveCount--;
             _aliveEnemies.Remove(enemy);
 
-            enemy.Killed -= ScoredKill;
+            enemy.Killed -= OnEnemyKilled;
             enemy.Kill();
 
-            ScoredKilled?.Invoke();
+            EnemyKilled?.Invoke();
         }
 
         public void ForEachEnemy(Action<IEnemy> action)
@@ -58,7 +68,5 @@ namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn
                 action(enemy);
             }
         }
-
-        public void Dispose() => Unsubscribe();
     }
 }

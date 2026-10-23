@@ -1,29 +1,26 @@
 using UnityEngine;
 
-namespace _Project.Sources.Gameplay.ObjectMovement
+namespace Asteroids
 {
     public class ScreenBounds
     {
-        public readonly float Left;
-        public readonly float Right;
-        public readonly float Bottom;
-        public readonly float Top;
-
-        public float Width => Right - Left;
-        public float Height => Top - Bottom;
+        private readonly float _bottom;
+        private readonly float _left;
+        private readonly float _right;
+        private readonly float _top;
 
         public ScreenBounds(float left, float right, float bottom, float top)
         {
-            Left = left;
-            Right = right;
-            Bottom = bottom;
-            Top = top;
+            _left = left;
+            _right = right;
+            _bottom = bottom;
+            _top = top;
         }
 
-        public bool Contains(Vector2 position)
+        private bool Contains(Vector2 position)
         {
-            bool isInsideX = position.x >= Left && position.x <= Right;
-            bool isInsideY = position.y >= Bottom && position.y <= Top;
+            bool isInsideX = position.x >= _left && position.x <= _right;
+            bool isInsideY = position.y >= _bottom && position.y <= _top;
 
             return isInsideX && isInsideY;
         }
@@ -36,34 +33,58 @@ namespace _Project.Sources.Gameplay.ObjectMovement
         public Vector2 Wrap(Vector2 position)
         {
             float wrappedX = position.x;
-            if (wrappedX > Right) wrappedX = Left;
-            else if (wrappedX < Left) wrappedX = Right;
+            if (wrappedX > _right)
+            {
+                wrappedX = _left;
+            }
+            else if (wrappedX < _left)
+            {
+                wrappedX = _right;
+            }
 
             float wrappedY = position.y;
-            if (wrappedY > Top) wrappedY = Bottom;
-            else if (wrappedY < Bottom) wrappedY = Top;
+            if (wrappedY > _top)
+            {
+                wrappedY = _bottom;
+            }
+            else if (wrappedY < _bottom)
+            {
+                wrappedY = _top;
+            }
 
-            return new Vector2(wrappedX, wrappedY);
+            return new(wrappedX, wrappedY);
         }
 
         public Vector2 GetRandomPointOnPerimeter()
         {
-            float width = Width;
-            float height = Height;
+            float width = _right - _left;
+            float height = _top - _bottom;
 
             float perimeter = 2f * (width + height);
             float perimeterDistance = Random.value * perimeter;
 
-            if (perimeterDistance < width) return new Vector2(Left + perimeterDistance, Top);
+            if (perimeterDistance < width)
+            {
+                return new(_left + perimeterDistance, _top);
+            }
+
             perimeterDistance -= width;
 
-            if (perimeterDistance < height) return new Vector2(Right, Top - perimeterDistance);
+            if (perimeterDistance < height)
+            {
+                return new(_right, _top - perimeterDistance);
+            }
+
             perimeterDistance -= height;
 
-            if (perimeterDistance < width) return new Vector2(Right - perimeterDistance, Bottom);
+            if (perimeterDistance < width)
+            {
+                return new(_right - perimeterDistance, _bottom);
+            }
+
             perimeterDistance -= width;
 
-            return new Vector2(Left, Bottom + perimeterDistance);
+            return new(_left, _bottom + perimeterDistance);
         }
     }
 }

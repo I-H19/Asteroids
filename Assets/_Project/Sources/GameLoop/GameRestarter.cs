@@ -1,19 +1,23 @@
 using System;
-using _Project.Sources.Gameplay;
-using _Project.Sources.Gameplay.EnemySystem.EnemySpawn;
 using UnityEngine.UI;
 using VContainer;
 
-namespace _Project.Sources.GameLoop
+namespace Asteroids
 {
     public class GameRestarter : IDisposable
     {
-        public event Action Restarted;
+        private EnemyRegistry _enemiesRegistry;
 
         private GamePause _gamePause;
-        private EnemyRegistry _enemiesRegistry;
-        private Player _player;
         private Button _gameRestartButton;
+        private Player _player;
+
+        public void Dispose()
+        {
+            _gameRestartButton.onClick.RemoveAllListeners();
+        }
+
+        public event Action Restarted;
 
 
         [Inject]
@@ -26,12 +30,12 @@ namespace _Project.Sources.GameLoop
         public void Init(Player player, Button restartButton)
         {
             _player = player;
-            _gameRestartButton =  restartButton;
-            
-            _gameRestartButton.onClick.AddListener(RestartGame);
+            _gameRestartButton = restartButton;
+
+            _gameRestartButton.onClick.AddListener(OnRestartButtonClicked);
         }
 
-        public void RestartGame()
+        private void OnRestartButtonClicked()
         {
             _enemiesRegistry.KillAll();
             _player.ResetPlayer();
@@ -40,7 +44,5 @@ namespace _Project.Sources.GameLoop
 
             _gamePause.SetPause(false);
         }
-
-        public void Dispose() => _gameRestartButton.onClick.RemoveAllListeners();
     }
 }
