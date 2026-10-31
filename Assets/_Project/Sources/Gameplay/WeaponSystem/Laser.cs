@@ -80,11 +80,6 @@ namespace Asteroids
         {
             Ticked?.Invoke();
 
-            if (_isShooting)
-            {
-                _damageSource.Tick();
-            }
-
             float reloadingTime = _nextChargeTime - Time.time;
             float shootingCooldown = _nextShootTime - Time.time;
 
@@ -130,6 +125,14 @@ namespace Asteroids
             _nextChargeTime = Time.time + _reloadingChargeTime;
             TotalAmmo++;
             AmmoChanged?.Invoke();
+        }
+
+        public void FixedTick()
+        {
+            if (_isShooting)
+            {
+                _damageSource.Tick();
+            }
         }
 
         private void SetLaserActive(bool isActive)

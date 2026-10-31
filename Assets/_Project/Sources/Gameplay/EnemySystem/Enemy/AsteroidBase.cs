@@ -10,8 +10,6 @@ namespace Asteroids
     [RequireComponent(typeof(EnemyDamageSource), typeof(ScreenTeleporter))]
     public class AsteroidBase : MonoBehaviour
     {
-        private Camera _camera;
-
         private EnemyLife _enemyLife;
         private ScreenBoundsTracker _screenBoundsTracker;
         private ScreenTeleporter _screenTeleporter;
@@ -28,9 +26,8 @@ namespace Asteroids
         public event Action Died;
 
         [Inject]
-        public void Construct(Camera mainCamera, ScreenBoundsTracker screenBoundsTracker)
+        public void Construct(ScreenBoundsTracker screenBoundsTracker)
         {
-            _camera = mainCamera;
             _screenBoundsTracker = screenBoundsTracker;
         }
 
@@ -46,17 +43,17 @@ namespace Asteroids
             GetComponent<EnemyDamageSource>().Init(damageCount);
 
             _screenTeleporter = GetComponent<ScreenTeleporter>();
-            _screenBoundsTracker.Init(rigidBody2D, _camera);
+            _screenBoundsTracker.Init(rigidBody2D);
             _screenTeleporter.Init(_screenBoundsTracker);
 
             _enemyLife = GetComponent<EnemyLife>();
             _enemyLife.Died += OnDied;
         }
 
-        public void Tick()
+        public void FixedTick()
         {
             Mover.Move();
-            _screenTeleporter.Tick();
+            _screenTeleporter.FixedTick();
         }
 
         private void OnDied()

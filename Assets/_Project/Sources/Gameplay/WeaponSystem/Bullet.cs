@@ -9,7 +9,6 @@ namespace Asteroids
     [RequireComponent(typeof(DirectionalMover))]
     public class Bullet : MonoBehaviour, IPausable
     {
-        private Camera _camera;
         private PlayerDamageSource _damageSource;
         private bool _isPause;
 
@@ -37,9 +36,8 @@ namespace Asteroids
         public event Action<Bullet> Destroyed;
 
         [Inject]
-        public void Construct(Camera mainCamera, ScreenBoundsTracker screenBoundsTracker)
+        public void Construct(ScreenBoundsTracker screenBoundsTracker)
         {
-            _camera = mainCamera;
             _screenBoundsTracker = screenBoundsTracker;
         }
 
@@ -53,7 +51,7 @@ namespace Asteroids
             _mover.Init(bulletMoverSettings, rigidBody);
             _damageSource.TargetDamaged += OnHit;
 
-            _screenBoundsTracker.Init(rigidBody, _camera);
+            _screenBoundsTracker.Init(rigidBody);
 
             _mover.EnableMoving();
         }
@@ -63,7 +61,7 @@ namespace Asteroids
             Destroy(gameObject);
         }
 
-        public void Tick()
+        public void FixedTick()
         {
             if (_isPause)
             {

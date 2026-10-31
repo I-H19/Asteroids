@@ -9,7 +9,7 @@ namespace Asteroids
     [RequireComponent(typeof(DirectionalRotator))]
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(PlayerLife))]
-    public class Player : MonoBehaviour, ISceneTickable, IPausable
+    public class Player : MonoBehaviour, ISceneTickable, ISceneFixedTickable, IPausable
     {
         public event Action Died;
         
@@ -19,7 +19,6 @@ namespace Asteroids
         [field: SerializeField]
         public LaserVisual PlayerLaserVisual { get; private set; }
 
-        private Camera _camera;
         private PlayerLife _life;
         private float _maxHealth;
         private PlayerCombatSettings _playerCombatSettings;
@@ -49,15 +48,19 @@ namespace Asteroids
 
         public void Tick()
         {
-            _playerTeleporter.Tick();
             PlayerLaser.LocalTick();
+        }
+
+        public void FixedTick()
+        {
+            _playerTeleporter.FixedTick();
+            PlayerLaser.FixedTick();
         }
 
 
         [Inject]
-        public void Construct(PlayerCombatSettings combatSettings, Camera mainCamera, ScreenBoundsTracker boundsTracker)
+        public void Construct(PlayerCombatSettings combatSettings, ScreenBoundsTracker boundsTracker)
         {
-            _camera = mainCamera;
             _maxHealth = combatSettings.MaxHealth;
             _playerCombatSettings = combatSettings;
             _screenBoundsTracker = boundsTracker;
@@ -75,7 +78,7 @@ namespace Asteroids
             _life = GetComponent<PlayerLife>();
             _life.Init(_maxHealth);
 
-            _screenBoundsTracker.Init(PlayerRigidBody, _camera);
+            _screenBoundsTracker.Init(PlayerRigidBody);
 
             _playerTeleporter.Init(_screenBoundsTracker);
 

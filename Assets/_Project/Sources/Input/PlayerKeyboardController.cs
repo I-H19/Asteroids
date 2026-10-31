@@ -3,7 +3,7 @@ using VContainer;
 
 namespace Asteroids
 {
-    public class PlayerKeyboardController : IDisposable, IPausable, ISceneTickable
+    public class PlayerKeyboardController : IDisposable, IPausable, ISceneFixedTickable
     {
         private BulletSpawner _bulletSpawner;
         private bool _isPause;
@@ -27,7 +27,7 @@ namespace Asteroids
             _isPause = false;
         }
 
-        public void Tick()
+        public void FixedTick()
         {
             if (_isPause)
             {

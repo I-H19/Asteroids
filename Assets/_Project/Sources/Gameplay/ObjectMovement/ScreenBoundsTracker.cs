@@ -32,9 +32,8 @@ namespace Asteroids
             _screenBounds = new(leftScreenBorder, rightScreenBorder, bottomScreenBorder, topScreenBorder);
         }
 
-        public void Init(Rigidbody2D rigidbody, Camera mainCamera)
+        public void Init(Rigidbody2D rigidbody)
         {
-            _camera = mainCamera;
             _rigidbody = rigidbody;
             InitBounds();
         }

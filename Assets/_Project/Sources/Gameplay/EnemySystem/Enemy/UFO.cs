@@ -13,8 +13,6 @@ namespace Asteroids
     [RequireComponent(typeof(EnemyDamageSource))]
     public class Ufo : MonoBehaviour, IEnemy
     {
-        private Camera _camera;
-
         private DirectionalMover _directionalMover;
         private EnemyLife _enemyLife;
         private LookAtRotator _lookAtRotator;
@@ -25,21 +23,28 @@ namespace Asteroids
         public IMover Mover => _directionalMover;
         public event Action<IEnemy> Killed;
 
+        private void OnDestroy()
+        {
+            if (_enemyLife != null)
+            {
+                _enemyLife.Died -= OnDied;
+            }
+        }
+
         public void Kill()
         {
             Destroy(gameObject);
         }
 
-        public void Tick()
+        public void FixedTick()
         {
             _lookAtRotator.Rotate();
             _directionalMover.Move();
         }
 
         [Inject]
-        public void Construct(Camera mainCamera, ScreenBoundsTracker screenBoundsTracker)
+        public void Construct(ScreenBoundsTracker screenBoundsTracker)
         {
-            _camera = mainCamera;
             _screenBoundsTracker = screenBoundsTracker;
         }
 
@@ -62,7 +67,7 @@ namespace Asteroids
             _lookAtRotator = GetComponent<LookAtRotator>();
             _lookAtRotator.Init(player.transform);
 
-            _screenBoundsTracker.Init(_rigidbody2D, _camera);
+            _screenBoundsTracker.Init(_rigidbody2D);
 
             _enemyLife.Died += OnDied;
         }

@@ -2,7 +2,7 @@ using System;
 
 namespace Asteroids
 {
-    public interface IEnemy : ISceneTickable
+    public interface IEnemy : ISceneFixedTickable
     {
         public IMover Mover { get; }
         public event Action<IEnemy> Killed;

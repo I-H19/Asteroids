@@ -1,14 +1,23 @@
-using System.Collections;
 using System.Collections.Generic;
 using VContainer;
 using VContainer.Unity;
 
 namespace Asteroids
 {
-    public class SceneTickDriver : ITickable, IPausable
+    public class SceneTickDriver : ITickable, IPausable, IFixedTickable
     {
         private bool _isPaused;
-        private IEnumerable _sceneTickables;
+        private IEnumerable<ISceneTickable> _sceneTickables;
+        private IEnumerable<ISceneFixedTickable> _sceneFixedTickables;
+
+        [Inject]
+        public void Construct(
+            IEnumerable<ISceneTickable> sceneTickables,
+            IEnumerable<ISceneFixedTickable> sceneFixedTickables)
+        {
+            _sceneTickables = sceneTickables;
+            _sceneFixedTickables = sceneFixedTickables;
+        }
 
         public void Pause()
         {
@@ -34,10 +43,17 @@ namespace Asteroids
             }
         }
 
-        [Inject]
-        public void Construct(IEnumerable<ISceneTickable> sceneTickables)
+        public void FixedTick()
         {
-            _sceneTickables = sceneTickables;
+            if (_isPaused)
+            {
+                return;
+            }
+
+            foreach (ISceneFixedTickable fixedTickable in _sceneFixedTickables)
+            {
+                fixedTickable.FixedTick();
+            }
         }
     }
 }

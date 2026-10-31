@@ -23,9 +23,9 @@ namespace Asteroids
         public event Action<IEnemy> Killed;
         public IMover Mover => _asteroidBase.Mover;
 
-        public void Tick()
+        public void FixedTick()
         {
-            _asteroidBase.Tick();
+            _asteroidBase.FixedTick();
         }
 
         public void Kill()

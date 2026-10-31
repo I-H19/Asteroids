@@ -2,7 +2,7 @@
 
 namespace Asteroids
 {
-    public class EnemyDriver : ISceneTickable, IPausable
+    public class EnemyDriver : ISceneFixedTickable, IPausable
     {
         private EnemyRegistry _enemiesRegistry;
 
@@ -18,7 +18,7 @@ namespace Asteroids
             UnfreezeEnemyMoving();
         }
 
-        public void Tick()
+        public void FixedTick()
         {
             if (!_isEnemiesTicking)
             {
@@ -27,7 +27,7 @@ namespace Asteroids
 
             _enemiesRegistry.ForEachEnemy(enemy =>
             {
-                enemy.Tick();
+                enemy.FixedTick();
             });
         }
 

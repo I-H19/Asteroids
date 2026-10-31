@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
-using VContainer.Unity;
 
 namespace Asteroids
 {
-    public class BulletSpawner : IPausable, ISceneTickable
+    public class BulletSpawner : IPausable, ISceneTickable, ISceneFixedTickable
     {
         private readonly List<Bullet> _bullets = new();
         private float _bulletCooldown;
@@ -45,11 +44,6 @@ namespace Asteroids
                 return;
             }
 
-            foreach (Bullet bullet in _bullets)
-            {
-                bullet.Tick();
-            }
-
             if (!_isSpawning)
             {
                 return;
@@ -62,6 +56,19 @@ namespace Asteroids
 
             SpawnBullet();
             _nextShotTime = Time.time + _bulletCooldown;
+        }
+
+        public void FixedTick()
+        {
+            if (_isPause)
+            {
+                return;
+            }
+
+            foreach (Bullet bullet in _bullets)
+            {
+                bullet.FixedTick();
+            }
         }
 
         [Inject]

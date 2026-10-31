@@ -3,12 +3,12 @@ using UnityEngine;
 namespace Asteroids
 {
     [RequireComponent(typeof(Rigidbody2D))]
-    public sealed class ScreenTeleporter : MonoBehaviour, ISceneTickable
+    public sealed class ScreenTeleporter : MonoBehaviour
     {
         private ScreenBoundsTracker _boundsTracker;
         private Rigidbody2D _rigidbody;
 
-        public void Tick()
+        public void FixedTick()
         {
             if (!_boundsTracker.IsOutOfBounds())
             {
