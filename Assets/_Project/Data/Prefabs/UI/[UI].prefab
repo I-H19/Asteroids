@@ -42,10 +42,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 322825352330505604}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c432545921f3fa4dbf5e6ca887b599c, type: 3}
+  m_Script: {fileID: 11500000, guid: 452ab0fe1e1c45b7969ca9460965e5ed, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RootUI
-  <View>k__BackingField: {fileID: 2091938298504217745}
+  m_EditorClassIdentifier: Assembly-CSharp::Asteroids.GameView
   <GameRestartPanel>k__BackingField: {fileID: 3133088896915196687}
   <RuntimeScore>k__BackingField: {fileID: 4641796742589854067}
   <ResultScore>k__BackingField: {fileID: 3878353699775304450}
@@ -164,17 +163,6 @@ PrefabInstance:
       addedObject: {fileID: 2278144488538517121}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bcdd23ca41d43114ea87a8bced0b228b, type: 3}
---- !u!114 &2091938298504217745 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3891521919040177877, guid: bcdd23ca41d43114ea87a8bced0b228b, type: 3}
-  m_PrefabInstance: {fileID: 3101142162241765956}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 452ab0fe1e1c45b7969ca9460965e5ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_Project.Sources.UI.MVP.View
 --- !u!224 &6966224639779940013 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5450613643920041193, guid: bcdd23ca41d43114ea87a8bced0b228b, type: 3}

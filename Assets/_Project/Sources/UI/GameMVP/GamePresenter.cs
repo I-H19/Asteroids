@@ -14,13 +14,9 @@ namespace Asteroids
         }
 
         [Inject]
-        public void Construct(GameModel gameModel)
+        public void Construct(GameModel gameModel, GameView gameView)
         {
             _gameModel = gameModel;
-        }
-
-        public void Init(GameView gameView)
-        {
             _gameView = gameView;
 
             Subscribe();

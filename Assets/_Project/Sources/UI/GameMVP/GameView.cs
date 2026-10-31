@@ -9,33 +9,32 @@ namespace Asteroids
     public class GameView : MonoBehaviour
     {
         private readonly StringBuilder _hudBuilder = new();
-        private TextMeshProUGUI _playerResultScore;
-        private TextMeshProUGUI _playerRuntimeScore;
-        private TextMeshProUGUI _playerStats;
-        private Button _restartGameButton;
-        private RestartPanel _restartPanel;
 
-        public void OnDestroy()
-        {
-            _restartGameButton.onClick.RemoveAllListeners();
-        }
+        [field: SerializeField]
+        public RestartPanel GameRestartPanel { get; private set; }
+
+        [field: SerializeField]
+        public TextMeshProUGUI RuntimeScore { get; private set; }
+
+        [field: SerializeField]
+        public TextMeshProUGUI ResultScore { get; private set; }
+
+        [field: SerializeField]
+        public TextMeshProUGUI PlayerStats { get; private set; }
+
+        [field: SerializeField]
+        public Button RestartButton { get; private set; }
 
         public event Action RestartButtonClicked;
 
-        public void Init(
-            TextMeshProUGUI playerRuntimeScore,
-            TextMeshProUGUI playerResultScore,
-            TextMeshProUGUI playerStats,
-            RestartPanel restartPanel,
-            Button restartGameButton)
+        private void OnEnable()
         {
-            _playerRuntimeScore = playerRuntimeScore;
-            _playerResultScore = playerResultScore;
-            _playerStats = playerStats;
-            _restartPanel = restartPanel;
-            _restartGameButton = restartGameButton;
+            RestartButton.onClick.AddListener(OnRestartButtonClicked);
+        }
 
-            _restartGameButton.onClick.AddListener(OnRestartButtonClicked);
+        private void OnDisable()
+        {
+            RestartButton.onClick.RemoveListener(OnRestartButtonClicked);
         }
 
         private void OnRestartButtonClicked()
@@ -55,18 +54,18 @@ namespace Asteroids
             _hudBuilder.AppendLine($"LaserReloadTime: {playerStats.ReloadingTime}");
             _hudBuilder.AppendLine($"LaserCooldown: {playerStats.ShootingCooldown}");
 
-            _playerStats.SetText(_hudBuilder.ToString());
+            PlayerStats.SetText(_hudBuilder.ToString());
         }
 
         public void ChangeScore(int score)
         {
-            _playerRuntimeScore.text = $"GameScore: {score}";
-            _playerResultScore.text = $"GameScore: {score}";
+            RuntimeScore.text = $"GameScore: {score}";
+            ResultScore.text = $"GameScore: {score}";
         }
 
         public void SetRestartPanelEnabled(bool panelEnabled)
         {
-            _restartPanel.SetActive(panelEnabled);
+            GameRestartPanel.SetActive(panelEnabled);
         }
     }
 }

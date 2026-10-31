@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 2899987365554492473}
   - component: {fileID: 32313259576199030}
   - component: {fileID: 6370996377465707163}
-  - component: {fileID: 3891521919040177877}
   m_Layer: 5
   m_Name: Root Canvas
   m_TagString: Untagged
@@ -102,15 +101,3 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &3891521919040177877
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1600867565135665993}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 452ab0fe1e1c45b7969ca9460965e5ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_Project.Sources.UI.MVP.View

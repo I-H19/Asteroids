@@ -12,14 +12,12 @@ namespace Asteroids
         private GameModel _gameModel;
         private GameplayEventsBridge _gameplayEventsBridge;
         private PlayerStatsBridge _playerStatsBridge;
-        private GamePresenter _gamePresenter;
         private Laser _laser;
         private Player _player;
         private PlayerKeyboardController _playerKeyboardController;
         private PlayerMovementSettings _playerMovementSettings;
         private PlayerStats _playerStats;
 
-        private RootUI _rootUI;
         private SpawnOptionsTable _spawnOptionsTable;
 
         private UfoFactory _ufoFactory;
@@ -41,8 +39,6 @@ namespace Asteroids
             UfoFactory ufoFactory,
             BulletSpawner bulletSpawner,
             Player player,
-            RootUI rootUI,
-            GamePresenter gamePresenter,
             GameModel gameModel,
             GameplayEventsBridge gameplayEventsBridge,
             PlayerStatsBridge playerStatsBridge,
@@ -56,8 +52,6 @@ namespace Asteroids
             _playerMovementSettings = playerMovementSettings;
             _playerKeyboardController = playerKeyboardController;
 
-            _rootUI = rootUI;
-            _gamePresenter = gamePresenter;
             _gameModel = gameModel;
             _gameplayEventsBridge = gameplayEventsBridge;
             _playerStatsBridge = playerStatsBridge;
@@ -105,15 +99,6 @@ namespace Asteroids
         private void InitializeUI()
         {
             _gameModel.Init(_playerStats);
-
-            _rootUI.View.Init(
-                _rootUI.RuntimeScore,
-                _rootUI.ResultScore,
-                _rootUI.PlayerStats,
-                _rootUI.GameRestartPanel,
-                _rootUI.RestartButton);
-
-            _gamePresenter.Init(_rootUI.View);
 
             _playerStatsBridge.Init();
         }

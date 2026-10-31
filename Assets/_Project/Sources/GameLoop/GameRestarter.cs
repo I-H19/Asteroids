@@ -23,12 +23,12 @@ namespace Asteroids
             EnemyRegistry enemiesRegistry,
             GamePause gamePause,
             Player player,
-            RootUI rootUI)
+            GameView gameView)
         {
             _gamePause = gamePause;
             _enemiesRegistry = enemiesRegistry;
             _player = player;
-            _gameView = rootUI.View;
+            _gameView = gameView;
 
             _gameView.RestartButtonClicked += OnRestartButtonClicked;
         }

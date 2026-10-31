@@ -28,7 +28,7 @@ namespace Asteroids
             RegisterGameFlow(builder);
             RegisterFactories(builder);
 
-            builder.RegisterComponentInNewPrefab(_prefabHolder.UI, Lifetime.Singleton);
+            builder.RegisterComponentInNewPrefab<GameView>(_prefabHolder.UI, Lifetime.Singleton);
             builder.Register<GamePresenter>(Lifetime.Singleton);
             builder.Register<GameModel>(Lifetime.Singleton);
             builder.Register<GameplayEventsBridge>(Lifetime.Singleton);
