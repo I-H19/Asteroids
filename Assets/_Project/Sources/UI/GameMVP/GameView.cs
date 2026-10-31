@@ -35,7 +35,12 @@ namespace Asteroids
             _restartPanel = restartPanel;
             _restartGameButton = restartGameButton;
 
-            _restartGameButton.onClick.AddListener(() => RestartButtonClicked?.Invoke());
+            _restartGameButton.onClick.AddListener(OnRestartButtonClicked);
+        }
+
+        private void OnRestartButtonClicked()
+        {
+            RestartButtonClicked?.Invoke();
         }
 
 

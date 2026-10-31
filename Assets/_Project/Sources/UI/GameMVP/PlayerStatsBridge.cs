@@ -4,49 +4,36 @@ using VContainer;
 
 namespace Asteroids
 {
-    public class GameplayBridge : IDisposable
+    public class PlayerStatsBridge : IDisposable
     {
-        private EnemyRegistry _enemyRegistry;
-        private GameFinisher _gameFinisher;
         private GameModel _gameModel;
-
-        private GameRestarter _gameRestarter;
         private Laser _laser;
-
         private Player _player;
         private InertialMover _playerMover;
         private Rigidbody2D _playerRigidBody;
         private DirectionalRotator _playerRotator;
+        private bool _isSubscribed;
 
         public void Dispose()
         {
-            Unsubscribe();
+            if (_isSubscribed)
+            {
+                Unsubscribe();
+            }
         }
 
         [Inject]
-        public void Construct(
-            EnemyRegistry enemyRegistry,
-            GameRestarter gameRestarter,
-            GameFinisher gameFinisher,
-            GameModel gameModel,
-            Player player)
+        public void Construct(GameModel gameModel, Player player)
         {
-            _player = player;
-            _enemyRegistry = enemyRegistry;
-
-            _gameRestarter = gameRestarter;
-            _gameFinisher = gameFinisher;
-
             _gameModel = gameModel;
+            _player = player;
         }
 
         public void Init()
         {
             _playerMover = _player.PlayerInertialMover;
             _playerRotator = _player.PlayerDirectionalRotator;
-
             _playerRigidBody = _player.PlayerRigidBody;
-
             _laser = _player.PlayerLaser;
 
             _gameModel.ChangeMaxCharges(_laser.MaxChargesNumber);
@@ -55,47 +42,27 @@ namespace Asteroids
 
         private void Subscribe()
         {
-            _enemyRegistry.EnemyKilled += OnEnemyKilled;
-            _gameRestarter.Restarted += OnGameRestarted;
+            if (_isSubscribed)
+            {
+                return;
+            }
 
             _playerMover.SpeedChanged += OnSpeedChanged;
             _playerMover.PositionChanged += OnPositionChanged;
             _playerRotator.AngleChanged += OnAngleChanged;
-
             _laser.AmmoChanged += OnLaserAmmoChanged;
             _laser.Ticked += OnCooldownChanged;
-
-            _gameFinisher.Finished += OnGameFinished;
+            _isSubscribed = true;
         }
 
         private void Unsubscribe()
         {
-            _enemyRegistry.EnemyKilled -= OnEnemyKilled;
-            _gameRestarter.Restarted -= OnGameRestarted;
-
             _playerMover.SpeedChanged -= OnSpeedChanged;
             _playerMover.PositionChanged -= OnPositionChanged;
             _playerRotator.AngleChanged -= OnAngleChanged;
-
             _laser.AmmoChanged -= OnLaserAmmoChanged;
             _laser.Ticked -= OnCooldownChanged;
-
-            _gameFinisher.Finished -= OnGameFinished;
-        }
-
-        private void OnEnemyKilled()
-        {
-            _gameModel.IncrementScore();
-        }
-
-        private void OnGameRestarted()
-        {
-            _gameModel.ResetScore();
-        }
-
-        private void OnGameFinished()
-        {
-            _gameModel.FinishGame();
+            _isSubscribed = false;
         }
 
         private void OnSpeedChanged()

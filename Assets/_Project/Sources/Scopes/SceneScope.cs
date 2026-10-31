@@ -31,7 +31,8 @@ namespace Asteroids
             builder.RegisterComponentInNewPrefab(_prefabHolder.UI, Lifetime.Singleton);
             builder.Register<GamePresenter>(Lifetime.Singleton);
             builder.Register<GameModel>(Lifetime.Singleton);
-            builder.Register<GameplayBridge>(Lifetime.Singleton);
+            builder.Register<GameplayEventsBridge>(Lifetime.Singleton);
+            builder.Register<PlayerStatsBridge>(Lifetime.Singleton);
             builder.Register<PlayerStats>(Lifetime.Singleton);
         }
 

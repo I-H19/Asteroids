@@ -1,24 +1,22 @@
 using System;
-using UnityEngine.UI;
 using VContainer;
 
 namespace Asteroids
 {
     public class GameRestarter : IDisposable
     {
+        public event Action Restarted;
+
         private EnemyRegistry _enemiesRegistry;
 
         private GamePause _gamePause;
-        private Button _gameRestartButton;
         private Player _player;
+        private GameView _gameView;
 
         public void Dispose()
         {
-            _gameRestartButton.onClick.RemoveAllListeners();
+            _gameView.RestartButtonClicked -= OnRestartButtonClicked;
         }
-
-        public event Action Restarted;
-
 
         [Inject]
         public void Construct(EnemyRegistry enemiesRegistry, GamePause gamePause)
@@ -27,12 +25,12 @@ namespace Asteroids
             _enemiesRegistry = enemiesRegistry;
         }
 
-        public void Init(Player player, Button restartButton)
+        public void Init(Player player, GameView view)
         {
             _player = player;
-            _gameRestartButton = restartButton;
+            _gameView = view;
 
-            _gameRestartButton.onClick.AddListener(OnRestartButtonClicked);
+            _gameView.RestartButtonClicked += OnRestartButtonClicked;
         }
 
         private void OnRestartButtonClicked()

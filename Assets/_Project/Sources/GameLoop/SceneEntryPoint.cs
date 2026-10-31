@@ -11,7 +11,8 @@ namespace Asteroids
 
         private GameFinisher _gameFinisher;
         private GameModel _gameModel;
-        private GameplayBridge _gameplayBridge;
+        private GameplayEventsBridge _gameplayEventsBridge;
+        private PlayerStatsBridge _playerStatsBridge;
         private GamePresenter _gamePresenter;
         private GameRestarter _gameRestarter;
         private Laser _laser;
@@ -49,7 +50,8 @@ namespace Asteroids
             RootUI rootUI,
             GamePresenter gamePresenter,
             GameModel gameModel,
-            GameplayBridge gameplayBridge,
+            GameplayEventsBridge gameplayEventsBridge,
+            PlayerStatsBridge playerStatsBridge,
             PlayerStats playerStats,
             SpawnOptionsTable spawnOptionsTable,
             AsteroidFactory asteroidFactory,
@@ -63,7 +65,8 @@ namespace Asteroids
             _rootUI = rootUI;
             _gamePresenter = gamePresenter;
             _gameModel = gameModel;
-            _gameplayBridge = gameplayBridge;
+            _gameplayEventsBridge = gameplayEventsBridge;
+            _playerStatsBridge = playerStatsBridge;
             _playerStats = playerStats;
 
             _gameFinisher = gameFinisher;
@@ -84,8 +87,9 @@ namespace Asteroids
 
         private void InitializeGameFlow()
         {
-            _gameRestarter.Init(_player, _rootUI.RestartButton);
+            _gameRestarter.Init(_player, _rootUI.View);
             _gameFinisher.Init(_player);
+            _gameplayEventsBridge.Init();
         }
 
         private void InitializePlayer()
@@ -124,7 +128,7 @@ namespace Asteroids
 
             _gamePresenter.Init(_rootUI.View);
 
-            _gameplayBridge.Init();
+            _playerStatsBridge.Init();
         }
     }
 }
