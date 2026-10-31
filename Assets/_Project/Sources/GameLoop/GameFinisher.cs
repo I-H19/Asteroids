@@ -5,8 +5,8 @@ namespace Asteroids
 {
     public class GameFinisher : IDisposable
     {
-        private GamePause _gamePause;
         private Player _player;
+        private GamePause _gamePause;
 
         public void Dispose()
         {
@@ -16,15 +16,11 @@ namespace Asteroids
         public event Action Finished;
 
         [Inject]
-        public void Construct(GamePause gamePause)
+        public void Construct(Player player, GamePause gamePause)
         {
-            _gamePause = gamePause;
-        }
-
-        public void Init(Player player)
-        {
-            player.Died += OnPlayerDied;
             _player = player;
+            _gamePause = gamePause;
+            player.Died += OnPlayerDied;
         }
 
         private void OnPlayerDied()

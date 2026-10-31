@@ -9,12 +9,10 @@ namespace Asteroids
         private BulletSpawner _bulletSpawner;
         private EnemySpawnerSettings _enemySpawnerSettings;
 
-        private GameFinisher _gameFinisher;
         private GameModel _gameModel;
         private GameplayEventsBridge _gameplayEventsBridge;
         private PlayerStatsBridge _playerStatsBridge;
         private GamePresenter _gamePresenter;
-        private GameRestarter _gameRestarter;
         private Laser _laser;
         private Player _player;
         private PlayerKeyboardController _playerKeyboardController;
@@ -33,8 +31,6 @@ namespace Asteroids
             InitializeUI();
             InitializeGameFlow();
 
-            _ufoFactory.Init(_player);
-
             InitializeSpawnOptions();
         }
 
@@ -42,8 +38,6 @@ namespace Asteroids
         public void Construct(
             PlayerMovementSettings playerMovementSettings,
             PlayerKeyboardController playerKeyboardController,
-            GameFinisher gameFinisher,
-            GameRestarter gameRestarter,
             UfoFactory ufoFactory,
             BulletSpawner bulletSpawner,
             Player player,
@@ -69,9 +63,6 @@ namespace Asteroids
             _playerStatsBridge = playerStatsBridge;
             _playerStats = playerStats;
 
-            _gameFinisher = gameFinisher;
-            _gameRestarter = gameRestarter;
-
             _ufoFactory = ufoFactory;
             _spawnOptionsTable = spawnOptionsTable;
             _asteroidFactory = asteroidFactory;
@@ -87,8 +78,6 @@ namespace Asteroids
 
         private void InitializeGameFlow()
         {
-            _gameRestarter.Init(_player, _rootUI.View);
-            _gameFinisher.Init(_player);
             _gameplayEventsBridge.Init();
         }
 
@@ -96,8 +85,6 @@ namespace Asteroids
         {
             _player.Init();
             _laser = _player.PlayerLaser;
-            _bulletSpawner.Init(_player);
-
             _playerKeyboardController.Init(
                 _player.PlayerInertialMover,
                 _player.PlayerDirectionalRotator,

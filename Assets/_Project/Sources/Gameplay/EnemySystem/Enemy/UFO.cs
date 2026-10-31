@@ -19,6 +19,7 @@ namespace Asteroids
         private Rigidbody2D _rigidbody2D;
         private ScreenBoundsTracker _screenBoundsTracker;
         private DirectionalMoverSettings _moverSettings;
+        private Player _player;
 
         public IMover Mover => _directionalMover;
         public event Action<IEnemy> Killed;
@@ -43,12 +44,13 @@ namespace Asteroids
         }
 
         [Inject]
-        public void Construct(ScreenBoundsTracker screenBoundsTracker)
+        public void Construct(ScreenBoundsTracker screenBoundsTracker, Player player)
         {
             _screenBoundsTracker = screenBoundsTracker;
+            _player = player;
         }
 
-        public void Init(DirectionalMoverSettings moverSettings, Player player, float damageCount)
+        public void Init(DirectionalMoverSettings moverSettings, float damageCount)
         {
             _moverSettings = moverSettings;
 
@@ -65,7 +67,7 @@ namespace Asteroids
             damageSource.Init(damageCount);
 
             _lookAtRotator = GetComponent<LookAtRotator>();
-            _lookAtRotator.Init(player.transform);
+            _lookAtRotator.Init(_player.transform);
 
             _screenBoundsTracker.Init(_rigidbody2D);
 

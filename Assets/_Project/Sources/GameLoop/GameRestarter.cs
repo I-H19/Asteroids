@@ -9,9 +9,9 @@ namespace Asteroids
 
         private EnemyRegistry _enemiesRegistry;
 
+        private GameView _gameView;
         private GamePause _gamePause;
         private Player _player;
-        private GameView _gameView;
 
         public void Dispose()
         {
@@ -19,16 +19,16 @@ namespace Asteroids
         }
 
         [Inject]
-        public void Construct(EnemyRegistry enemiesRegistry, GamePause gamePause)
+        public void Construct(
+            EnemyRegistry enemiesRegistry,
+            GamePause gamePause,
+            Player player,
+            RootUI rootUI)
         {
             _gamePause = gamePause;
             _enemiesRegistry = enemiesRegistry;
-        }
-
-        public void Init(Player player, GameView view)
-        {
             _player = player;
-            _gameView = view;
+            _gameView = rootUI.View;
 
             _gameView.RestartButtonClicked += OnRestartButtonClicked;
         }

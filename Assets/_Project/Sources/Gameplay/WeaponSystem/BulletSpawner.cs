@@ -76,20 +76,17 @@ namespace Asteroids
         public void Construct(
             IObjectResolver resolver,
             PrefabHolder spawnerPrefabs,
-            PlayerCombatSettings playerCombatSettings)
+            PlayerCombatSettings playerCombatSettings,
+            Player player)
         {
             _resolver = resolver;
+            _player = player;
             _bulletPrefab = spawnerPrefabs.BulletPrefab;
             _bulletCooldown = playerCombatSettings.BulletCooldown;
             _bulletMoverSettings = playerCombatSettings.BulletMoverSettings;
             _bulletDamage = playerCombatSettings.BulletDamage;
 
             _nextShotTime = Time.time;
-        }
-
-        public void Init(Player player)
-        {
-            _player = player;
         }
 
         public void StartSpawning()
