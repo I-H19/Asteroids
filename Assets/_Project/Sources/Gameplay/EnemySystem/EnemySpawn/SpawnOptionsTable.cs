@@ -1,40 +1,48 @@
 using System.Collections.Generic;
-using _Project.Sources.Gameplay.EnemySystem.Enemy;
 using UnityEngine;
 
-public class SpawnOptionsTable
+namespace Asteroids
 {
-    private readonly List<SpawnOption> _spawnOptions = new();
-    private int _totalRate;
-    
-    public IEnemy SpawnOneByChance(Vector3 spawnPosition)
+    public class SpawnOptionsTable
     {
-        if (_totalRate <= 0)
-            return null;
+        private readonly List<SpawnOption> _spawnOptions = new();
+        private int _totalWeight;
 
-        int randomValue = Random.Range(0, _totalRate);
-
-        foreach (var option in _spawnOptions)
+        public IEnemy SpawnRandom(Vector3 spawnPosition)
         {
-            if (randomValue < option.Rate)
-                return option.Factory.SpawnOne(spawnPosition);
+            if (_totalWeight <= 0)
+            {
+                return null;
+            }
 
-            randomValue -= option.Rate;
+            int randomValue = Random.Range(0, _totalWeight);
+
+            foreach (SpawnOption option in _spawnOptions)
+            {
+                if (randomValue < option.Weight)
+                {
+                    return option.Factory.SpawnOne(spawnPosition);
+                }
+
+                randomValue -= option.Weight;
+            }
+
+            return null;
         }
 
-        return null;
-    }
-    
-    public void AddSpawnOption(SpawnOption spawnOption)
-    {
-        _spawnOptions.Add(spawnOption);
-        UpdateTotalRate();
-    }
-    
-    private void UpdateTotalRate()
-    {
-        _totalRate = 0;
-        foreach (var spawnOption in _spawnOptions)
-            _totalRate += spawnOption.Rate;
+        public void AddSpawnOption(SpawnOption spawnOption)
+        {
+            _spawnOptions.Add(spawnOption);
+            UpdateTotalWeight();
+        }
+
+        private void UpdateTotalWeight()
+        {
+            _totalWeight = 0;
+            foreach (SpawnOption spawnOption in _spawnOptions)
+            {
+                _totalWeight += spawnOption.Weight;
+            }
+        }
     }
 }

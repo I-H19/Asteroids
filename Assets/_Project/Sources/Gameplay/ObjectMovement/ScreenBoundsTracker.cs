@@ -2,7 +2,7 @@
 using UnityEngine;
 using VContainer;
 
-namespace _Project.Sources.Gameplay.ObjectMovement
+namespace Asteroids
 {
     public class ScreenBoundsTracker
     {
@@ -12,7 +12,16 @@ namespace _Project.Sources.Gameplay.ObjectMovement
         private ScreenBounds _screenBounds;
 
         [Inject]
-        public void Construct(Camera mainCamera) => _camera = mainCamera;
+        public void Construct(Camera mainCamera)
+        {
+            _camera = mainCamera;
+        }
+
+        public void Init(Rigidbody2D rigidbody)
+        {
+            _rigidbody = rigidbody;
+            InitBounds();
+        }
 
         public void InitBounds()
         {
@@ -26,17 +35,7 @@ namespace _Project.Sources.Gameplay.ObjectMovement
             float bottomScreenBorder = cameraWorldPosition.y - halfScreenHeight;
             float topScreenBorder = cameraWorldPosition.y + halfScreenHeight;
 
-            _screenBounds = new ScreenBounds(leftScreenBorder, rightScreenBorder, bottomScreenBorder, topScreenBorder);
-        }
-        public void Init(Rigidbody2D rigidbody)
-        {
-            _rigidbody = rigidbody;
-            InitBounds();
-        }
-        public void Init(Rigidbody2D rigidbody, Camera mainCamera)
-        {
-            _camera = mainCamera;
-            Init(rigidbody);
+            _screenBounds = new(leftScreenBorder, rightScreenBorder, bottomScreenBorder, topScreenBorder);
         }
 
         public bool IsOutOfBounds()
@@ -53,7 +52,11 @@ namespace _Project.Sources.Gameplay.ObjectMovement
 
         public Vector3 GetRandomPointOnPerimeter()
         {
-            if (_screenBounds == null) throw new NullReferenceException();
+            if (_screenBounds == null)
+            {
+                throw new NullReferenceException();
+            }
+
             Vector2 randomVector2 = _screenBounds.GetRandomPointOnPerimeter();
             Vector3 randomVector3 = new(randomVector2.x, randomVector2.y, 0);
             return randomVector3;

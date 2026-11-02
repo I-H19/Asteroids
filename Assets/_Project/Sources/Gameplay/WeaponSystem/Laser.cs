@@ -1,38 +1,34 @@
 ﻿using System;
-using _Project.Sources.Config;
-using _Project.Sources.GameLoop;
-using _Project.Sources.Gameplay.DamageSystem.DamageSource;
 using UnityEngine;
 
-namespace _Project.Sources.Gameplay.WeaponSystem
+namespace Asteroids
 {
     [RequireComponent(typeof(PlayerDamageSource))]
     public class Laser : MonoBehaviour
     {
-        public event Action AmmoChanged;
-        public event Action Ticked;
-
-        public int MaxChargesNumber { get; private set; }
-
-        public int TotalAmmo { get; private set; }
-        public float ReloadingTime { get; private set; }
-        public float ShootingCooldown { get; private set; }
-
         private PlayerDamageSource _damageSource;
-        private LaserVisual _laserVisual;
-
-        private int _startCharges;
-
-        private float _operatingTime;
         private float _endOfOperatingTime;
 
-        private float _reloadingChargeTime;
-        private float _shootingCooldown;
+        private bool _isShooting;
+        private LaserVisual _laserVisual;
         private float _nextChargeTime;
         private float _nextShootTime;
 
-        private bool _isShooting;
-        
+        private float _operatingTime;
+
+        private float _reloadingChargeTime;
+        private float _shootingCooldown;
+
+        private int _startCharges;
+
+        public int MaxChargesNumber { get; private set; }
+        public float ReloadingTime { get; private set; }
+        public float ShootingCooldown { get; private set; }
+
+        public int TotalAmmo { get; private set; }
+        public event Action AmmoChanged;
+        public event Action Ticked;
+
 
         public void Init(LaserVisual laserVisual, PlayerCombatSettings combatSettings)
         {
@@ -52,14 +48,17 @@ namespace _Project.Sources.Gameplay.WeaponSystem
 
             _nextShootTime = Time.time;
             _nextChargeTime = Time.time;
-            
+
             _laserVisual = laserVisual;
             SetLaserActive(false);
         }
 
         public void TryShoot()
         {
-            if (Time.time <= _nextShootTime || TotalAmmo == 0 || _isShooting) return;
+            if (Time.time <= _nextShootTime || TotalAmmo == 0 || _isShooting)
+            {
+                return;
+            }
 
             SetLaserActive(true);
             TotalAmmo--;
@@ -81,31 +80,58 @@ namespace _Project.Sources.Gameplay.WeaponSystem
         {
             Ticked?.Invoke();
 
-            if (_isShooting) _damageSource.Tick();
-
             float reloadingTime = _nextChargeTime - Time.time;
             float shootingCooldown = _nextShootTime - Time.time;
 
-            if (shootingCooldown < 0) ShootingCooldown = 0;
-            else ShootingCooldown = shootingCooldown;
+            if (shootingCooldown < 0)
+            {
+                ShootingCooldown = 0;
+            }
+            else
+            {
+                ShootingCooldown = shootingCooldown;
+            }
 
-            if (reloadingTime < 0) ReloadingTime = 0;
-            else ReloadingTime = reloadingTime;
+            if (reloadingTime < 0)
+            {
+                ReloadingTime = 0;
+            }
+            else
+            {
+                ReloadingTime = reloadingTime;
+            }
 
-            if (_isShooting && Time.time > _endOfOperatingTime) SetLaserActive(false);
+            if (_isShooting && Time.time > _endOfOperatingTime)
+            {
+                SetLaserActive(false);
+            }
 
-            if (TotalAmmo == MaxChargesNumber) return;
+            if (TotalAmmo == MaxChargesNumber)
+            {
+                return;
+            }
+
             if (TotalAmmo > MaxChargesNumber)
             {
                 TotalAmmo = MaxChargesNumber;
                 return;
             }
 
-            if (Time.time > _nextChargeTime)
+            if (!(Time.time > _nextChargeTime))
             {
-                _nextChargeTime = Time.time + _reloadingChargeTime;
-                TotalAmmo++;
-                AmmoChanged?.Invoke();
+                return;
+            }
+
+            _nextChargeTime = Time.time + _reloadingChargeTime;
+            TotalAmmo++;
+            AmmoChanged?.Invoke();
+        }
+
+        public void FixedTick()
+        {
+            if (_isShooting)
+            {
+                _damageSource.Tick();
             }
         }
 

@@ -16,5 +16,5 @@ MonoBehaviour:
   <AsteroidPrefab>k__BackingField: {fileID: -8278625478078350598, guid: bc72ad307a225a946b0e1ba90e72ab4e, type: 3}
   <AsteroidFragmentPrefab>k__BackingField: {fileID: 6952870469170526523, guid: afe36e0dc4079184f870c37e4d49ffd7, type: 3}
   <UfoPrefab>k__BackingField: {fileID: 5699485163233134086, guid: 7df4d2a343d909f41b68010e5f69e315, type: 3}
-  <UI>k__BackingField: {fileID: 8911707649219829423, guid: 62167dde294b3f94693795a897c54563, type: 3}
+  <GameViewPrefab>k__BackingField: {fileID: 8911707649219829423, guid: 62167dde294b3f94693795a897c54563, type: 3}
   <PlayerRoot>k__BackingField: {fileID: 6018801142347838370, guid: d1e3afc129c5a4c4696bd4fd4e00ae97, type: 3}

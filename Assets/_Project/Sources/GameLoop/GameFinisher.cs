@@ -1,31 +1,32 @@
 using System;
-using _Project.Sources.Gameplay;
 using VContainer;
 
-namespace _Project.Sources.GameLoop
+namespace Asteroids
 {
     public class GameFinisher : IDisposable
     {
+        private Player _player;
+        private GamePause _gamePause;
+
         public event Action Finished;
 
-        private GamePause _gamePause;
-        private Player _player;
-
         [Inject]
-        public void Construct(GamePause gamePause) => _gamePause = gamePause;
-
-        public void Init(Player player)
+        public void Construct(Player player, GamePause gamePause)
         {
-            player.Death += Finish;
             _player = player;
+            _gamePause = gamePause;
+            player.Died += OnPlayerDied;
         }
 
-        private void Finish()
+        public void Dispose()
+        {
+            _player.Died -= OnPlayerDied;
+        }
+
+        private void OnPlayerDied()
         {
             Finished?.Invoke();
             _gamePause.SetPause(true);
         }
-
-        public void Dispose() => _player.Death -= Finish;
     }
 }

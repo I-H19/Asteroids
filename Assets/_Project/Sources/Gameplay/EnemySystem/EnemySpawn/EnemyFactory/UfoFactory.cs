@@ -1,35 +1,28 @@
-using _Project.Sources.Config;
-using _Project.Sources.Config.Gameplay;
-using _Project.Sources.Gameplay.EnemySystem.Enemy;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace _Project.Sources.Gameplay.EnemySystem.EnemySpawn.EnemyFactory
+namespace Asteroids
 {
     public class UfoFactory : IEnemyFactory
     {
-        private IObjectResolver _resolver;
-        private UFO _enemyPrefab;
+        private Ufo _enemyPrefab;
         private EnemySettings _enemySettings;
-        private Player _player;
+        private IObjectResolver _resolver;
 
         [Inject]
-        public void Construct(
-            IObjectResolver resolver,
-            PrefabHolder prefabHolder,
-            EnemySettings enemySettings)
+        public void Construct(IObjectResolver resolver, PrefabHolder prefabHolder, EnemySettings enemySettings)
         {
             _resolver = resolver;
             _enemyPrefab = prefabHolder.UfoPrefab;
             _enemySettings = enemySettings;
         }
-        public void Init(Player player) => _player = player;
+
         public IEnemy SpawnOne(Vector3 position)
         {
-            UFO ufo = _resolver.Instantiate(_enemyPrefab, position, Quaternion.identity);
+            Ufo ufo = _resolver.Instantiate(_enemyPrefab, position, Quaternion.identity);
 
-            ufo.Init(_enemySettings.UfoMovingSettings, _player, _enemySettings.UfoDamage);
+            ufo.Init(_enemySettings.UfoMovingSettings, _enemySettings.UfoDamage);
 
             return ufo;
         }

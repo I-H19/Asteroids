@@ -1,15 +1,9 @@
 using System;
-using _Project.Sources.Config.Movement;
-using _Project.Sources.GameLoop;
-using _Project.Sources.Gameplay.DamageSystem.Damageable;
-using _Project.Sources.Gameplay.DamageSystem.DamageSource;
-using _Project.Sources.Gameplay.ObjectMovement;
-using _Project.Sources.Gameplay.ObjectMovement.Movers;
-using _Project.Sources.Gameplay.ObjectMovement.Rotators;
 using UnityEngine;
 using VContainer;
+using Random = UnityEngine.Random;
 
-namespace _Project.Sources.Gameplay.EnemySystem.Enemy
+namespace Asteroids
 {
     [RequireComponent(typeof(DirectionalMover))]
     [RequireComponent(typeof(LookAtRotator))]
@@ -17,66 +11,72 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
     [RequireComponent(typeof(EnemyLife))]
     [RequireComponent(typeof(ScreenTeleporter))]
     [RequireComponent(typeof(EnemyDamageSource))]
-    public class UFO : MonoBehaviour, IEnemy, ISceneTickable
+    public class Ufo : MonoBehaviour, IEnemy
     {
-        public DirectionalMoverSettings MoverSettings { get; private set; }
-
-        public IMover Mover => _directionalMover;
-        public event Action<IEnemy> Killed;
-
         private DirectionalMover _directionalMover;
         private EnemyLife _enemyLife;
-        private Rigidbody2D _rigidbody2D;
         private LookAtRotator _lookAtRotator;
+        private DirectionalMoverSettings _moverSettings;
+        private Player _player;
+        private Rigidbody2D _rigidbody2D;
         private ScreenBoundsTracker _screenBoundsTracker;
-        private Camera _camera;
 
         [Inject]
-        public void Construct(Camera mainCamera, ScreenBoundsTracker screenBoundsTracker)
+        public void Construct(ScreenBoundsTracker screenBoundsTracker, Player player)
         {
-            _camera = mainCamera;
             _screenBoundsTracker = screenBoundsTracker;
+            _player = player;
         }
-        public void Init(
-            DirectionalMoverSettings moverSettings,
-            Player player,
-            float damageCount)
-        {
-            MoverSettings = moverSettings;
 
-            float randomAngleDegrees = UnityEngine.Random.Range(0f, 360f);
+        public void Init(DirectionalMoverSettings moverSettings, float damageCount)
+        {
+            _moverSettings = moverSettings;
+
+            float randomAngleDegrees = Random.Range(0f, 360f);
             gameObject.transform.rotation = Quaternion.Euler(0f, 0f, randomAngleDegrees);
 
             _enemyLife = GetComponent<EnemyLife>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _directionalMover = GetComponent<DirectionalMover>();
-            _directionalMover.Init(MoverSettings, _rigidbody2D);
+            _directionalMover.Init(_moverSettings, _rigidbody2D);
             _directionalMover.EnableMoving();
 
             EnemyDamageSource damageSource = GetComponent<EnemyDamageSource>();
             damageSource.Init(damageCount);
 
             _lookAtRotator = GetComponent<LookAtRotator>();
-            _lookAtRotator.Init(player.transform);
+            _lookAtRotator.Init(_player.transform);
 
-            _screenBoundsTracker.Init(_rigidbody2D, _camera);
-            
-            _enemyLife.OnDeath += OnDeath;
+            _screenBoundsTracker.Init(_rigidbody2D);
+
+            _enemyLife.Died += OnDied;
         }
 
-        private void OnDeath()
+        private void OnDestroy()
         {
-            Killed?.Invoke(this);
+            if (_enemyLife != null)
+            {
+                _enemyLife.Died -= OnDied;
+            }
         }
+
+        public IMover Mover => _directionalMover;
+        public event Action<IEnemy> Killed;
+
         public void Kill()
         {
             Destroy(gameObject);
         }
 
-        public void Tick()
+        public void FixedTick()
         {
             _lookAtRotator.Rotate();
             _directionalMover.Move();
+        }
+
+        private void OnDied()
+        {
+            Killed?.Invoke(this);
         }
     }
 }

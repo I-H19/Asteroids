@@ -1,13 +1,11 @@
 using System;
-using _Project.Sources.GameLoop;
-using _Project.Sources.Gameplay.ObjectMovement.Movers;
 
-namespace _Project.Sources.Gameplay.EnemySystem.Enemy
+namespace Asteroids
 {
-    public interface IEnemy : ISceneTickable
+    public interface IEnemy : ISceneFixedTickable
     {
-        public event Action<IEnemy> Killed;
         public IMover Mover { get; }
+        public event Action<IEnemy> Killed;
         public void Kill();
     }
 }

@@ -1,101 +1,124 @@
-﻿using System;
-using _Project.Sources.GameLoop;
-using _Project.Sources.Gameplay.ObjectMovement.Movers;
-using _Project.Sources.Gameplay.ObjectMovement.Rotators;
-using _Project.Sources.Gameplay.WeaponSystem;
+using System;
 using VContainer;
 
-namespace _Project.Sources.Input
+namespace Asteroids
 {
-    public class PlayerKeyboardController : IDisposable, IPausable, ISceneTickable
+    public class PlayerKeyboardController : IDisposable
     {
-        private DirectionalRotator _playerRotator;
-        private InertialMover _playerMover;
+        private BulletFiringController _bulletFiringController;
         private KeyboardMonitor _keyboardMonitor;
-
-        private BulletSpawner _bulletSpawner;
-        private Laser _laser;
-        private bool _isPause;
+        private Player _player;
 
         [Inject]
-        public void Construct(KeyboardMonitor keyboardMonitor) => _keyboardMonitor = keyboardMonitor;
-
-        public void Init(
-            InertialMover inertialMover,
-            DirectionalRotator directionalRotator,
-            BulletSpawner bulletSpawner,
-            Laser laser)
+        public void Construct(KeyboardMonitor keyboardMonitor)
         {
-            _playerMover = inertialMover;
-            _playerRotator = directionalRotator;
-            _bulletSpawner = bulletSpawner;
-            _laser = laser;
+            _keyboardMonitor = keyboardMonitor;
         }
 
-        public void Tick()
+        public void Init(Player player, BulletFiringController bulletFiringController)
         {
-            if (_isPause) return;
-            
-            _playerMover.Move();
-            _playerRotator.Rotate();
+            _player = player;
+            _bulletFiringController = bulletFiringController;
+        }
+
+        public void Dispose()
+        {
+            KeyboardUnsubscribe();
         }
 
         public void KeyboardSubscribe()
         {
-            _keyboardMonitor.ForwardButtonDown += HandleForwardDown;
-            _keyboardMonitor.ForwardButtonUp += HandleForwardUp;
+            _keyboardMonitor.ForwardButtonDown += OnForwardButtonDown;
+            _keyboardMonitor.ForwardButtonUp += OnForwardButtonUp;
 
-            _keyboardMonitor.BackwardButtonDown += HandleBackwardDown;
-            _keyboardMonitor.BackwardButtonUp += HandleBackwardUp;
+            _keyboardMonitor.BackwardButtonDown += OnBackwardButtonDown;
+            _keyboardMonitor.BackwardButtonUp += OnBackwardButtonUp;
 
-            _keyboardMonitor.LeftButtonDown += HandleLeftDown;
-            _keyboardMonitor.LeftButtonUp += HandleLeftUp;
+            _keyboardMonitor.LeftButtonDown += OnLeftButtonDown;
+            _keyboardMonitor.LeftButtonUp += OnLeftButtonUp;
 
-            _keyboardMonitor.RightButtonDown += HandleRightDown;
-            _keyboardMonitor.RightButtonUp += HandleRightUp;
+            _keyboardMonitor.RightButtonDown += OnRightButtonDown;
+            _keyboardMonitor.RightButtonUp += OnRightButtonUp;
 
-            _keyboardMonitor.ShootButtonDown += HandleShootDown;
-            _keyboardMonitor.ShootButtonUp += HandleShootUp;
+            _keyboardMonitor.ShootButtonDown += OnShootButtonDown;
+            _keyboardMonitor.ShootButtonUp += OnShootButtonUp;
 
-            _keyboardMonitor.LaserButtonDown += HandleLaserDown;
+            _keyboardMonitor.LaserButtonDown += OnLaserButtonDown;
         }
 
         private void KeyboardUnsubscribe()
         {
-            _keyboardMonitor.ForwardButtonDown -= HandleForwardDown;
-            _keyboardMonitor.ForwardButtonUp -= HandleForwardUp;
+            _keyboardMonitor.ForwardButtonDown -= OnForwardButtonDown;
+            _keyboardMonitor.ForwardButtonUp -= OnForwardButtonUp;
 
-            _keyboardMonitor.BackwardButtonDown -= HandleBackwardDown;
-            _keyboardMonitor.BackwardButtonUp -= HandleBackwardUp;
+            _keyboardMonitor.BackwardButtonDown -= OnBackwardButtonDown;
+            _keyboardMonitor.BackwardButtonUp -= OnBackwardButtonUp;
 
-            _keyboardMonitor.LeftButtonDown -= HandleLeftDown;
-            _keyboardMonitor.LeftButtonUp -= HandleLeftUp;
+            _keyboardMonitor.LeftButtonDown -= OnLeftButtonDown;
+            _keyboardMonitor.LeftButtonUp -= OnLeftButtonUp;
 
-            _keyboardMonitor.RightButtonDown -= HandleRightDown;
-            _keyboardMonitor.RightButtonUp -= HandleRightUp;
+            _keyboardMonitor.RightButtonDown -= OnRightButtonDown;
+            _keyboardMonitor.RightButtonUp -= OnRightButtonUp;
 
-            _keyboardMonitor.ShootButtonDown -= HandleShootDown;
-            _keyboardMonitor.ShootButtonUp -= HandleShootUp;
+            _keyboardMonitor.ShootButtonDown -= OnShootButtonDown;
+            _keyboardMonitor.ShootButtonUp -= OnShootButtonUp;
 
-            _keyboardMonitor.LaserButtonDown -= HandleLaserDown;
+            _keyboardMonitor.LaserButtonDown -= OnLaserButtonDown;
         }
 
-        private void HandleLaserDown() => _laser.TryShoot();
-        private void HandleShootDown() => _bulletSpawner.StartSpawning();
-        private void HandleShootUp() => _bulletSpawner.StopSpawning();
-        private void HandleForwardDown() => _playerMover.StartAcceleration(true);
-        private void HandleForwardUp() => _playerMover.StartAcceleration(false);
+        private void OnLaserButtonDown()
+        {
+            _player.TryLaserShoot();
+        }
 
-        private void HandleBackwardDown() => _playerMover.StartBraking(true);
-        private void HandleBackwardUp() => _playerMover.StartBraking(false);
+        private void OnShootButtonDown()
+        {
+            _bulletFiringController.StartFiring();
+        }
 
-        private void HandleLeftDown() => _playerRotator.SetRotateLeft(true);
-        private void HandleLeftUp() => _playerRotator.SetRotateLeft(false);
+        private void OnShootButtonUp()
+        {
+            _bulletFiringController.StopFiring();
+        }
 
-        private void HandleRightDown() => _playerRotator.SetRotateRight(true);
-        private void HandleRightUp() => _playerRotator.SetRotateRight(false);
-        public void Dispose() => KeyboardUnsubscribe();
-        public void Pause() => _isPause = true;
-        public void Unpause() => _isPause = false;
+        private void OnForwardButtonDown()
+        {
+            _player.SetAccelerating(true);
+        }
+
+        private void OnForwardButtonUp()
+        {
+            _player.SetAccelerating(false);
+        }
+
+        private void OnBackwardButtonDown()
+        {
+            _player.SetBraking(true);
+        }
+
+        private void OnBackwardButtonUp()
+        {
+            _player.SetBraking(false);
+        }
+
+        private void OnLeftButtonDown()
+        {
+            _player.SetRotateLeft(true);
+        }
+
+        private void OnLeftButtonUp()
+        {
+            _player.SetRotateLeft(false);
+        }
+
+        private void OnRightButtonDown()
+        {
+            _player.SetRotateRight(true);
+        }
+
+        private void OnRightButtonUp()
+        {
+            _player.SetRotateRight(false);
+        }
     }
 }

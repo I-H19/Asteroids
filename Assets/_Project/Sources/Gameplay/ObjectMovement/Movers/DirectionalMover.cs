@@ -1,13 +1,12 @@
-﻿using _Project.Sources.Config.Movement;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace _Project.Sources.Gameplay.ObjectMovement.Movers
+namespace Asteroids
 {
     public class DirectionalMover : MonoBehaviour, IMover
     {
-        private Rigidbody2D _rigidBody;
-        private float _moveSpeed;
         private bool _enabled = true;
+        private float _moveSpeed;
+        private Rigidbody2D _rigidBody;
 
         public void Init(DirectionalMoverSettings moverSettings, Rigidbody2D moveRigidbody)
         {
@@ -15,18 +14,10 @@ namespace _Project.Sources.Gameplay.ObjectMovement.Movers
             _moveSpeed = moverSettings.MovingSpeed;
         }
 
-        public void Move()
-        {
-            if (!_enabled) return;
-
-            Vector2 forward = _rigidBody.transform.up;
-            _rigidBody.linearVelocity = forward * _moveSpeed;
-        }
-        
 
         public void EnableMoving()
         {
-            _enabled = true;   
+            _enabled = true;
         }
 
         public void DisableMoving()
@@ -34,6 +25,21 @@ namespace _Project.Sources.Gameplay.ObjectMovement.Movers
             _enabled = false;
             _rigidBody.linearVelocity = Vector2.zero;
         }
-        public void SetPosition(Vector2 position) => _rigidBody.position = position;
+
+        public void Move()
+        {
+            if (!_enabled)
+            {
+                return;
+            }
+
+            Vector2 forward = _rigidBody.transform.up;
+            _rigidBody.linearVelocity = forward * _moveSpeed;
+        }
+
+        public void SetPosition(Vector2 position)
+        {
+            _rigidBody.position = position;
+        }
     }
 }

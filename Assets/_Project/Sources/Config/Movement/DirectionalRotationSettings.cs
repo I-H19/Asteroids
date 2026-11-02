@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 
-namespace _Project.Sources.Config.Movement
+namespace Asteroids
 {
-    [CreateAssetMenu(fileName = "DirectionalRotationSettings", menuName = "Settings/Movement/DirectionalRotationSettings")]
+    [CreateAssetMenu(
+        fileName = "DirectionalRotationSettings",
+        menuName = "Settings/Movement/DirectionalRotationSettings")]
     public class DirectionalRotationSettings : ScriptableObject
     {
-        [field: SerializeField] public float RotationSpeed { get; private set; }
-        
+        [field: SerializeField]
+        public float RotationSpeed { get; private set; }
     }
 }
-

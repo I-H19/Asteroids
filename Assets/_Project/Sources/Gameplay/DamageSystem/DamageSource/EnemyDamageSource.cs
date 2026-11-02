@@ -1,19 +1,28 @@
-using _Project.Sources.Gameplay.DamageSystem.Damageable;
 using UnityEngine;
 
-namespace _Project.Sources.Gameplay.DamageSystem.DamageSource
+namespace Asteroids
 {
     [RequireComponent(typeof(BoxCollider2D))]
-    public class EnemyDamageSource : MonoBehaviour, IDamageSource
+    public class EnemyDamageSource : MonoBehaviour
     {
         public float DamageCount { get; private set; }
 
-        public void Init(float damageCount) => DamageCount = damageCount;
-        public void Damage(IDamageable target) => target.TakeDamage(DamageCount);
+        public void Init(float damageCount)
+        {
+            DamageCount = damageCount;
+        }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.gameObject.TryGetComponent<PlayerLife>(out PlayerLife playerLife)) Damage(playerLife);
+            if (collision.gameObject.TryGetComponent(out PlayerLife playerLife))
+            {
+                Damage(playerLife);
+            }
+        }
+
+        public void Damage(IDamageable target)
+        {
+            target.TakeDamage(DamageCount);
         }
     }
 }

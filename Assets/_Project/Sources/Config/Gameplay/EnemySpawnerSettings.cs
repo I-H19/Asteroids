@@ -1,14 +1,30 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace _Project.Sources.Config.Gameplay
+namespace Asteroids
 {
     [CreateAssetMenu(fileName = "EnemySpawnerSettings", menuName = "Settings/Gameplay/EnemySpawnerSettings")]
     public class EnemySpawnerSettings : ScriptableObject
     {
-        [field: SerializeField, Range(1, 100)] public float SpawnTryingInterval { get; private set; }
-        [field: SerializeField, Range(0, 100)] public byte EnemySpawnChance { get; private set; }
-        [field: SerializeField, Range(0, 100)] public byte AsteroidSpawnChance { get; private set; }
-        [field: SerializeField, Range(0, 100)] public byte UfoSpawnChance { get; private set; }
-        [field: SerializeField, Range(0, 255)] public byte MaxEnemiesAlive { get; private set; }
+        [field: SerializeField]
+        [field: Range(1, 100)]
+        [field: FormerlySerializedAs("<SpawnTryingInterval>k__BackingField")]
+        public float SpawnAttemptInterval { get; private set; }
+
+        [field: SerializeField]
+        [field: Range(0, 100)]
+        public byte EnemySpawnChance { get; private set; }
+
+        [field: SerializeField]
+        [field: Range(0, 100)]
+        public byte AsteroidSpawnChance { get; private set; }
+
+        [field: SerializeField]
+        [field: Range(0, 100)]
+        public byte UfoSpawnChance { get; private set; }
+
+        [field: SerializeField]
+        [field: Range(0, 255)]
+        public byte MaxEnemiesAlive { get; private set; }
     }
 }

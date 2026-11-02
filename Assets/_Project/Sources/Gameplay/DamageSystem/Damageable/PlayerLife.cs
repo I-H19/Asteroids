@@ -1,20 +1,38 @@
 ﻿using System;
 using UnityEngine;
 
-namespace _Project.Sources.Gameplay.DamageSystem.Damageable
+namespace Asteroids
 {
     public class PlayerLife : MonoBehaviour, IDamageable
     {
-        public float Health { get; private set; }
-        public event Action OnDeath;
+        private float _health;
+        private float _maxHealth;
 
-        public void Init(float healthCount) => Health = healthCount;
-        public void TakeDamage(float damage)
+        public event Action Died;
+
+        public void Init(float maxHealthCount)
         {
-            Health -= damage;
-            if (Health <= 0) PlayerKill();
+            _health = maxHealthCount;
+            _maxHealth = maxHealthCount;
         }
 
-        public void PlayerKill() => OnDeath?.Invoke();
+        public void TakeDamage(float damage)
+        {
+            _health -= damage;
+            if (_health <= 0)
+            {
+                PlayerKill();
+            }
+        }
+
+        public void RestoreHealth()
+        {
+            _health = _maxHealth;
+        }
+
+        private void PlayerKill()
+        {
+            Died?.Invoke();
+        }
     }
 }

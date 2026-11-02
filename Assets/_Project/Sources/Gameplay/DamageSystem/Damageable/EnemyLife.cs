@@ -1,22 +1,26 @@
 ﻿using System;
 using UnityEngine;
 
-namespace _Project.Sources.Gameplay.DamageSystem.Damageable
+namespace Asteroids
 {
     public class EnemyLife : MonoBehaviour, IDamageable
     {
-        public float Health { get; private set; }
-        public event Action OnDeath;
+        private float _health;
+
+        public event Action Died;
+
         public void TakeDamage(float damage)
         {
-            Health -= damage;
-            if (Health <= 0) EnemyKill();
+            _health -= damage;
+            if (_health <= 0)
+            {
+                EnemyKill();
+            }
         }
 
-        public void EnemyKill()
+        private void EnemyKill()
         {
-            OnDeath?.Invoke();
-            Destroy(gameObject);
+            Died?.Invoke();
         }
     }
 }

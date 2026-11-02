@@ -1,27 +1,75 @@
-using System.Collections;
 using System.Collections.Generic;
 using VContainer;
 using VContainer.Unity;
 
-namespace _Project.Sources.GameLoop
+namespace Asteroids
 {
-    public class SceneTickDriver : ITickable, IPausable
+    public class SceneTickDriver : ITickable, IPausable, IFixedTickable, ILateTickable
     {
         private bool _isPaused;
-        private IEnumerable _sceneTickables;
+        private IEnumerable<ISceneTickable> _sceneTickables;
+        private IEnumerable<ISceneFixedTickable> _sceneFixedTickables;
+        private IEnumerable<ISceneLateTickable> _sceneLateTickables;
 
         [Inject]
-        public void Construct(IEnumerable<ISceneTickable> sceneTickables) 
-            =>  _sceneTickables  = sceneTickables;
-        
+        public void Construct(
+            IEnumerable<ISceneTickable> sceneTickables,
+            IEnumerable<ISceneFixedTickable> sceneFixedTickables,
+            IEnumerable<ISceneLateTickable> sceneLateTickables)
+        {
+            _sceneTickables = sceneTickables;
+            _sceneFixedTickables = sceneFixedTickables;
+            _sceneLateTickables = sceneLateTickables;
+        }
+
+        public void Pause()
+        {
+            _isPaused = true;
+        }
+
+        public void Unpause()
+        {
+            _isPaused = false;
+        }
+
 
         public void Tick()
         {
-            if (!_isPaused)
-                foreach (ISceneTickable sceneTickable in _sceneTickables) sceneTickable.Tick();
+            if (_isPaused)
+            {
+                return;
+            }
+
+            foreach (ISceneTickable sceneTickable in _sceneTickables)
+            {
+                sceneTickable.Tick();
+            }
         }
-        
-        public void Pause() => _isPaused = true;
-        public void Unpause() => _isPaused = false;
+
+        public void FixedTick()
+        {
+            if (_isPaused)
+            {
+                return;
+            }
+
+            foreach (ISceneFixedTickable fixedTickable in _sceneFixedTickables)
+            {
+                fixedTickable.FixedTick();
+            }
+        }
+
+        public void LateTick()
+        {
+            if (_isPaused)
+            {
+                return;
+            }
+
+            foreach (ISceneLateTickable lateTickable in _sceneLateTickables)
+            {
+                lateTickable.LateTick();
+            }
+        }
     }
 }

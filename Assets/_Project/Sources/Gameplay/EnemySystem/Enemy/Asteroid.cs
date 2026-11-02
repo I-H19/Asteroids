@@ -1,18 +1,14 @@
 using System;
 using System.Collections.Generic;
-using _Project.Sources.Config.Movement;
-using _Project.Sources.Gameplay.ObjectMovement.Movers;
 using UnityEngine;
 
-namespace _Project.Sources.Gameplay.EnemySystem.Enemy
+namespace Asteroids
 {
     [RequireComponent(typeof(AsteroidBase))]
     public class Asteroid : MonoBehaviour, IEnemy
     {
-        [field: SerializeField] public List<AsteroidFragment> Fragments { get; private set; } = new();
-
-        public event Action<IEnemy> Killed;
-        public IMover Mover => _asteroidBase.Mover;
+        [field: SerializeField]
+        public List<AsteroidFragment> Fragments { get; private set; } = new();
 
         private AsteroidBase _asteroidBase;
 
@@ -21,27 +17,43 @@ namespace _Project.Sources.Gameplay.EnemySystem.Enemy
             _asteroidBase = GetComponent<AsteroidBase>();
             _asteroidBase.Init(moverSettings, damageCount);
             _asteroidBase.Mover.EnableMoving();
-            _asteroidBase.Died += OnDeath;
+            _asteroidBase.Died += OnDied;
         }
-
-        public void AddFragment(AsteroidFragment fragment) => Fragments.Add(fragment);
-
-        public void Tick() => _asteroidBase.Tick();
-
-        public void Kill()
-        {
-            foreach (AsteroidFragment fragment in Fragments)
-                fragment.Activate();
-
-            Destroy(gameObject);
-        }
-
-        private void OnDeath() => Killed?.Invoke(this);
 
         private void OnDestroy()
         {
             if (_asteroidBase != null)
-                _asteroidBase.Died -= OnDeath;
+            {
+                _asteroidBase.Died -= OnDied;
+            }
+        }
+
+        public event Action<IEnemy> Killed;
+        public IMover Mover => _asteroidBase.Mover;
+
+        public void FixedTick()
+        {
+            _asteroidBase.FixedTick();
+        }
+
+        public void Kill()
+        {
+            foreach (AsteroidFragment fragment in Fragments)
+            {
+                fragment.Activate();
+            }
+
+            Destroy(gameObject);
+        }
+
+        public void AddFragment(AsteroidFragment fragment)
+        {
+            Fragments.Add(fragment);
+        }
+
+        private void OnDied()
+        {
+            Killed?.Invoke(this);
         }
     }
 }

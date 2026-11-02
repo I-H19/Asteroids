@@ -1,38 +1,43 @@
 using System;
-using _Project.Sources.Gameplay;
-using _Project.Sources.Gameplay.EnemySystem.EnemySpawn;
-using UnityEngine.UI;
 using VContainer;
 
-namespace _Project.Sources.GameLoop
+namespace Asteroids
 {
     public class GameRestarter : IDisposable
     {
+        private EnemyRegistry _enemiesRegistry;
+        private BulletRegistry _bulletRegistry;
+
+        private GameOverView _gameOverView;
+        private GamePause _gamePause;
+        private Player _player;
         public event Action Restarted;
 
-        private GamePause _gamePause;
-        private EnemyRegistry _enemiesRegistry;
-        private Player _player;
-        private Button _gameRestartButton;
-
-
         [Inject]
-        public void Construct(EnemyRegistry enemiesRegistry, GamePause gamePause)
+        public void Construct(
+            EnemyRegistry enemiesRegistry,
+            BulletRegistry bulletRegistry,
+            GamePause gamePause,
+            Player player,
+            GameView gameView)
         {
             _gamePause = gamePause;
             _enemiesRegistry = enemiesRegistry;
-        }
-
-        public void Init(Player player, Button restartButton)
-        {
+            _bulletRegistry = bulletRegistry;
             _player = player;
-            _gameRestartButton =  restartButton;
-            
-            _gameRestartButton.onClick.AddListener(RestartGame);
+
+            _gameOverView = gameView.GameOverView;
+            _gameOverView.RestartButtonClicked += OnRestartButtonClicked;
         }
 
-        public void RestartGame()
+        public void Dispose()
         {
+            _gameOverView.RestartButtonClicked -= OnRestartButtonClicked;
+        }
+
+        private void OnRestartButtonClicked()
+        {
+            _bulletRegistry.ClearAll();
             _enemiesRegistry.KillAll();
             _player.ResetPlayer();
 
@@ -40,7 +45,5 @@ namespace _Project.Sources.GameLoop
 
             _gamePause.SetPause(false);
         }
-
-        public void Dispose() => _gameRestartButton.onClick.RemoveAllListeners();
     }
 }
