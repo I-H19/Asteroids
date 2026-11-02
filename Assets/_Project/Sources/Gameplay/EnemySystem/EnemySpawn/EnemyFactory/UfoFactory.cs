@@ -10,6 +10,14 @@ namespace Asteroids
         private EnemySettings _enemySettings;
         private IObjectResolver _resolver;
 
+        [Inject]
+        public void Construct(IObjectResolver resolver, PrefabHolder prefabHolder, EnemySettings enemySettings)
+        {
+            _resolver = resolver;
+            _enemyPrefab = prefabHolder.UfoPrefab;
+            _enemySettings = enemySettings;
+        }
+
         public IEnemy SpawnOne(Vector3 position)
         {
             Ufo ufo = _resolver.Instantiate(_enemyPrefab, position, Quaternion.identity);
@@ -17,17 +25,6 @@ namespace Asteroids
             ufo.Init(_enemySettings.UfoMovingSettings, _enemySettings.UfoDamage);
 
             return ufo;
-        }
-
-        [Inject]
-        public void Construct(
-            IObjectResolver resolver,
-            PrefabHolder prefabHolder,
-            EnemySettings enemySettings)
-        {
-            _resolver = resolver;
-            _enemyPrefab = prefabHolder.UfoPrefab;
-            _enemySettings = enemySettings;
         }
     }
 }

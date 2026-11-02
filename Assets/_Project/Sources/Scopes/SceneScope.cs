@@ -6,19 +6,6 @@ namespace Asteroids
 {
     public class SceneScope : LifetimeScope
     {
-#pragma warning disable CS0649 // These fields are assigned by Unity serialization.
-        [Header("Core")] [SerializeField] private Camera _camera;
-
-        [Header("Player")] [SerializeField] private PlayerMovementSettings _playerMovementSettings;
-
-        [SerializeField] private PlayerCombatSettings _playerCombatSettings;
-
-        [Header("Gameplay")] [SerializeField] private PrefabHolder _prefabHolder;
-
-        [SerializeField] private EnemySpawnerSettings _enemySpawnerSettings;
-        [SerializeField] private EnemySettings _enemySettings;
-#pragma warning restore CS0649
-
         protected override void Configure(IContainerBuilder builder)
         {
             RegisterEntryPoints(builder);
@@ -28,8 +15,8 @@ namespace Asteroids
             RegisterGameFlow(builder);
             RegisterFactories(builder);
 
-            builder.RegisterComponentInNewPrefab<GameView>(_prefabHolder.UI, Lifetime.Singleton);
-            builder.Register<GamePresenter>(Lifetime.Singleton);
+            builder.RegisterComponentInNewPrefab(_prefabHolder.GameViewPrefab, Lifetime.Singleton);
+            builder.Register<GamePresenter>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             builder.Register<GameModel>(Lifetime.Singleton);
             builder.Register<GameplayEventsBridge>(Lifetime.Singleton);
             builder.Register<PlayerStatsBridge>(Lifetime.Singleton);
@@ -63,7 +50,10 @@ namespace Asteroids
             builder.RegisterInstance(_playerMovementSettings.MoverSettings);
             builder.RegisterInstance(_playerMovementSettings.RotationSettings);
 
-            builder.Register<BulletSpawner>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<BulletRegistry>(Lifetime.Singleton).AsSelf();
+            builder.Register<BulletFactory>(Lifetime.Singleton).AsSelf();
+            builder.Register<BulletSystem>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
+            builder.Register<BulletFiringController>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
 
             builder.Register<PlayerKeyboardController>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
         }
@@ -95,5 +85,17 @@ namespace Asteroids
             builder.Register<AsteroidFactory>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             builder.Register<UfoFactory>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
         }
+#pragma warning disable CS0649
+        [Header("Core")] [SerializeField] private Camera _camera;
+
+        [Header("Player")] [SerializeField] private PlayerMovementSettings _playerMovementSettings;
+
+        [SerializeField] private PlayerCombatSettings _playerCombatSettings;
+
+        [Header("Gameplay")] [SerializeField] private PrefabHolder _prefabHolder;
+
+        [SerializeField] private EnemySpawnerSettings _enemySpawnerSettings;
+        [SerializeField] private EnemySettings _enemySettings;
+#pragma warning restore CS0649
     }
 }

@@ -13,6 +13,23 @@ namespace Asteroids
 
         private float _spawnTimer;
 
+        [Inject]
+        public void Construct(
+            EnemySpawnerSettings enemySpawnerSettings,
+            EnemyRegistry enemiesRegistry,
+            ScreenBoundsTracker boundsTracker,
+            SpawnOptionsTable spawnOptionsTable)
+        {
+            _enemiesRegistry = enemiesRegistry;
+
+            _enemySpawnerSettings = enemySpawnerSettings;
+
+            _boundsTracker = boundsTracker;
+            _boundsTracker.InitBounds();
+
+            _spawnOptionsTable = spawnOptionsTable;
+        }
+
         public void Tick()
         {
             _spawnTimer += Time.deltaTime;
@@ -43,23 +60,6 @@ namespace Asteroids
             }
 
             _enemiesRegistry.RegisterEnemy(enemy);
-        }
-
-        [Inject]
-        public void Construct(
-            EnemySpawnerSettings enemySpawnerSettings,
-            EnemyRegistry enemiesRegistry,
-            ScreenBoundsTracker boundsTracker,
-            SpawnOptionsTable spawnOptionsTable)
-        {
-            _enemiesRegistry = enemiesRegistry;
-
-            _enemySpawnerSettings = enemySpawnerSettings;
-
-            _boundsTracker = boundsTracker;
-            _boundsTracker.InitBounds();
-
-            _spawnOptionsTable = spawnOptionsTable;
         }
     }
 }

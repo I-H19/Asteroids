@@ -11,39 +11,108 @@ namespace Asteroids
     [RequireComponent(typeof(PlayerLife))]
     public class Player : MonoBehaviour, ISceneTickable, ISceneFixedTickable, IPausable
     {
-        public event Action Died;
-        
         [field: SerializeField]
-        public Laser PlayerLaser { get; private set; }
+        private Laser PlayerLaser { get; set; }
 
         [field: SerializeField]
-        public LaserVisual PlayerLaserVisual { get; private set; }
+        private LaserVisual PlayerLaserVisual { get; set; }
 
+        private DirectionalRotator _directionalRotator;
+        private InertialMover _inertialMover;
         private PlayerLife _life;
         private float _maxHealth;
         private PlayerCombatSettings _playerCombatSettings;
+        private PlayerMovementSettings _playerMovementSettings;
+        private Rigidbody2D _rigidbody;
         private ScreenTeleporter _playerTeleporter;
 
         private ScreenBoundsTracker _screenBoundsTracker;
-        public Rigidbody2D PlayerRigidBody { get; private set; }
-        public InertialMover PlayerInertialMover { get; private set; }
-        public DirectionalRotator PlayerDirectionalRotator { get; private set; }
+
+        public float CurrentSpeed => _inertialMover.CurrentSpeed;
+        public Vector2 Position => _rigidbody.position;
+        public float CurrentAngle => _directionalRotator.CurrentAngle;
+        public int TotalLaserAmmo => PlayerLaser.TotalAmmo;
+        public int MaxLaserCharges => PlayerLaser.MaxChargesNumber;
+        public float LaserReloadingTime => PlayerLaser.ReloadingTime;
+        public float LaserShootingCooldown => PlayerLaser.ShootingCooldown;
+
+        public event Action Died;
+        public event Action SpeedChanged;
+        public event Action PositionChanged;
+        public event Action AngleChanged;
+        public event Action LaserAmmoChanged;
+        public event Action LaserTicked;
+
+        [Inject]
+        public void Construct(
+            PlayerCombatSettings combatSettings,
+            PlayerMovementSettings movementSettings,
+            ScreenBoundsTracker boundsTracker)
+        {
+            _maxHealth = combatSettings.MaxHealth;
+            _playerCombatSettings = combatSettings;
+            _playerMovementSettings = movementSettings;
+            _screenBoundsTracker = boundsTracker;
+        }
+
+
+        public void Init()
+        {
+            _playerTeleporter = GetComponent<ScreenTeleporter>();
+
+            _rigidbody = GetComponent<Rigidbody2D>();
+
+            _inertialMover = GetComponent<InertialMover>();
+            _directionalRotator = GetComponent<DirectionalRotator>();
+
+            _directionalRotator.Init(_rigidbody, _playerMovementSettings.RotationSettings);
+            _inertialMover.Init(_playerMovementSettings.MoverSettings, _rigidbody);
+
+            _life = GetComponent<PlayerLife>();
+            _life.Init(_maxHealth);
+
+            _screenBoundsTracker.Init(_rigidbody);
+
+            _playerTeleporter.Init(_screenBoundsTracker);
+
+            _life.Died += OnDied;
+            _inertialMover.SpeedChanged += OnSpeedChanged;
+            _inertialMover.PositionChanged += OnPositionChanged;
+            _directionalRotator.AngleChanged += OnAngleChanged;
+            PlayerLaser.AmmoChanged += OnLaserAmmoChanged;
+            PlayerLaser.Ticked += OnLaserTicked;
+
+            PlayerLaser.Init(PlayerLaserVisual, _playerCombatSettings);
+        }
 
         private void OnDestroy()
         {
             _life.Died -= OnDied;
+            _inertialMover.SpeedChanged -= OnSpeedChanged;
+            _inertialMover.PositionChanged -= OnPositionChanged;
+            _directionalRotator.AngleChanged -= OnAngleChanged;
+            PlayerLaser.AmmoChanged -= OnLaserAmmoChanged;
+            PlayerLaser.Ticked -= OnLaserTicked;
         }
 
         public void Pause()
         {
-            PlayerInertialMover.DisableMoving();
-            PlayerDirectionalRotator.SetEnabled(false);
+            _inertialMover.DisableMoving();
+            _directionalRotator.SetEnabled(false);
         }
 
         public void Unpause()
         {
-            PlayerInertialMover.EnableMoving();
-            PlayerDirectionalRotator.SetEnabled(true);
+            _inertialMover.EnableMoving();
+            _directionalRotator.SetEnabled(true);
+        }
+
+        public void FixedTick()
+        {
+            _inertialMover.Move();
+            _directionalRotator.Rotate();
+            _playerTeleporter.FixedTick();
+            PlayerLaser.FixedTick();
         }
 
         public void Tick()
@@ -51,53 +120,39 @@ namespace Asteroids
             PlayerLaser.LocalTick();
         }
 
-        public void FixedTick()
+        public void ResetPlayer()
         {
-            _playerTeleporter.FixedTick();
-            PlayerLaser.FixedTick();
+            _life.RestoreHealth();
+
+            _rigidbody.position = Vector2.zero;
+            _rigidbody.rotation = 0;
+
+            PlayerLaser.ResetParameters();
         }
 
+        public void SetAccelerating(bool isAccelerating) => _inertialMover.SetAccelerating(isAccelerating);
 
-        [Inject]
-        public void Construct(PlayerCombatSettings combatSettings, ScreenBoundsTracker boundsTracker)
-        {
-            _maxHealth = combatSettings.MaxHealth;
-            _playerCombatSettings = combatSettings;
-            _screenBoundsTracker = boundsTracker;
-        }
+        public void SetBraking(bool isBraking) => _inertialMover.SetBraking(isBraking);
 
-        public void Init()
-        {
-            _playerTeleporter = GetComponent<ScreenTeleporter>();
+        public void SetRotateLeft(bool isRotating) => _directionalRotator.SetRotateLeft(isRotating);
 
-            PlayerRigidBody = GetComponent<Rigidbody2D>();
+        public void SetRotateRight(bool isRotating) => _directionalRotator.SetRotateRight(isRotating);
 
-            PlayerInertialMover = GetComponent<InertialMover>();
-            PlayerDirectionalRotator = GetComponent<DirectionalRotator>();
-
-            _life = GetComponent<PlayerLife>();
-            _life.Init(_maxHealth);
-
-            _screenBoundsTracker.Init(PlayerRigidBody);
-
-            _playerTeleporter.Init(_screenBoundsTracker);
-
-            _life.Died += OnDied;
-
-            PlayerLaser.Init(PlayerLaserVisual, _playerCombatSettings);
-        }
+        public void TryLaserShoot() => PlayerLaser.TryShoot();
 
         private void OnDied()
         {
             Died?.Invoke();
         }
 
-        public void ResetPlayer()
-        {
-            PlayerRigidBody.position = Vector3.zero;
-            PlayerRigidBody.rotation = 0;
+        private void OnSpeedChanged() => SpeedChanged?.Invoke();
 
-            PlayerLaser.ResetParameters();
-        }
+        private void OnPositionChanged() => PositionChanged?.Invoke();
+
+        private void OnAngleChanged() => AngleChanged?.Invoke();
+
+        private void OnLaserAmmoChanged() => LaserAmmoChanged?.Invoke();
+
+        private void OnLaserTicked() => LaserTicked?.Invoke();
     }
 }

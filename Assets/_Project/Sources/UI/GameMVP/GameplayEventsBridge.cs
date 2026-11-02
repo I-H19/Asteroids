@@ -11,14 +11,6 @@ namespace Asteroids
         private GameRestarter _gameRestarter;
         private bool _isSubscribed;
 
-        public void Dispose()
-        {
-            if (_isSubscribed)
-            {
-                Unsubscribe();
-            }
-        }
-
         [Inject]
         public void Construct(
             EnemyRegistry enemyRegistry,
@@ -35,6 +27,14 @@ namespace Asteroids
         public void Init()
         {
             Subscribe();
+        }
+
+        public void Dispose()
+        {
+            if (_isSubscribed)
+            {
+                Unsubscribe();
+            }
         }
 
         private void Subscribe()

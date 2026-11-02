@@ -8,11 +8,6 @@ namespace Asteroids
         private Player _player;
         private GamePause _gamePause;
 
-        public void Dispose()
-        {
-            _player.Died -= OnPlayerDied;
-        }
-
         public event Action Finished;
 
         [Inject]
@@ -21,6 +16,11 @@ namespace Asteroids
             _player = player;
             _gamePause = gamePause;
             player.Died += OnPlayerDied;
+        }
+
+        public void Dispose()
+        {
+            _player.Died -= OnPlayerDied;
         }
 
         private void OnPlayerDied()

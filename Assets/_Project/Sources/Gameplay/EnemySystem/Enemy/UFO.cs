@@ -16,32 +16,10 @@ namespace Asteroids
         private DirectionalMover _directionalMover;
         private EnemyLife _enemyLife;
         private LookAtRotator _lookAtRotator;
-        private Rigidbody2D _rigidbody2D;
-        private ScreenBoundsTracker _screenBoundsTracker;
         private DirectionalMoverSettings _moverSettings;
         private Player _player;
-
-        public IMover Mover => _directionalMover;
-        public event Action<IEnemy> Killed;
-
-        private void OnDestroy()
-        {
-            if (_enemyLife != null)
-            {
-                _enemyLife.Died -= OnDied;
-            }
-        }
-
-        public void Kill()
-        {
-            Destroy(gameObject);
-        }
-
-        public void FixedTick()
-        {
-            _lookAtRotator.Rotate();
-            _directionalMover.Move();
-        }
+        private Rigidbody2D _rigidbody2D;
+        private ScreenBoundsTracker _screenBoundsTracker;
 
         [Inject]
         public void Construct(ScreenBoundsTracker screenBoundsTracker, Player player)
@@ -72,6 +50,28 @@ namespace Asteroids
             _screenBoundsTracker.Init(_rigidbody2D);
 
             _enemyLife.Died += OnDied;
+        }
+
+        private void OnDestroy()
+        {
+            if (_enemyLife != null)
+            {
+                _enemyLife.Died -= OnDied;
+            }
+        }
+
+        public IMover Mover => _directionalMover;
+        public event Action<IEnemy> Killed;
+
+        public void Kill()
+        {
+            Destroy(gameObject);
+        }
+
+        public void FixedTick()
+        {
+            _lookAtRotator.Rotate();
+            _directionalMover.Move();
         }
 
         private void OnDied()

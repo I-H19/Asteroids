@@ -14,6 +14,16 @@ namespace Asteroids
         private float _rotationSpeed;
         public float CurrentAngle { get; private set; }
 
+        public event Action AngleChanged;
+
+        public void Init(Rigidbody2D rigidBody, DirectionalRotationSettings rotationSettings)
+        {
+            _rigidBody = rigidBody;
+            CurrentAngle = _rigidBody.rotation;
+
+            _rotationSpeed = rotationSettings.RotationSpeed;
+        }
+
         public void Rotate()
         {
             if (!_enabled)
@@ -51,16 +61,6 @@ namespace Asteroids
             _rigidBody.angularVelocity = 0f;
             _rotateLeft = false;
             _rotateRight = false;
-        }
-
-        public event Action AngleChanged;
-
-        public void Init(Rigidbody2D rigidBody, DirectionalRotationSettings rotationSettings)
-        {
-            _rigidBody = rigidBody;
-            CurrentAngle = _rigidBody.rotation;
-
-            _rotationSpeed = rotationSettings.RotationSpeed;
         }
 
         public void SetRotateLeft(bool value)

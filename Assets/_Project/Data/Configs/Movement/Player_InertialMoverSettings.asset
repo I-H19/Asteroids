@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Player_InertialMoverSettings
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Sources.Settings.Movement.InertialMoverSettings
   <MaxForwardSpeed>k__BackingField: 5
-  <ForwardAcceleration>k__BackingField: 1.001
-  <CoastDeceleration>k__BackingField: 0.5
-  <BrakeDeceleration>k__BackingField: 1
+  <ForwardAcceleration>k__BackingField: 4
+  <CoastDeceleration>k__BackingField: 2
+  <BrakeDeceleration>k__BackingField: 5
   <StopEpsilon>k__BackingField: 0.0001

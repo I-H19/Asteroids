@@ -17,6 +17,12 @@ namespace Asteroids
             _camera = mainCamera;
         }
 
+        public void Init(Rigidbody2D rigidbody)
+        {
+            _rigidbody = rigidbody;
+            InitBounds();
+        }
+
         public void InitBounds()
         {
             Vector3 cameraWorldPosition = _camera.transform.position;
@@ -30,12 +36,6 @@ namespace Asteroids
             float topScreenBorder = cameraWorldPosition.y + halfScreenHeight;
 
             _screenBounds = new(leftScreenBorder, rightScreenBorder, bottomScreenBorder, topScreenBorder);
-        }
-
-        public void Init(Rigidbody2D rigidbody)
-        {
-            _rigidbody = rigidbody;
-            InitBounds();
         }
 
         public bool IsOutOfBounds()

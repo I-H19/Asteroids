@@ -17,14 +17,6 @@ namespace Asteroids
             _top = top;
         }
 
-        private bool Contains(Vector2 position)
-        {
-            bool isInsideX = position.x >= _left && position.x <= _right;
-            bool isInsideY = position.y >= _bottom && position.y <= _top;
-
-            return isInsideX && isInsideY;
-        }
-
         public bool IsOutOfBounds(Vector2 position)
         {
             return !Contains(position);
@@ -85,6 +77,14 @@ namespace Asteroids
             perimeterDistance -= width;
 
             return new(_left, _bottom + perimeterDistance);
+        }
+
+        private bool Contains(Vector2 position)
+        {
+            bool isInsideX = position.x >= _left && position.x <= _right;
+            bool isInsideY = position.y >= _bottom && position.y <= _top;
+
+            return isInsideX && isInsideY;
         }
     }
 }

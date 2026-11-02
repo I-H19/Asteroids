@@ -21,7 +21,7 @@ namespace Asteroids
         [field: Space]
         [Header("UI")]
         [field: SerializeField]
-        public GameView UI { get; private set; }
+        public GameView GameViewPrefab { get; private set; }
 
         [field: Space]
         [Header("Player")]

@@ -10,28 +10,10 @@ namespace Asteroids
     public class Bullet : MonoBehaviour, IPausable
     {
         private PlayerDamageSource _damageSource;
-        private bool _isPause;
 
         private DirectionalMover _mover;
+        private bool _isDestroying;
         private ScreenBoundsTracker _screenBoundsTracker;
-
-        private void OnDestroy()
-        {
-            Destroyed?.Invoke(this);
-            _damageSource.TargetDamaged -= OnHit;
-        }
-
-        public void Pause()
-        {
-            _mover.DisableMoving();
-            _isPause = true;
-        }
-
-        public void Unpause()
-        {
-            _mover.EnableMoving();
-            _isPause = false;
-        }
 
         public event Action<Bullet> Destroyed;
 
@@ -56,18 +38,27 @@ namespace Asteroids
             _mover.EnableMoving();
         }
 
-        private void OnHit()
+        private void OnDestroy()
         {
-            Destroy(gameObject);
+            Destroyed?.Invoke(this);
+            if (_damageSource != null)
+            {
+                _damageSource.TargetDamaged -= OnHit;
+            }
+        }
+
+        public void Pause()
+        {
+            _mover.DisableMoving();
+        }
+
+        public void Unpause()
+        {
+            _mover.EnableMoving();
         }
 
         public void FixedTick()
         {
-            if (_isPause)
-            {
-                return;
-            }
-
             _damageSource.Tick();
 
             if (_screenBoundsTracker.IsOutOfBounds())
@@ -78,6 +69,22 @@ namespace Asteroids
             {
                 _mover.Move();
             }
+        }
+
+        private void OnHit()
+        {
+            DestroyBullet();
+        }
+
+        public void DestroyBullet()
+        {
+            if (_isDestroying)
+            {
+                return;
+            }
+
+            _isDestroying = true;
+            Destroy(gameObject);
         }
     }
 }

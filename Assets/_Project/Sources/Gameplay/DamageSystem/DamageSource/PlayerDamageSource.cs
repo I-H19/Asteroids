@@ -12,13 +12,13 @@ namespace Asteroids
         private HitDetectionType _hitDetectionType = HitDetectionType.HitSingle;
         public float DamageCount { get; private set; }
 
+        public event Action TargetDamaged;
+
         public void Damage(IDamageable target)
         {
             target.TakeDamage(DamageCount);
             TargetDamaged?.Invoke();
         }
-
-        public event Action TargetDamaged;
 
         public void ChangeDamage(float damage)
         {

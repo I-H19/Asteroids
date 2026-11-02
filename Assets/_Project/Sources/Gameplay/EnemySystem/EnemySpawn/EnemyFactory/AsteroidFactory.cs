@@ -12,6 +12,20 @@ namespace Asteroids
         private AsteroidFragment _fragmentPrefab;
         private IObjectResolver _resolver;
 
+        [Inject]
+        public void Construct(
+            IObjectResolver resolver,
+            PrefabHolder prefabHolder,
+            EnemySettings enemySettings,
+            AsteroidSplitter asteroidSplitter)
+        {
+            _resolver = resolver;
+            _asteroidPrefab = prefabHolder.AsteroidPrefab;
+            _fragmentPrefab = prefabHolder.AsteroidFragmentPrefab;
+            _enemySettings = enemySettings;
+            _asteroidSplitter = asteroidSplitter;
+        }
+
         public IEnemy SpawnOne(Vector3 position)
         {
             Asteroid asteroid = _resolver.Instantiate(_asteroidPrefab, position, Quaternion.identity);
@@ -25,20 +39,6 @@ namespace Asteroids
             }
 
             return asteroid;
-        }
-
-        [Inject]
-        public void Construct(
-            IObjectResolver resolver,
-            PrefabHolder prefabHolder,
-            EnemySettings enemySettings,
-            AsteroidSplitter asteroidSplitter)
-        {
-            _resolver = resolver;
-            _asteroidPrefab = prefabHolder.AsteroidPrefab;
-            _fragmentPrefab = prefabHolder.AsteroidFragmentPrefab;
-            _enemySettings = enemySettings;
-            _asteroidSplitter = asteroidSplitter;
         }
 
         private AsteroidFragment CreateFragment(Vector3 position, Asteroid parent)

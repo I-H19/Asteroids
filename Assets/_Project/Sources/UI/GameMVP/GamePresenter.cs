@@ -3,23 +3,44 @@ using VContainer;
 
 namespace Asteroids
 {
-    public class GamePresenter : IDisposable
+    public class GamePresenter : IDisposable, ISceneLateTickable
     {
         private GameModel _gameModel;
-        private GameView _gameView;
+        private PlayerHudView _playerHudView;
+        private ScoreView _scoreView;
+        private GameOverView _gameOverView;
+        private bool _isScoreDirty = true;
+        private bool _isStatsDirty = true;
+
+        [Inject]
+        public void Construct(GameModel gameModel, GameView gameView)
+        {
+            _gameModel = gameModel;
+            _playerHudView = gameView.PlayerHudView;
+            _scoreView = gameView.ScoreView;
+            _gameOverView = gameView.GameOverView;
+
+            Subscribe();
+        }
 
         public void Dispose()
         {
             Unsubscribe();
         }
 
-        [Inject]
-        public void Construct(GameModel gameModel, GameView gameView)
+        public void LateTick()
         {
-            _gameModel = gameModel;
-            _gameView = gameView;
+            if (_isScoreDirty)
+            {
+                _scoreView.ChangeScore(_gameModel.Score);
+                _isScoreDirty = false;
+            }
 
-            Subscribe();
+            if (_isStatsDirty)
+            {
+                _playerHudView.ChangeHUDStats(_gameModel.PlayerStats);
+                _isStatsDirty = false;
+            }
         }
 
         private void Subscribe()
@@ -28,7 +49,7 @@ namespace Asteroids
             _gameModel.StatsChanged += OnStatsChanged;
 
             _gameModel.GameFinished += OnGameFinished;
-            _gameView.RestartButtonClicked += OnRestartButtonClicked;
+            _gameOverView.RestartButtonClicked += OnRestartButtonClicked;
         }
 
         private void Unsubscribe()
@@ -37,7 +58,7 @@ namespace Asteroids
             _gameModel.StatsChanged -= OnStatsChanged;
 
             _gameModel.GameFinished -= OnGameFinished;
-            _gameView.RestartButtonClicked -= OnRestartButtonClicked;
+            _gameOverView.RestartButtonClicked -= OnRestartButtonClicked;
         }
 
         private void OnRestartButtonClicked()
@@ -47,22 +68,22 @@ namespace Asteroids
 
         private void OnScoreChanged()
         {
-            _gameView.ChangeScore(_gameModel.Score);
+            _isScoreDirty = true;
         }
 
         private void OnStatsChanged()
         {
-            _gameView.ChangeHUDStats(_gameModel.PlayerStats);
+            _isStatsDirty = true;
         }
 
         private void OnGameFinished()
         {
-            _gameView.SetRestartPanelEnabled(true);
+            _gameOverView.SetRestartPanelEnabled(true);
         }
 
         private void DeactivateRestartPanel()
         {
-            _gameView.SetRestartPanelEnabled(false);
+            _gameOverView.SetRestartPanelEnabled(false);
         }
     }
 }

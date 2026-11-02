@@ -12,6 +12,14 @@ namespace Asteroids
 
         private AsteroidBase _asteroidBase;
 
+        public void Init(DirectionalMoverSettings moverSettings, float damageCount)
+        {
+            _asteroidBase = GetComponent<AsteroidBase>();
+            _asteroidBase.Init(moverSettings, damageCount);
+            _asteroidBase.Mover.EnableMoving();
+            _asteroidBase.Died += OnDied;
+        }
+
         private void OnDestroy()
         {
             if (_asteroidBase != null)
@@ -36,14 +44,6 @@ namespace Asteroids
             }
 
             Destroy(gameObject);
-        }
-
-        public void Init(DirectionalMoverSettings moverSettings, float damageCount)
-        {
-            _asteroidBase = GetComponent<AsteroidBase>();
-            _asteroidBase.Init(moverSettings, damageCount);
-            _asteroidBase.Mover.EnableMoving();
-            _asteroidBase.Died += OnDied;
         }
 
         public void AddFragment(AsteroidFragment fragment)

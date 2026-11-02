@@ -3,11 +3,9 @@ using UnityEngine;
 
 namespace TextMesh_Pro.Examples___Extras.Scripts
 {
-
     public class Benchmark04 : MonoBehaviour
     {
-
-        public int SpawnType = 0;
+        public int SpawnType;
 
         public int MinPointSize = 12;
         public int MaxPointSize = 64;
@@ -18,7 +16,7 @@ namespace TextMesh_Pro.Examples___Extras.Scripts
         //public Material material;
 
 
-        void Start()
+        private void Start()
         {
             m_Transform = transform;
 
@@ -31,18 +29,24 @@ namespace TextMesh_Pro.Examples___Extras.Scripts
                 if (SpawnType == 0)
                 {
                     // TextMesh Pro Implementation
-                    GameObject go = new GameObject("Text - " + i + " Pts");
+                    GameObject go = new("Text - " + i + " Pts");
 
-                    if (lineHeight > orthoSize * 2) return;
+                    if (lineHeight > orthoSize * 2)
+                    {
+                        return;
+                    }
 
-                    go.transform.position = m_Transform.position + new Vector3(ratio * -orthoSize * 0.975f, orthoSize * 0.975f - lineHeight, 0);
+                    go.transform.position = m_Transform.position + new Vector3(
+                        ratio * -orthoSize * 0.975f,
+                        orthoSize * 0.975f - lineHeight,
+                        0);
 
                     TextMeshPro textMeshPro = go.AddComponent<TextMeshPro>();
 
                     //textMeshPro.fontSharedMaterial = material;
                     //textMeshPro.font = Resources.Load("Fonts & Materials/LiberationSans SDF", typeof(TextMeshProFont)) as TextMeshProFont;
                     //textMeshPro.anchor = AnchorPositions.Left;
-                    textMeshPro.rectTransform.pivot = new Vector2(0, 0.5f);
+                    textMeshPro.rectTransform.pivot = new(0, 0.5f);
 
                     textMeshPro.textWrappingMode = TextWrappingModes.NoWrap;
                     textMeshPro.extraPadding = true;
@@ -54,11 +58,9 @@ namespace TextMesh_Pro.Examples___Extras.Scripts
 
                     lineHeight += i;
                 }
-                else
-                {
-                    // TextMesh Implementation
-                    // Causes crashes since atlas needed exceeds 4096 X 4096
-                    /*
+                // TextMesh Implementation
+                // Causes crashes since atlas needed exceeds 4096 X 4096
+                /*
                     GameObject go = new GameObject("Arial " + i);
 
                     //if (lineHeight > orthoSize * 2 * 0.9f) return;
@@ -76,9 +78,7 @@ namespace TextMesh_Pro.Examples___Extras.Scripts
 
                     lineHeight += i;
                     */
-                }
             }
         }
-
     }
 }

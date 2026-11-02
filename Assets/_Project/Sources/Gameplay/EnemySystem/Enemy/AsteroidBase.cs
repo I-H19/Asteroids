@@ -15,14 +15,6 @@ namespace Asteroids
         private ScreenTeleporter _screenTeleporter;
         public DirectionalMover Mover { get; private set; }
 
-        private void OnDestroy()
-        {
-            if (_enemyLife != null)
-            {
-                _enemyLife.Died -= OnDied;
-            }
-        }
-
         public event Action Died;
 
         [Inject]
@@ -48,6 +40,14 @@ namespace Asteroids
 
             _enemyLife = GetComponent<EnemyLife>();
             _enemyLife.Died += OnDied;
+        }
+
+        private void OnDestroy()
+        {
+            if (_enemyLife != null)
+            {
+                _enemyLife.Died -= OnDied;
+            }
         }
 
         public void FixedTick()

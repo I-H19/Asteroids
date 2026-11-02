@@ -19,25 +19,9 @@ namespace Asteroids
         private Rigidbody2D _rigidBody;
         private float _stopEpsilon;
         public float CurrentSpeed { get; private set; }
-
-        public void EnableMoving()
-        {
-            _enabled = true;
-        }
-
-        public void DisableMoving()
-        {
-            _enabled = false;
-            
-            _isAccelerating = false;
-            _isBraking = false;
-            _movingDirection = MovingDirection.None;
-
-            _rigidBody.linearVelocity = Vector2.zero;
-        }
+        public event Action PositionChanged;
 
         public event Action SpeedChanged;
-        public event Action PositionChanged;
 
         public void Init(InertialMoverSettings moverSettings, Rigidbody2D moverRigidbody)
         {
@@ -50,6 +34,22 @@ namespace Asteroids
 
             _objectTransform = moverRigidbody.transform;
             CurrentSpeed = 0;
+        }
+
+        public void EnableMoving()
+        {
+            _enabled = true;
+        }
+
+        public void DisableMoving()
+        {
+            _enabled = false;
+
+            _isAccelerating = false;
+            _isBraking = false;
+            _movingDirection = MovingDirection.None;
+
+            _rigidBody.linearVelocity = Vector2.zero;
         }
 
         public void Move()

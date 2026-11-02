@@ -6,6 +6,15 @@ namespace Asteroids
     public class PlayerLife : MonoBehaviour, IDamageable
     {
         private float _health;
+        private float _maxHealth;
+
+        public event Action Died;
+
+        public void Init(float maxHealthCount)
+        {
+            _health = maxHealthCount;
+            _maxHealth = maxHealthCount;
+        }
 
         public void TakeDamage(float damage)
         {
@@ -16,11 +25,9 @@ namespace Asteroids
             }
         }
 
-        public event Action Died;
-
-        public void Init(float healthCount)
+        public void RestoreHealth()
         {
-            _health = healthCount;
+            _health = _maxHealth;
         }
 
         private void PlayerKill()

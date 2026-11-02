@@ -9,12 +9,12 @@ namespace Asteroids
 
         public int AliveCount { get; private set; }
 
+        public event Action EnemyKilled;
+
         public void Dispose()
         {
             Unsubscribe();
         }
-
-        public event Action EnemyKilled;
 
         public void RegisterEnemy(IEnemy enemy)
         {
@@ -28,18 +28,19 @@ namespace Asteroids
         {
             foreach (IEnemy enemy in _aliveEnemies)
             {
-                if (enemy != null)
-                {
-                    enemy.Kill();
-                }
-                else
-                {
-                    throw new NullReferenceException("enemy is null");
-                }
+                enemy.Kill();
             }
 
             _aliveEnemies.Clear();
             AliveCount = 0;
+        }
+
+        public void ForEachEnemy(Action<IEnemy> action)
+        {
+            foreach (IEnemy enemy in _aliveEnemies)
+            {
+                action(enemy);
+            }
         }
 
         private void Unsubscribe()
@@ -59,14 +60,6 @@ namespace Asteroids
             enemy.Kill();
 
             EnemyKilled?.Invoke();
-        }
-
-        public void ForEachEnemy(Action<IEnemy> action)
-        {
-            foreach (IEnemy enemy in _aliveEnemies)
-            {
-                action(enemy);
-            }
         }
     }
 }

@@ -4,19 +4,22 @@ using VContainer.Unity;
 
 namespace Asteroids
 {
-    public class SceneTickDriver : ITickable, IPausable, IFixedTickable
+    public class SceneTickDriver : ITickable, IPausable, IFixedTickable, ILateTickable
     {
         private bool _isPaused;
         private IEnumerable<ISceneTickable> _sceneTickables;
         private IEnumerable<ISceneFixedTickable> _sceneFixedTickables;
+        private IEnumerable<ISceneLateTickable> _sceneLateTickables;
 
         [Inject]
         public void Construct(
             IEnumerable<ISceneTickable> sceneTickables,
-            IEnumerable<ISceneFixedTickable> sceneFixedTickables)
+            IEnumerable<ISceneFixedTickable> sceneFixedTickables,
+            IEnumerable<ISceneLateTickable> sceneLateTickables)
         {
             _sceneTickables = sceneTickables;
             _sceneFixedTickables = sceneFixedTickables;
+            _sceneLateTickables = sceneLateTickables;
         }
 
         public void Pause()
@@ -53,6 +56,19 @@ namespace Asteroids
             foreach (ISceneFixedTickable fixedTickable in _sceneFixedTickables)
             {
                 fixedTickable.FixedTick();
+            }
+        }
+
+        public void LateTick()
+        {
+            if (_isPaused)
+            {
+                return;
+            }
+
+            foreach (ISceneLateTickable lateTickable in _sceneLateTickables)
+            {
+                lateTickable.LateTick();
             }
         }
     }

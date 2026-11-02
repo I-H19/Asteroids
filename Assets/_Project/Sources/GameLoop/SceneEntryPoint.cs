@@ -6,38 +6,25 @@ namespace Asteroids
     public class SceneEntryPoint : IInitializable
     {
         private AsteroidFactory _asteroidFactory;
-        private BulletSpawner _bulletSpawner;
+        private BulletFiringController _bulletFiringController;
         private EnemySpawnerSettings _enemySpawnerSettings;
 
         private GameModel _gameModel;
         private GameplayEventsBridge _gameplayEventsBridge;
         private PlayerStatsBridge _playerStatsBridge;
-        private Laser _laser;
         private Player _player;
         private PlayerKeyboardController _playerKeyboardController;
-        private PlayerMovementSettings _playerMovementSettings;
         private PlayerStats _playerStats;
 
         private SpawnOptionsTable _spawnOptionsTable;
 
         private UfoFactory _ufoFactory;
 
-        public void Initialize()
-        {
-            InitializePlayer();
-            InitializePlayerMovement();
-            InitializeUI();
-            InitializeGameFlow();
-
-            InitializeSpawnOptions();
-        }
-
         [Inject]
         public void Construct(
-            PlayerMovementSettings playerMovementSettings,
             PlayerKeyboardController playerKeyboardController,
             UfoFactory ufoFactory,
-            BulletSpawner bulletSpawner,
+            BulletFiringController bulletFiringController,
             Player player,
             GameModel gameModel,
             GameplayEventsBridge gameplayEventsBridge,
@@ -48,8 +35,7 @@ namespace Asteroids
             EnemySpawnerSettings enemySpawnerSettings)
         {
             _player = player;
-            _bulletSpawner = bulletSpawner;
-            _playerMovementSettings = playerMovementSettings;
+            _bulletFiringController = bulletFiringController;
             _playerKeyboardController = playerKeyboardController;
 
             _gameModel = gameModel;
@@ -61,6 +47,15 @@ namespace Asteroids
             _spawnOptionsTable = spawnOptionsTable;
             _asteroidFactory = asteroidFactory;
             _enemySpawnerSettings = enemySpawnerSettings;
+        }
+
+        public void Initialize()
+        {
+            InitializePlayer();
+            InitializeUI();
+            InitializeGameFlow();
+
+            InitializeSpawnOptions();
         }
 
         private void InitializeSpawnOptions()
@@ -78,22 +73,8 @@ namespace Asteroids
         private void InitializePlayer()
         {
             _player.Init();
-            _laser = _player.PlayerLaser;
-            _playerKeyboardController.Init(
-                _player.PlayerInertialMover,
-                _player.PlayerDirectionalRotator,
-                _bulletSpawner,
-                _laser);
+            _playerKeyboardController.Init(_player, _bulletFiringController);
             _playerKeyboardController.KeyboardSubscribe();
-        }
-
-        private void InitializePlayerMovement()
-        {
-            DirectionalRotator directionalRotator = _player.PlayerDirectionalRotator;
-            InertialMover inertialMover = _player.PlayerInertialMover;
-
-            directionalRotator.Init(_player.PlayerRigidBody, _playerMovementSettings.RotationSettings);
-            inertialMover.Init(_playerMovementSettings.MoverSettings, _player.PlayerRigidBody);
         }
 
         private void InitializeUI()

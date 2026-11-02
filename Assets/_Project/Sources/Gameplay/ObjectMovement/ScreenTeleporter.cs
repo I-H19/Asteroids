@@ -8,6 +8,12 @@ namespace Asteroids
         private ScreenBoundsTracker _boundsTracker;
         private Rigidbody2D _rigidbody;
 
+        public void Init(ScreenBoundsTracker tracker)
+        {
+            _rigidbody = GetComponent<Rigidbody2D>();
+            _boundsTracker = tracker;
+        }
+
         public void FixedTick()
         {
             if (!_boundsTracker.IsOutOfBounds())
@@ -16,12 +22,6 @@ namespace Asteroids
             }
 
             _rigidbody.position = _boundsTracker.GetTeleportPosition();
-        }
-
-        public void Init(ScreenBoundsTracker tracker)
-        {
-            _rigidbody = GetComponent<Rigidbody2D>();
-            _boundsTracker = tracker;
         }
     }
 }

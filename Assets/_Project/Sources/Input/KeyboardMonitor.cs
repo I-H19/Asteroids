@@ -5,6 +5,23 @@ namespace Asteroids
 {
     public class KeyboardMonitor : ISceneTickable
     {
+        public event Action ForwardButtonDown;
+        public event Action ForwardButtonUp;
+
+        public event Action BackwardButtonDown;
+        public event Action BackwardButtonUp;
+
+        public event Action LeftButtonDown;
+        public event Action LeftButtonUp;
+
+        public event Action RightButtonDown;
+        public event Action RightButtonUp;
+
+        public event Action ShootButtonDown;
+        public event Action ShootButtonUp;
+
+        public event Action LaserButtonDown;
+
         public void Tick()
         {
             if (Input.GetKeyDown(KeyCode.W))
@@ -62,22 +79,5 @@ namespace Asteroids
                 LaserButtonDown?.Invoke();
             }
         }
-
-        public event Action ForwardButtonDown;
-        public event Action ForwardButtonUp;
-
-        public event Action BackwardButtonDown;
-        public event Action BackwardButtonUp;
-
-        public event Action LeftButtonDown;
-        public event Action LeftButtonUp;
-
-        public event Action RightButtonDown;
-        public event Action RightButtonUp;
-
-        public event Action ShootButtonDown;
-        public event Action ShootButtonUp;
-
-        public event Action LaserButtonDown;
     }
 }

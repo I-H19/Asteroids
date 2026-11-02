@@ -8,6 +8,12 @@ namespace Asteroids
         private float _moveSpeed;
         private Rigidbody2D _rigidBody;
 
+        public void Init(DirectionalMoverSettings moverSettings, Rigidbody2D moveRigidbody)
+        {
+            _rigidBody = moveRigidbody;
+            _moveSpeed = moverSettings.MovingSpeed;
+        }
+
 
         public void EnableMoving()
         {
@@ -18,12 +24,6 @@ namespace Asteroids
         {
             _enabled = false;
             _rigidBody.linearVelocity = Vector2.zero;
-        }
-
-        public void Init(DirectionalMoverSettings moverSettings, Rigidbody2D moveRigidbody)
-        {
-            _rigidBody = moveRigidbody;
-            _moveSpeed = moverSettings.MovingSpeed;
         }
 
         public void Move()

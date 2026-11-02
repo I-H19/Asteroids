@@ -22,10 +22,10 @@ namespace Asteroids
         private int _startCharges;
 
         public int MaxChargesNumber { get; private set; }
-
-        public int TotalAmmo { get; private set; }
         public float ReloadingTime { get; private set; }
         public float ShootingCooldown { get; private set; }
+
+        public int TotalAmmo { get; private set; }
         public event Action AmmoChanged;
         public event Action Ticked;
 

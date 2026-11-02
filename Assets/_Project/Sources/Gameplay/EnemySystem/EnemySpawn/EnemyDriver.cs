@@ -8,6 +8,14 @@ namespace Asteroids
 
         private bool _isEnemiesTicking = true;
 
+        [Inject]
+        public void Construct(EnemyRegistry enemiesRegistry)
+        {
+            _enemiesRegistry = enemiesRegistry;
+
+            _isEnemiesTicking = true;
+        }
+
         public void Pause()
         {
             FreezeEnemyMoving();
@@ -31,18 +39,10 @@ namespace Asteroids
             });
         }
 
-        [Inject]
-        public void Construct(EnemyRegistry enemiesRegistry)
-        {
-            _enemiesRegistry = enemiesRegistry;
-
-            _isEnemiesTicking = true;
-        }
-
         private void FreezeEnemyMoving()
         {
             _isEnemiesTicking = false;
-            
+
             _enemiesRegistry.ForEachEnemy(enemy =>
             {
                 enemy.Mover.DisableMoving();
@@ -52,7 +52,7 @@ namespace Asteroids
         private void UnfreezeEnemyMoving()
         {
             _isEnemiesTicking = true;
-            
+
             _enemiesRegistry.ForEachEnemy(enemy =>
             {
                 enemy.Mover.EnableMoving();

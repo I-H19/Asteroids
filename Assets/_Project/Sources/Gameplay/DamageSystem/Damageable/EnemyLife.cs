@@ -6,7 +6,9 @@ namespace Asteroids
     public class EnemyLife : MonoBehaviour, IDamageable
     {
         private float _health;
-        
+
+        public event Action Died;
+
         public void TakeDamage(float damage)
         {
             _health -= damage;
@@ -16,12 +18,9 @@ namespace Asteroids
             }
         }
 
-        public event Action Died;
-
         private void EnemyKill()
         {
             Died?.Invoke();
-            Destroy(gameObject);
         }
     }
 }

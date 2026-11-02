@@ -3,40 +3,11 @@ using VContainer;
 
 namespace Asteroids
 {
-    public class PlayerKeyboardController : IDisposable, IPausable, ISceneFixedTickable
+    public class PlayerKeyboardController : IDisposable
     {
-        private BulletSpawner _bulletSpawner;
-        private bool _isPause;
+        private BulletFiringController _bulletFiringController;
         private KeyboardMonitor _keyboardMonitor;
-        private Laser _laser;
-        private InertialMover _playerMover;
-        private DirectionalRotator _playerRotator;
-
-        public void Dispose()
-        {
-            KeyboardUnsubscribe();
-        }
-
-        public void Pause()
-        {
-            _isPause = true;
-        }
-
-        public void Unpause()
-        {
-            _isPause = false;
-        }
-
-        public void FixedTick()
-        {
-            if (_isPause)
-            {
-                return;
-            }
-
-            _playerMover.Move();
-            _playerRotator.Rotate();
-        }
+        private Player _player;
 
         [Inject]
         public void Construct(KeyboardMonitor keyboardMonitor)
@@ -44,16 +15,15 @@ namespace Asteroids
             _keyboardMonitor = keyboardMonitor;
         }
 
-        public void Init(
-            InertialMover inertialMover,
-            DirectionalRotator directionalRotator,
-            BulletSpawner bulletSpawner,
-            Laser laser)
+        public void Init(Player player, BulletFiringController bulletFiringController)
         {
-            _playerMover = inertialMover;
-            _playerRotator = directionalRotator;
-            _bulletSpawner = bulletSpawner;
-            _laser = laser;
+            _player = player;
+            _bulletFiringController = bulletFiringController;
+        }
+
+        public void Dispose()
+        {
+            KeyboardUnsubscribe();
         }
 
         public void KeyboardSubscribe()
@@ -98,57 +68,57 @@ namespace Asteroids
 
         private void OnLaserButtonDown()
         {
-            _laser.TryShoot();
+            _player.TryLaserShoot();
         }
 
         private void OnShootButtonDown()
         {
-            _bulletSpawner.StartSpawning();
+            _bulletFiringController.StartFiring();
         }
 
         private void OnShootButtonUp()
         {
-            _bulletSpawner.StopSpawning();
+            _bulletFiringController.StopFiring();
         }
 
         private void OnForwardButtonDown()
         {
-            _playerMover.SetAccelerating(true);
+            _player.SetAccelerating(true);
         }
 
         private void OnForwardButtonUp()
         {
-            _playerMover.SetAccelerating(false);
+            _player.SetAccelerating(false);
         }
 
         private void OnBackwardButtonDown()
         {
-            _playerMover.SetBraking(true);
+            _player.SetBraking(true);
         }
 
         private void OnBackwardButtonUp()
         {
-            _playerMover.SetBraking(false);
+            _player.SetBraking(false);
         }
 
         private void OnLeftButtonDown()
         {
-            _playerRotator.SetRotateLeft(true);
+            _player.SetRotateLeft(true);
         }
 
         private void OnLeftButtonUp()
         {
-            _playerRotator.SetRotateLeft(false);
+            _player.SetRotateLeft(false);
         }
 
         private void OnRightButtonDown()
         {
-            _playerRotator.SetRotateRight(true);
+            _player.SetRotateRight(true);
         }
 
         private void OnRightButtonUp()
         {
-            _playerRotator.SetRotateRight(false);
+            _player.SetRotateRight(false);
         }
     }
 }
