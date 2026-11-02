@@ -9,7 +9,6 @@ namespace Asteroids
         private BulletRegistry _bulletRegistry;
         private float _bulletCooldown;
         private bool _isFiring;
-        private bool _isPaused;
         private float _nextShotTime;
         private Player _player;
 
@@ -29,18 +28,16 @@ namespace Asteroids
 
         public void Pause()
         {
-            _isPaused = true;
             _isFiring = false;
         }
 
         public void Unpause()
         {
-            _isPaused = false;
         }
 
         public void Tick()
         {
-            if (!_isFiring || _isPaused || Time.time < _nextShotTime)
+            if (!_isFiring || Time.time < _nextShotTime)
             {
                 return;
             }
@@ -52,10 +49,7 @@ namespace Asteroids
 
         public void StartFiring()
         {
-            if (!_isPaused)
-            {
-                _isFiring = true;
-            }
+            _isFiring = true;
         }
 
         public void StopFiring()
