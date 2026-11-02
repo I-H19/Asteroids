@@ -10,9 +10,9 @@ namespace Asteroids
     public class Bullet : MonoBehaviour, IPausable
     {
         private PlayerDamageSource _damageSource;
+        private bool _isDestroying;
 
         private DirectionalMover _mover;
-        private bool _isDestroying;
         private ScreenBoundsTracker _screenBoundsTracker;
 
         public event Action<Bullet> Destroyed;
@@ -71,11 +71,6 @@ namespace Asteroids
             }
         }
 
-        private void OnHit()
-        {
-            DestroyBullet();
-        }
-
         public void DestroyBullet()
         {
             if (_isDestroying)
@@ -85,6 +80,11 @@ namespace Asteroids
 
             _isDestroying = true;
             Destroy(gameObject);
+        }
+
+        private void OnHit()
+        {
+            DestroyBullet();
         }
     }
 }

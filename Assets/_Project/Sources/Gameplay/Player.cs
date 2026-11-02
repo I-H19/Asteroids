@@ -23,25 +23,25 @@ namespace Asteroids
         private float _maxHealth;
         private PlayerCombatSettings _playerCombatSettings;
         private PlayerMovementSettings _playerMovementSettings;
-        private Rigidbody2D _rigidbody;
         private ScreenTeleporter _playerTeleporter;
+        private Rigidbody2D _rigidbody;
 
         private ScreenBoundsTracker _screenBoundsTracker;
+        public float CurrentAngle => _directionalRotator.CurrentAngle;
 
         public float CurrentSpeed => _inertialMover.CurrentSpeed;
-        public Vector2 Position => _rigidbody.position;
-        public float CurrentAngle => _directionalRotator.CurrentAngle;
-        public int TotalLaserAmmo => PlayerLaser.TotalAmmo;
-        public int MaxLaserCharges => PlayerLaser.MaxChargesNumber;
         public float LaserReloadingTime => PlayerLaser.ReloadingTime;
         public float LaserShootingCooldown => PlayerLaser.ShootingCooldown;
+        public int MaxLaserCharges => PlayerLaser.MaxChargesNumber;
+        public Vector2 Position => _rigidbody.position;
+        public int TotalLaserAmmo => PlayerLaser.TotalAmmo;
+        public event Action AngleChanged;
 
         public event Action Died;
-        public event Action SpeedChanged;
-        public event Action PositionChanged;
-        public event Action AngleChanged;
         public event Action LaserAmmoChanged;
         public event Action LaserTicked;
+        public event Action PositionChanged;
+        public event Action SpeedChanged;
 
         [Inject]
         public void Construct(
@@ -130,29 +130,59 @@ namespace Asteroids
             PlayerLaser.ResetParameters();
         }
 
-        public void SetAccelerating(bool isAccelerating) => _inertialMover.SetAccelerating(isAccelerating);
+        public void SetAccelerating(bool isAccelerating)
+        {
+            _inertialMover.SetAccelerating(isAccelerating);
+        }
 
-        public void SetBraking(bool isBraking) => _inertialMover.SetBraking(isBraking);
+        public void SetBraking(bool isBraking)
+        {
+            _inertialMover.SetBraking(isBraking);
+        }
 
-        public void SetRotateLeft(bool isRotating) => _directionalRotator.SetRotateLeft(isRotating);
+        public void SetRotateLeft(bool isRotating)
+        {
+            _directionalRotator.SetRotateLeft(isRotating);
+        }
 
-        public void SetRotateRight(bool isRotating) => _directionalRotator.SetRotateRight(isRotating);
+        public void SetRotateRight(bool isRotating)
+        {
+            _directionalRotator.SetRotateRight(isRotating);
+        }
 
-        public void TryLaserShoot() => PlayerLaser.TryShoot();
+        public void TryLaserShoot()
+        {
+            PlayerLaser.TryShoot();
+        }
 
         private void OnDied()
         {
             Died?.Invoke();
         }
 
-        private void OnSpeedChanged() => SpeedChanged?.Invoke();
+        private void OnSpeedChanged()
+        {
+            SpeedChanged?.Invoke();
+        }
 
-        private void OnPositionChanged() => PositionChanged?.Invoke();
+        private void OnPositionChanged()
+        {
+            PositionChanged?.Invoke();
+        }
 
-        private void OnAngleChanged() => AngleChanged?.Invoke();
+        private void OnAngleChanged()
+        {
+            AngleChanged?.Invoke();
+        }
 
-        private void OnLaserAmmoChanged() => LaserAmmoChanged?.Invoke();
+        private void OnLaserAmmoChanged()
+        {
+            LaserAmmoChanged?.Invoke();
+        }
 
-        private void OnLaserTicked() => LaserTicked?.Invoke();
+        private void OnLaserTicked()
+        {
+            LaserTicked?.Invoke();
+        }
     }
 }
