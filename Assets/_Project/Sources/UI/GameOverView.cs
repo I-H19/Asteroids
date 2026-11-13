@@ -7,7 +7,7 @@ namespace Asteroids
     public class GameOverView : MonoBehaviour
     {
         [field: SerializeField]
-        public RestartPanel GameRestartPanel { get; private set; }
+        public Image GameRestartPanel { get; private set; }
 
         [field: SerializeField]
         public Button RestartButton { get; private set; }
@@ -26,7 +26,7 @@ namespace Asteroids
 
         public void SetRestartPanelEnabled(bool panelEnabled)
         {
-            GameRestartPanel.SetActive(panelEnabled);
+            GameRestartPanel.gameObject.SetActive(panelEnabled);
         }
 
         private void OnRestartButtonClicked()

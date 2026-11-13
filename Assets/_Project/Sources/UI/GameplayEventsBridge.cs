@@ -9,7 +9,6 @@ namespace Asteroids
         private GameFinisher _gameFinisher;
         private GameModel _gameModel;
         private GameRestarter _gameRestarter;
-        private bool _isSubscribed;
 
         [Inject]
         public void Construct(
@@ -31,23 +30,14 @@ namespace Asteroids
 
         public void Dispose()
         {
-            if (_isSubscribed)
-            {
-                Unsubscribe();
-            }
+            Unsubscribe();
         }
 
         private void Subscribe()
         {
-            if (_isSubscribed)
-            {
-                return;
-            }
-
             _enemyRegistry.EnemyKilled += OnEnemyKilled;
             _gameRestarter.Restarted += OnGameRestarted;
             _gameFinisher.Finished += OnGameFinished;
-            _isSubscribed = true;
         }
 
         private void Unsubscribe()
@@ -55,7 +45,6 @@ namespace Asteroids
             _enemyRegistry.EnemyKilled -= OnEnemyKilled;
             _gameRestarter.Restarted -= OnGameRestarted;
             _gameFinisher.Finished -= OnGameFinished;
-            _isSubscribed = false;
         }
 
         private void OnEnemyKilled()

@@ -62,7 +62,8 @@ namespace Asteroids
         {
             builder.RegisterComponent(_prefabHolder);
             builder.RegisterComponent(_enemySpawnerSettings);
-            builder.RegisterComponent(_enemySettings);
+            builder.RegisterComponent(_enemyMovingSettings);
+            builder.RegisterComponent(_enemyCombatSettings);
 
             builder.Register<ScreenBoundsTracker>(Lifetime.Transient);
             builder.Register<AsteroidSplitter>(Lifetime.Singleton);
@@ -95,7 +96,8 @@ namespace Asteroids
         [Header("Gameplay")] [SerializeField] private PrefabHolder _prefabHolder;
 
         [SerializeField] private EnemySpawnerSettings _enemySpawnerSettings;
-        [SerializeField] private EnemySettings _enemySettings;
+        [SerializeField] private EnemyMovingSettings _enemyMovingSettings;
+        [SerializeField] private EnemyCombatSettings _enemyCombatSettings;
 #pragma warning restore CS0649
     }
 }

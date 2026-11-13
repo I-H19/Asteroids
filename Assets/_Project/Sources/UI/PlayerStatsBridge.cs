@@ -7,7 +7,6 @@ namespace Asteroids
     {
         private GameModel _gameModel;
         private Player _player;
-        private bool _isSubscribed;
 
         [Inject]
         public void Construct(GameModel gameModel, Player player)
@@ -24,25 +23,16 @@ namespace Asteroids
 
         public void Dispose()
         {
-            if (_isSubscribed)
-            {
-                Unsubscribe();
-            }
+            Unsubscribe();
         }
 
         private void Subscribe()
         {
-            if (_isSubscribed)
-            {
-                return;
-            }
-
             _player.SpeedChanged += OnSpeedChanged;
             _player.PositionChanged += OnPositionChanged;
             _player.AngleChanged += OnAngleChanged;
             _player.LaserAmmoChanged += OnLaserAmmoChanged;
             _player.LaserTicked += OnCooldownChanged;
-            _isSubscribed = true;
         }
 
         private void Unsubscribe()
@@ -52,7 +42,6 @@ namespace Asteroids
             _player.AngleChanged -= OnAngleChanged;
             _player.LaserAmmoChanged -= OnLaserAmmoChanged;
             _player.LaserTicked -= OnCooldownChanged;
-            _isSubscribed = false;
         }
 
         private void OnSpeedChanged()

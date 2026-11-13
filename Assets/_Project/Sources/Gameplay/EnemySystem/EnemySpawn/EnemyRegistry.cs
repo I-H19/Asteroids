@@ -29,6 +29,7 @@ namespace Asteroids
             foreach (IEnemy enemy in _aliveEnemies)
             {
                 enemy.Kill();
+                enemy.Killed -= OnEnemyKilled;
             }
 
             _aliveEnemies.Clear();

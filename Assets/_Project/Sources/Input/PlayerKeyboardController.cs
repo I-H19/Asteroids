@@ -10,13 +10,12 @@ namespace Asteroids
         private Player _player;
 
         [Inject]
-        public void Construct(KeyboardMonitor keyboardMonitor)
+        public void Construct(
+            KeyboardMonitor keyboardMonitor,
+            Player player,
+            BulletFiringController bulletFiringController)
         {
             _keyboardMonitor = keyboardMonitor;
-        }
-
-        public void Init(Player player, BulletFiringController bulletFiringController)
-        {
             _player = player;
             _bulletFiringController = bulletFiringController;
         }

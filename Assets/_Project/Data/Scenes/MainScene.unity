@@ -189,7 +189,8 @@ MonoBehaviour:
   _playerCombatSettings: {fileID: 11400000, guid: 392d0ccdc8d72924ca0aa51bb56dd71b, type: 2}
   _prefabHolder: {fileID: 11400000, guid: 5a1fb4bf5d4b921499f9d6bf16c99e8d, type: 2}
   _enemySpawnerSettings: {fileID: 11400000, guid: fec288cbcedb4b3448c7bd4fd1987cae, type: 2}
-  _enemySettings: {fileID: 11400000, guid: 9076467fe5a69ac4dacb546082d6d07a, type: 2}
+  _enemyMovingSettings: {fileID: 11400000, guid: 9076467fe5a69ac4dacb546082d6d07a, type: 2}
+  _enemyCombatSettings: {fileID: 11400000, guid: 5d41afbf81594a1b9eb37153a30e1736, type: 2}
 --- !u!4 &187408685
 Transform:
   m_ObjectHideFlags: 0

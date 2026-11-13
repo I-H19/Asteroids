@@ -28,7 +28,7 @@ namespace Asteroids
 
         public void Pause()
         {
-            _isFiring = false;
+            StopFiring();
         }
 
         public void Unpause()

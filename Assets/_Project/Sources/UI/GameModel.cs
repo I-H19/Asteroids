@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using VContainer;
 
 namespace Asteroids
 {
@@ -11,7 +12,8 @@ namespace Asteroids
         public event Action StatsChanged;
         public event Action GameFinished;
 
-        public void Init(PlayerStats playerStats)
+        [Inject]
+        public void Construct(PlayerStats playerStats)
         {
             PlayerStats = playerStats;
         }

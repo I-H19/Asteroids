@@ -8,7 +8,8 @@ namespace Asteroids
     {
         private Asteroid _asteroidPrefab;
         private AsteroidSplitter _asteroidSplitter;
-        private EnemySettings _enemySettings;
+        private EnemyMovingSettings _enemyMovingSettings;
+        private EnemyCombatSettings _enemyCombatSettings;
         private AsteroidFragment _fragmentPrefab;
         private IObjectResolver _resolver;
 
@@ -16,13 +17,15 @@ namespace Asteroids
         public void Construct(
             IObjectResolver resolver,
             PrefabHolder prefabHolder,
-            EnemySettings enemySettings,
+            EnemyCombatSettings enemyCombatSettings,
+            EnemyMovingSettings enemyMovingSettings,
             AsteroidSplitter asteroidSplitter)
         {
             _resolver = resolver;
             _asteroidPrefab = prefabHolder.AsteroidPrefab;
             _fragmentPrefab = prefabHolder.AsteroidFragmentPrefab;
-            _enemySettings = enemySettings;
+            _enemyMovingSettings = enemyMovingSettings;
+            _enemyCombatSettings = enemyCombatSettings;
             _asteroidSplitter = asteroidSplitter;
         }
 
@@ -30,9 +33,9 @@ namespace Asteroids
         {
             Asteroid asteroid = _resolver.Instantiate(_asteroidPrefab, position, Quaternion.identity);
 
-            asteroid.Init(_enemySettings.AsteroidMovingSettings, _enemySettings.AsteroidDamage);
+            asteroid.Init(_enemyMovingSettings.AsteroidMovingSettings, _enemyCombatSettings.AsteroidDamage);
 
-            for (int i = 0; i < _enemySettings.AsteroidFragmentCount; i++)
+            for (int i = 0; i < _enemyCombatSettings.AsteroidFragmentCount; i++)
             {
                 AsteroidFragment fragment = CreateFragment(position, asteroid);
                 _asteroidSplitter.Track(fragment);
@@ -45,7 +48,7 @@ namespace Asteroids
         {
             AsteroidFragment fragment = _resolver.Instantiate(_fragmentPrefab, position, Quaternion.identity);
 
-            fragment.Init(_enemySettings.FragmentMovingSettings, _enemySettings.AsteroidDamage);
+            fragment.Init(_enemyMovingSettings.FragmentMovingSettings, _enemyCombatSettings.AsteroidDamage);
             fragment.SetParent(parent);
             parent.AddFragment(fragment);
 
