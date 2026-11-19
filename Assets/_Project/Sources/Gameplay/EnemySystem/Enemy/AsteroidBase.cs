@@ -10,8 +10,8 @@ namespace Asteroids
     [RequireComponent(typeof(EnemyDamageSource), typeof(ScreenTeleporter))]
     public class AsteroidBase : MonoBehaviour
     {
-        private EnemyLife _enemyLife;
         private EnemyCombatSettings _enemyCombatSettings;
+        private EnemyLife _enemyLife;
         private ScreenBoundsTracker _screenBoundsTracker;
         private ScreenTeleporter _screenTeleporter;
         public DirectionalMover Mover { get; private set; }

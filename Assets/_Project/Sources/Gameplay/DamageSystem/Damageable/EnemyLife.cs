@@ -7,7 +7,7 @@ namespace Asteroids
     {
         private float _health;
         private bool _isDead;
-        
+
         public event Action Died;
 
         public void Init(float maxHealth)
@@ -15,6 +15,7 @@ namespace Asteroids
             _health = maxHealth;
             _isDead = false;
         }
+
         public void TakeDamage(float damage)
         {
             if (_isDead)

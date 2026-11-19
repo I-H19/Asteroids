@@ -31,9 +31,7 @@ namespace Asteroids
             StopFiring();
         }
 
-        public void Unpause()
-        {
-        }
+        public void Unpause() { }
 
         public void Tick()
         {

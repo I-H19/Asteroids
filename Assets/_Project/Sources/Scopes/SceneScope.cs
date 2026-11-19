@@ -6,6 +6,18 @@ namespace Asteroids
 {
     public class SceneScope : LifetimeScope
     {
+        [Header("Core")] [SerializeField] private Camera _camera;
+
+        [Header("Player")] [SerializeField] private PlayerMovementSettings _playerMovementSettings;
+
+        [SerializeField] private PlayerCombatSettings _playerCombatSettings;
+
+        [Header("Gameplay")] [SerializeField] private PrefabHolder _prefabHolder;
+
+        [SerializeField] private EnemySpawnerSettings _enemySpawnerSettings;
+        [SerializeField] private EnemyMovingSettings _enemyMovingSettings;
+        [SerializeField] private EnemyCombatSettings _enemyCombatSettings;
+
         protected override void Configure(IContainerBuilder builder)
         {
             RegisterEntryPoints(builder);
@@ -86,18 +98,5 @@ namespace Asteroids
             builder.Register<AsteroidFactory>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             builder.Register<UfoFactory>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
         }
-#pragma warning disable CS0649
-        [Header("Core")] [SerializeField] private Camera _camera;
-
-        [Header("Player")] [SerializeField] private PlayerMovementSettings _playerMovementSettings;
-
-        [SerializeField] private PlayerCombatSettings _playerCombatSettings;
-
-        [Header("Gameplay")] [SerializeField] private PrefabHolder _prefabHolder;
-
-        [SerializeField] private EnemySpawnerSettings _enemySpawnerSettings;
-        [SerializeField] private EnemyMovingSettings _enemyMovingSettings;
-        [SerializeField] private EnemyCombatSettings _enemyCombatSettings;
-#pragma warning restore CS0649
     }
 }

@@ -13,6 +13,5 @@ namespace Asteroids
 
         [field: SerializeField]
         public DirectionalMoverSettings UfoMovingSettings { get; private set; }
-
     }
 }
