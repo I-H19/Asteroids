@@ -11,6 +11,7 @@ namespace Asteroids
         [field: SerializeField]
         public TextMeshProUGUI ResultScore { get; private set; }
 
+
         public void ChangeScore(int score)
         {
             RuntimeScore.text = $"GameScore: {score}";

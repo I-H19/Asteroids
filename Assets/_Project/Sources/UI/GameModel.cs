@@ -6,16 +6,27 @@ namespace Asteroids
 {
     public class GameModel
     {
+        private ISaveLoadProgress _saveLoadProgress;
+        private SaveData _actualSaveData;
         public int Score { get; private set; }
+        public int BestScore { get; private set; }
+        public int PlayedGamesCount { get; private set; }
         public PlayerStats PlayerStats { get; private set; }
         public event Action ScoreChanged;
         public event Action StatsChanged;
         public event Action GameFinished;
+        public event Action RecordScoreChanged;
+        public event Action PlayedGamesCountChanged;
 
         [Inject]
-        public void Construct(PlayerStats playerStats)
+        public void Construct(PlayerStats playerStats, ISaveLoadProgress saveLoadProgress)
         {
             PlayerStats = playerStats;
+            _saveLoadProgress = saveLoadProgress;
+
+            _actualSaveData = _saveLoadProgress.LoadProgress();
+            ChangeRecordScore(_actualSaveData.BestScore);
+            ChangePlayedGamesCount(_actualSaveData.PlayedGamesCount);
         }
 
         public void IncrementScore()
@@ -67,8 +78,32 @@ namespace Asteroids
             StatsChanged?.Invoke();
         }
 
+        public void ChangeRecordScore(int score)
+        {
+            BestScore = score;
+            _actualSaveData.BestScore = score;
+            RecordScoreChanged?.Invoke();
+        }
+
+        public void ChangePlayedGamesCount(int count)
+        {
+            PlayedGamesCount = count;
+            _actualSaveData.PlayedGamesCount = count;
+            PlayedGamesCountChanged?.Invoke();
+        }
+
         public void FinishGame()
         {
+            if (Score > BestScore)
+            {
+                BestScore = Score;
+                _actualSaveData.BestScore = BestScore;
+            }
+
+            ChangePlayedGamesCount(PlayedGamesCount + 1);
+
+            _saveLoadProgress.SaveProgress(_actualSaveData);
+
             GameFinished?.Invoke();
         }
     }

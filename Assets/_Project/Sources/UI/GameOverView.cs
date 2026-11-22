@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +7,12 @@ namespace Asteroids
 {
     public class GameOverView : MonoBehaviour
     {
+        [field: SerializeField]
+        public TextMeshProUGUI RecordScore { get; private set; }
+
+        [field: SerializeField]
+        public TextMeshProUGUI PlayedGamesCount { get; private set; }
+        
         [field: SerializeField]
         public Image GameRestartPanel { get; private set; }
 
@@ -32,6 +39,16 @@ namespace Asteroids
         private void OnRestartButtonClicked()
         {
             RestartButtonClicked?.Invoke();
+        }
+        
+        public void ChangeRecordScore(int score)
+        {
+            RecordScore.text = $"Best score: {score}";
+        }
+
+        public void ChangePlayedGamesCount(int count)
+        {
+            PlayedGamesCount.text = $"Games Count: {count}";
         }
     }
 }
