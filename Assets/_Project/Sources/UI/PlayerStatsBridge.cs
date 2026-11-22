@@ -32,7 +32,7 @@ namespace Asteroids
             _player.PositionChanged += OnPositionChanged;
             _player.AngleChanged += OnAngleChanged;
             _player.LaserAmmoChanged += OnLaserAmmoChanged;
-            _player.LaserTicked += OnCooldownChanged;
+            _player.LaserCooldownChanged += OnLaserCooldownChanged;
         }
 
         private void Unsubscribe()
@@ -41,7 +41,7 @@ namespace Asteroids
             _player.PositionChanged -= OnPositionChanged;
             _player.AngleChanged -= OnAngleChanged;
             _player.LaserAmmoChanged -= OnLaserAmmoChanged;
-            _player.LaserTicked -= OnCooldownChanged;
+            _player.LaserCooldownChanged -= OnLaserCooldownChanged;
         }
 
         private void OnSpeedChanged()
@@ -64,7 +64,7 @@ namespace Asteroids
             _gameModel.ChangeTotalAmmo(_player.TotalLaserAmmo);
         }
 
-        private void OnCooldownChanged()
+        private void OnLaserCooldownChanged()
         {
             _gameModel.ChangeCooldown(_player.LaserShootingCooldown, _player.LaserReloadingTime);
         }

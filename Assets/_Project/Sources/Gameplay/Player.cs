@@ -9,7 +9,7 @@ namespace Asteroids
     [RequireComponent(typeof(DirectionalRotator))]
     [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(PlayerLife))]
-    public class Player : MonoBehaviour, ISceneTickable, ISceneFixedTickable, IPausable
+    public class Player : MonoBehaviour, ISceneFixedTickable, IPausable
     {
         [field: SerializeField]
         private Laser PlayerLaser { get; set; }
@@ -39,9 +39,11 @@ namespace Asteroids
 
         public event Action Died;
         public event Action LaserAmmoChanged;
-        public event Action LaserTicked;
+        public event Action LaserCooldownChanged;
         public event Action PositionChanged;
         public event Action SpeedChanged;
+        public event Action Paused;
+        public event Action Unpaused;
 
         [Inject]
         public void Construct(
@@ -80,9 +82,9 @@ namespace Asteroids
             _inertialMover.PositionChanged += OnPositionChanged;
             _directionalRotator.AngleChanged += OnAngleChanged;
             PlayerLaser.AmmoChanged += OnLaserAmmoChanged;
-            PlayerLaser.Ticked += OnLaserTicked;
+            PlayerLaser.LaserCooldownChanged += OnLaserCooldownChanged;
 
-            PlayerLaser.Init(PlayerLaserVisual, _playerCombatSettings);
+            PlayerLaser.Init(this, PlayerLaserVisual, _playerCombatSettings);
         }
 
         private void OnDestroy()
@@ -92,19 +94,21 @@ namespace Asteroids
             _inertialMover.PositionChanged -= OnPositionChanged;
             _directionalRotator.AngleChanged -= OnAngleChanged;
             PlayerLaser.AmmoChanged -= OnLaserAmmoChanged;
-            PlayerLaser.Ticked -= OnLaserTicked;
+            PlayerLaser.LaserCooldownChanged -= OnLaserCooldownChanged;
         }
 
         public void Pause()
         {
             _inertialMover.DisableMoving();
             _directionalRotator.SetEnabled(false);
+            Paused?.Invoke();
         }
 
         public void Unpause()
         {
             _inertialMover.EnableMoving();
             _directionalRotator.SetEnabled(true);
+            Unpaused?.Invoke();
         }
 
         public void FixedTick()
@@ -114,11 +118,7 @@ namespace Asteroids
             _playerTeleporter.FixedTick();
             PlayerLaser.FixedTick();
         }
-
-        public void Tick()
-        {
-            PlayerLaser.LocalTick();
-        }
+        
 
         public void ResetPlayer()
         {
@@ -180,9 +180,9 @@ namespace Asteroids
             LaserAmmoChanged?.Invoke();
         }
 
-        private void OnLaserTicked()
+        private void OnLaserCooldownChanged()
         {
-            LaserTicked?.Invoke();
+            LaserCooldownChanged?.Invoke();
         }
     }
 }

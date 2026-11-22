@@ -1,16 +1,21 @@
+using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
 
 namespace Asteroids
 {
-    public class BulletFiringController : IPausable, ISceneTickable
+    public class BulletFiringController : IPausable, IDisposable
     {
         private BulletFactory _bulletFactory;
         private BulletRegistry _bulletRegistry;
         private float _bulletCooldown;
         private bool _isFiring;
-        private float _nextShotTime;
         private Player _player;
+        private UniTask _firingTask;
+
+        private CancellationTokenSource _cancellationTokenSource;
 
         [Inject]
         public void Construct(
@@ -23,7 +28,6 @@ namespace Asteroids
             _bulletRegistry = bulletRegistry;
             _player = player;
             _bulletCooldown = playerCombatSettings.BulletCooldown;
-            _nextShotTime = Time.time;
         }
 
         public void Pause()
@@ -33,26 +37,52 @@ namespace Asteroids
 
         public void Unpause() { }
 
-        public void Tick()
-        {
-            if (!_isFiring || Time.time < _nextShotTime)
-            {
-                return;
-            }
-
-            Bullet bullet = _bulletFactory.Create(_player.transform.position, _player.transform.rotation);
-            _bulletRegistry.Register(bullet);
-            _nextShotTime = Time.time + _bulletCooldown;
-        }
 
         public void StartFiring()
         {
             _isFiring = true;
+
+            if (_firingTask.Status == UniTaskStatus.Pending)
+            {
+                return;
+            }
+            
+            if (_cancellationTokenSource == null)
+            {
+                _cancellationTokenSource = new();
+            }
+            
+            _firingTask = FiringLoop().Preserve();
+            _firingTask.Forget();
+            
         }
 
         public void StopFiring()
         {
             _isFiring = false;
+        }
+
+        private async UniTask FiringLoop()
+        {
+            while (!_cancellationTokenSource.IsCancellationRequested)
+            {
+                if (!_isFiring)
+                {
+                    await UniTask.Yield(_cancellationTokenSource.Token);
+                    continue;
+                }
+
+                Bullet bullet = _bulletFactory.Create(_player.transform.position, _player.transform.rotation);
+                _bulletRegistry.Register(bullet);
+
+                await UniTask.WaitForSeconds(_bulletCooldown, cancellationToken: _cancellationTokenSource.Token);
+            }
+        }
+
+        public void Dispose()
+        {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
         }
     }
 }
