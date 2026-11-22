@@ -10,6 +10,7 @@ namespace Asteroids
     [RequireComponent(typeof(EnemyDamageSource), typeof(ScreenTeleporter))]
     public class AsteroidBase : MonoBehaviour
     {
+        private EnemyCombatSettings _enemyCombatSettings;
         private EnemyLife _enemyLife;
         private ScreenBoundsTracker _screenBoundsTracker;
         private ScreenTeleporter _screenTeleporter;
@@ -18,9 +19,10 @@ namespace Asteroids
         public event Action Died;
 
         [Inject]
-        public void Construct(ScreenBoundsTracker screenBoundsTracker)
+        public void Construct(EnemyCombatSettings enemyCombatSettings, ScreenBoundsTracker screenBoundsTracker)
         {
             _screenBoundsTracker = screenBoundsTracker;
+            _enemyCombatSettings = enemyCombatSettings;
         }
 
         public void Init(DirectionalMoverSettings moverSettings, float damageCount)
@@ -39,6 +41,7 @@ namespace Asteroids
             _screenTeleporter.Init(_screenBoundsTracker);
 
             _enemyLife = GetComponent<EnemyLife>();
+            _enemyLife.Init(_enemyCombatSettings.DefaultMaxHealth);
             _enemyLife.Died += OnDied;
         }
 

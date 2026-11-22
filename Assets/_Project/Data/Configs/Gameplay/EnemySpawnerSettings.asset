@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EnemySpawnerSettings
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Sources.Settings.Gameplay.EnemySpawnerSettings
   <SpawnAttemptInterval>k__BackingField: 1
-  <EnemySpawnChance>k__BackingField: 100
+  <EnemySpawnChance>k__BackingField: 90
   <AsteroidSpawnChance>k__BackingField: 45
-  <UfoSpawnChance>k__BackingField: 82
+  <UfoSpawnChance>k__BackingField: 40
   <MaxEnemiesAlive>k__BackingField: 25

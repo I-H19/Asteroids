@@ -6,6 +6,18 @@ namespace Asteroids
 {
     public class SceneScope : LifetimeScope
     {
+        [Header("Core")] [SerializeField] private Camera _camera;
+
+        [Header("Player")] [SerializeField] private PlayerMovementSettings _playerMovementSettings;
+
+        [SerializeField] private PlayerCombatSettings _playerCombatSettings;
+
+        [Header("Gameplay")] [SerializeField] private PrefabHolder _prefabHolder;
+
+        [SerializeField] private EnemySpawnerSettings _enemySpawnerSettings;
+        [SerializeField] private EnemyMovingSettings _enemyMovingSettings;
+        [SerializeField] private EnemyCombatSettings _enemyCombatSettings;
+
         protected override void Configure(IContainerBuilder builder)
         {
             RegisterEntryPoints(builder);
@@ -14,6 +26,8 @@ namespace Asteroids
             RegisterGameplay(builder);
             RegisterGameFlow(builder);
             RegisterFactories(builder);
+
+            builder.Register<LocalSaveLoadProgress>(Lifetime.Singleton).As<ISaveLoadProgress>();
 
             builder.RegisterComponentInNewPrefab(_prefabHolder.GameViewPrefab, Lifetime.Singleton);
             builder.Register<GamePresenter>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
@@ -62,7 +76,8 @@ namespace Asteroids
         {
             builder.RegisterComponent(_prefabHolder);
             builder.RegisterComponent(_enemySpawnerSettings);
-            builder.RegisterComponent(_enemySettings);
+            builder.RegisterComponent(_enemyMovingSettings);
+            builder.RegisterComponent(_enemyCombatSettings);
 
             builder.Register<ScreenBoundsTracker>(Lifetime.Transient);
             builder.Register<AsteroidSplitter>(Lifetime.Singleton);
@@ -85,17 +100,5 @@ namespace Asteroids
             builder.Register<AsteroidFactory>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
             builder.Register<UfoFactory>(Lifetime.Singleton).AsSelf().AsImplementedInterfaces();
         }
-#pragma warning disable CS0649
-        [Header("Core")] [SerializeField] private Camera _camera;
-
-        [Header("Player")] [SerializeField] private PlayerMovementSettings _playerMovementSettings;
-
-        [SerializeField] private PlayerCombatSettings _playerCombatSettings;
-
-        [Header("Gameplay")] [SerializeField] private PrefabHolder _prefabHolder;
-
-        [SerializeField] private EnemySpawnerSettings _enemySpawnerSettings;
-        [SerializeField] private EnemySettings _enemySettings;
-#pragma warning restore CS0649
     }
 }

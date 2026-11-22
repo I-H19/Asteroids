@@ -14,6 +14,7 @@ namespace Asteroids
     public class Ufo : MonoBehaviour, IEnemy
     {
         private DirectionalMover _directionalMover;
+        private EnemyCombatSettings _enemyCombatSettings;
         private EnemyLife _enemyLife;
         private LookAtRotator _lookAtRotator;
         private DirectionalMoverSettings _moverSettings;
@@ -22,9 +23,13 @@ namespace Asteroids
         private ScreenBoundsTracker _screenBoundsTracker;
 
         [Inject]
-        public void Construct(ScreenBoundsTracker screenBoundsTracker, Player player)
+        public void Construct(
+            EnemyCombatSettings enemyCombatSettings,
+            ScreenBoundsTracker screenBoundsTracker,
+            Player player)
         {
             _screenBoundsTracker = screenBoundsTracker;
+            _enemyCombatSettings = enemyCombatSettings;
             _player = player;
         }
 
@@ -36,6 +41,8 @@ namespace Asteroids
             gameObject.transform.rotation = Quaternion.Euler(0f, 0f, randomAngleDegrees);
 
             _enemyLife = GetComponent<EnemyLife>();
+            _enemyLife.Init(_enemyCombatSettings.DefaultMaxHealth);
+
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _directionalMover = GetComponent<DirectionalMover>();
             _directionalMover.Init(_moverSettings, _rigidbody2D);

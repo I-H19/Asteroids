@@ -78,6 +78,9 @@ namespace Asteroids
 
         private void OnGameFinished()
         {
+            _gameOverView.ChangeRecordScore(_gameModel.BestScore);
+            _gameOverView.ChangePlayedGamesCount(_gameModel.PlayedGamesCount);
+            
             _gameOverView.SetRestartPanelEnabled(true);
         }
 
